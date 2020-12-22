@@ -1,8 +1,3 @@
-#Maven
-target
-release.properties
-pom.xml.*
-
 #Eclipse
 .classpath
 .project
@@ -10,10 +5,13 @@ pom.xml.*
 bin
 
 #IntelliJ IDEA
+.gradle
+.idea/
 *.iml
-!.idea/
-.idea/*
-!.idea/codeStyleSettings.xml
+build/
+src/main/gen
+src/main/resources/templates.list
+src/main/resources/gitignore/*
 
 #############
 ## Android
