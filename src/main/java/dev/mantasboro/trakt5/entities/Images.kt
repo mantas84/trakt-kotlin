@@ -1,13 +1,7 @@
-package dev.mantasboro.trakt5.entities;
+package dev.mantasboro.trakt5.entities
 
-public class Images {
+class Images {
+    val avatar: ImageSizes? = null
 
-    public ImageSizes avatar;
-
-    public static class ImageSizes {
-
-        public String full;
-
-    }
-
+    data class ImageSizes(val full: String? = null)
 }

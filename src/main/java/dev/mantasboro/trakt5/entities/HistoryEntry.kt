@@ -1,17 +1,13 @@
-package dev.mantasboro.trakt5.entities;
+package dev.mantasboro.trakt5.entities
 
-import org.threeten.bp.OffsetDateTime;
+import org.threeten.bp.OffsetDateTime
 
-public class HistoryEntry {
-
-    public Long id;
-    public OffsetDateTime watched_at;
-    public String action;
-    public String type;
-
-    public Episode episode;
-    public Show show;
-
-    public Movie movie;
-
-}
+data class HistoryEntry(
+    val id: Long? = null,
+    val watched_at: OffsetDateTime? = null,
+    val action: String? = null,
+    val type: String? = null,
+    val episode: Episode? = null,
+    val show: Show? = null,
+    val movie: Movie? = null,
+)

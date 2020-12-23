@@ -1,9 +1,7 @@
-package dev.mantasboro.trakt5.entities;
+package dev.mantasboro.trakt5.entities
 
-public class DeviceCodeAccessTokenRequest {
-
-    public String code;
-    public String client_id;
-    public String client_secret;
-
-}
+data class DeviceCodeAccessTokenRequest(
+    val code: String?,
+    val client_id: String? ,
+    val client_secret: String?,
+)

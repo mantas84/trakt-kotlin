@@ -1,14 +1,3 @@
-package dev.mantasboro.trakt5.entities;
+package dev.mantasboro.trakt5.entities
 
-import java.util.List;
-
-public class ListItemRank {
-
-    public List<Long> rank;
-
-    public static ListItemRank from(List<Long> rank) {
-        ListItemRank listItemRank = new ListItemRank();
-        listItemRank.rank = rank;
-        return listItemRank;
-    }
-}
+data class ListItemRank(val rank: List<Long>?)

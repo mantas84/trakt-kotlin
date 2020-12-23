@@ -1,521 +1,548 @@
-package dev.mantasboro.trakt5.services;
+package dev.mantasboro.trakt5.services
 
-import dev.mantasboro.trakt5.BaseTestCase;
-import dev.mantasboro.trakt5.TestData;
-import dev.mantasboro.trakt5.entities.*;
-import dev.mantasboro.trakt5.enums.Rating;
-import dev.mantasboro.trakt5.enums.RatingsFilter;
-import org.junit.Test;
-import org.threeten.bp.Instant;
-import org.threeten.bp.OffsetDateTime;
-import org.threeten.bp.ZoneOffset;
+import dev.mantasboro.trakt5.BaseTestCase
+import dev.mantasboro.trakt5.TestData
+import dev.mantasboro.trakt5.entities.*
+import dev.mantasboro.trakt5.enums.Rating
+import dev.mantasboro.trakt5.enums.RatingsFilter
+import org.assertj.core.api.Assertions
+import org.junit.Test
+import org.threeten.bp.Instant
+import org.threeten.bp.OffsetDateTime
+import org.threeten.bp.ZoneOffset
+import java.io.IOException
+import java.util.*
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
-
-public class SyncTest extends BaseTestCase {
-
+class SyncTest : BaseTestCase() {
     @Test
-    public void test_lastActivites() throws IOException {
-        LastActivities lastActivities = executeCall(getTrakt().sync().lastActivities());
-        assertThat(lastActivities).isNotNull();
-        assertThat(lastActivities.all).isNotNull();
-        assertLastActivityMore(lastActivities.movies);
-        assertLastActivityMore(lastActivities.episodes);
-        assertLastActivity(lastActivities.shows);
-        assertLastActivity(lastActivities.seasons);
-        assertListsLastActivity(lastActivities.lists);
+    @Throws(IOException::class)
+    fun test_lastActivites() {
+        val lastActivities = executeCall(trakt.sync().lastActivities())
+        Assertions.assertThat(lastActivities).isNotNull
+        Assertions.assertThat(lastActivities.all).isNotNull
+        assertLastActivityMore(lastActivities.movies)
+        assertLastActivityMore(lastActivities.episodes)
+        assertLastActivity(lastActivities.shows)
+        assertLastActivity(lastActivities.seasons)
+        assertListsLastActivity(lastActivities.lists)
     }
 
     @Test
-    public void test_getPlayback() throws IOException, InterruptedException {
+    @Throws(IOException::class, InterruptedException::class)
+    fun test_getPlayback() {
         // Make sure there are paused entries.
-        int agentsOfShield = 4420028; /* S01E01 */
-        SyncEpisode episode = new SyncEpisode().id(EpisodeIds.tvdb(agentsOfShield));
-        ScrobbleProgress episodeProgress = new ScrobbleProgress(episode, 25.0, null, null);
-        PlaybackResponse episodeResponse = executeCall(getTrakt().scrobble().pauseWatching(episodeProgress));
-        assertThat(episodeResponse.action).isEqualTo("pause");
+        val agentsOfShield = 4420028 /* S01E01 */
+        val episode = SyncEpisode().id(EpisodeIds(tvdb = agentsOfShield))
+        val episodeProgress =
+            ScrobbleProgress(episode = episode, progress = 25.0, app_date = APP_DATE, app_version = APP_VERSION)
+        val episodeResponse = executeCall(trakt.scrobble().pauseWatching(episodeProgress))
+        Assertions.assertThat(episodeResponse.action).isEqualTo("pause")
 
         // Give the server some time to process the request.
-        Thread.sleep(1500);
-
-        int interstellar = 157336;
-        SyncMovie movie = new SyncMovie().id(MovieIds.tmdb(157336));
-        ScrobbleProgress movieProgress = new ScrobbleProgress(movie, 32.0, null, null);
-        PlaybackResponse movieResponse = executeCall(getTrakt().scrobble().pauseWatching(movieProgress));
-        assertThat(movieResponse.action).isEqualTo("pause");
+        Thread.sleep(1500)
+        val interstellar = 157336
+        val movie = SyncMovie().id(MovieIds(tmdb = 157336))
+        val movieProgress =
+            ScrobbleProgress(movie = movie, progress = 32.0, app_date = APP_DATE, app_version = APP_VERSION)
+        val movieResponse = executeCall(trakt.scrobble().pauseWatching(movieProgress))
+        Assertions.assertThat(movieResponse.action).isEqualTo("pause")
 
         // Give the server some time to process the request.
-        Thread.sleep(1500);
-
-        List<PlaybackResponse> playbacks = executeCall(getTrakt().sync().getPlayback(10));
-        assertThat(playbacks).isNotNull();
-        boolean foundEpisode = false;
-        boolean foundMovie = false;
-
-        for (PlaybackResponse playback : playbacks) {
-            assertThat(playback.type).isNotNull();
-
-            if (playback.episode != null && playback.episode.ids != null && playback.episode.ids.tvdb != null
-                    && playback.episode.ids.tvdb == agentsOfShield) {
-                foundEpisode = true;
-                assertThat(playback.paused_at).isNotNull();
-                assertThat(playback.progress).isEqualTo(25.0);
+        Thread.sleep(1500)
+        val playbacks = executeCall(trakt.sync().getPlayback(10))
+        Assertions.assertThat(playbacks).isNotNull
+        var foundEpisode = false
+        var foundMovie = false
+        for (playback in playbacks) {
+            Assertions.assertThat(playback.type).isNotNull
+            if (playback.episode != null && playback.episode!!.ids != null && playback.episode!!.ids!!.tvdb != null && playback.episode!!.ids!!.tvdb == agentsOfShield) {
+                foundEpisode = true
+                Assertions.assertThat(playback.paused_at).isNotNull
+                Assertions.assertThat(playback.progress).isEqualTo(25.0)
             }
-            
-            if (playback.movie != null && playback.movie.ids != null && playback.movie.ids.tmdb != null
-                    && playback.movie.ids.tmdb == interstellar) {
-                foundMovie = true;
-                assertThat(playback.paused_at).isNotNull();
-                assertThat(playback.progress).isEqualTo(32.0);
+            if (playback.movie != null && playback.movie!!.ids != null && playback.movie!!.ids!!.tmdb != null && playback.movie!!.ids!!.tmdb == interstellar) {
+                foundMovie = true
+                Assertions.assertThat(playback.paused_at).isNotNull
+                Assertions.assertThat(playback.progress).isEqualTo(32.0)
             }
         }
-
-        if (!foundEpisode) //noinspection ResultOfMethodCallIgnored
-            fail("Agents of Shield episode not paused.");
-        if (!foundMovie) //noinspection ResultOfMethodCallIgnored
-            fail("Interstellar movie not paused.");
+        if (!foundEpisode) Assertions.fail<Any>("Agents of Shield episode not paused.")
+        if (!foundMovie) Assertions.fail<Any>("Interstellar movie not paused.")
     }
 
-    private void assertLastActivityMore(LastActivityMore activityMore) {
-        assertLastActivity(activityMore);
-        assertThat(activityMore.paused_at).isNotNull();
-        assertThat(activityMore.collected_at).isNotNull();
-        assertThat(activityMore.watched_at).isNotNull();
+    private fun assertLastActivityMore(activityMore: LastActivityMore?) {
+        assertLastActivity(activityMore)
+        Assertions.assertThat(activityMore!!.paused_at).isNotNull
+        Assertions.assertThat(activityMore.collected_at).isNotNull
+        Assertions.assertThat(activityMore.watched_at).isNotNull
     }
 
-    private void assertLastActivity(LastActivity activity) {
-        assertThat(activity).isNotNull();
-        assertThat(activity.commented_at).isNotNull();
-        assertThat(activity.rated_at).isNotNull();
-        assertThat(activity.watchlisted_at).isNotNull();
+    private fun assertLastActivity(activity: LastActivity?) {
+        Assertions.assertThat(activity).isNotNull
+        Assertions.assertThat(activity!!.commented_at).isNotNull
+        Assertions.assertThat(activity.rated_at).isNotNull
+        Assertions.assertThat(activity.watchlisted_at).isNotNull
     }
 
-    private void assertListsLastActivity(ListsLastActivity activity) {
-        assertThat(activity).isNotNull();
-        assertThat(activity.commented_at).isNotNull();
-        assertThat(activity.liked_at).isNotNull();
-        assertThat(activity.updated_at).isNotNull();
+    private fun assertListsLastActivity(activity: ListsLastActivity?) {
+        Assertions.assertThat(activity).isNotNull
+        Assertions.assertThat(activity!!.commented_at).isNotNull
+        Assertions.assertThat(activity.liked_at).isNotNull
+        Assertions.assertThat(activity.updated_at).isNotNull
     }
 
     @Test
-    public void test_collectionMovies() throws IOException {
-        List<BaseMovie> movies = executeCall(getTrakt().sync().collectionMovies(null));
-        assertSyncMovies(movies, "collection");
+    @Throws(IOException::class)
+    fun test_collectionMovies() {
+        val movies = executeCall(trakt.sync().collectionMovies(null))
+        assertSyncMovies(movies, "collection")
     }
 
     @Test
-    public void test_collectionShows() throws IOException {
-        List<BaseShow> shows = executeCall(getTrakt().sync().collectionShows(null));
-        assertSyncShows(shows, "collection");
+    @Throws(IOException::class)
+    fun test_collectionShows() {
+        val shows = executeCall(trakt.sync().collectionShows(null))
+        assertSyncShows(shows, "collection")
     }
 
     @Test
-    public void test_addItemsToCollection_movie() throws IOException {
-        SyncMovie movie = new SyncMovie();
-        movie.ids = buildMovieIds();
-
-        SyncItems items = new SyncItems().movies(movie);
-        addItemsToCollection(items);
+    @Throws(IOException::class)
+    fun test_addItemsToCollection_movie() {
+        val movie = SyncMovie()
+        movie.ids = buildMovieIds()
+        val items = SyncItems().movies(movie)
+        addItemsToCollection(items)
     }
 
     @Test
-    public void test_addItemsToCollection_show() throws IOException {
-        SyncShow show = new SyncShow();
-        show.ids = buildShowIds();
-
-        SyncItems items = new SyncItems().shows(show);
-        addItemsToCollection(items);
+    @Throws(IOException::class)
+    fun test_addItemsToCollection_show() {
+        val show = SyncShow()
+        show.ids = buildShowIds()
+        val items = SyncItems().shows(show)
+        addItemsToCollection(items)
     }
 
     @Test
-    public void test_addItemsToCollection_season() throws IOException {
+    @Throws(IOException::class)
+    fun test_addItemsToCollection_season() {
         // season
-        SyncSeason season = new SyncSeason();
-        season.number = 1;
+        val season = SyncSeason()
+        season.number = 1
 
         // show
-        SyncShow show = new SyncShow();
-        show.ids = ShowIds.slug("community");
-        show.seasons = new ArrayList<>();
-        show.seasons.add(season);
-
-        SyncItems items = new SyncItems().shows(show);
-        addItemsToCollection(items);
+        val show = SyncShow()
+        show.ids = ShowIds(slug = "community")
+        show.seasons = ArrayList()
+        show.seasons(season)
+        val items = SyncItems().shows(show)
+        addItemsToCollection(items)
     }
 
     @Test
-    public void test_addItemsToCollection_episode() throws IOException {
+    @Throws(IOException::class)
+    fun test_addItemsToCollection_episode() {
         // Fri Jul 14 2017 02:40:00 UTC
-        OffsetDateTime collectedAt = OffsetDateTime.ofInstant(Instant.ofEpochMilli(1500000000000L), ZoneOffset.UTC);
+        val collectedAt = OffsetDateTime.ofInstant(Instant.ofEpochMilli(1500000000000L), ZoneOffset.UTC)
 
         // episodes
-        SyncEpisode episode1 = new SyncEpisode();
-        episode1.number = 1;
-        episode1.collectedAt(collectedAt);
-        SyncEpisode episode2 = new SyncEpisode();
-        episode2.number = 2;
+        val episode1 = SyncEpisode()
+        episode1.number = 1
+        episode1.collectedAt(collectedAt)
+        val episode2 = SyncEpisode()
+        episode2.number = 2
 
         // season
-        SyncSeason season = new SyncSeason();
-        season.number = TestData.EPISODE_SEASON;
-        season.episodes = new ArrayList<>();
-        season.episodes.add(episode1);
-        season.episodes.add(episode2);
+        val season = SyncSeason()
+        season.number = TestData.EPISODE_SEASON
+        val episodes: MutableList<SyncEpisode> = ArrayList()
+        episodes.add(episode1)
+        episodes.add(episode2)
+        season.episodes = episodes
 
         // show
-        SyncShow show = new SyncShow();
-        show.ids = ShowIds.tvdb(TestData.SHOW_TVDB_ID);
-        show.seasons = new ArrayList<>();
-        show.seasons.add(season);
-
-        SyncItems items = new SyncItems().shows(show);
-        addItemsToCollection(items);
+        val show = SyncShow()
+        show.ids = ShowIds(tvdb = TestData.SHOW_TVDB_ID)
+        val seasons: MutableList<SyncSeason> = ArrayList()
+        seasons.add(season)
+        show.seasons = seasons
+        val items = SyncItems().shows(show)
+        addItemsToCollection(items)
     }
 
-    private void addItemsToCollection(SyncItems items) throws IOException {
-        SyncResponse response = executeCall(getTrakt().sync().addItemsToCollection(items));
-        assertSyncResponse(response);
+    @Throws(IOException::class)
+    private fun addItemsToCollection(items: SyncItems) {
+        val response = executeCall(trakt.sync().addItemsToCollection(items))
+        assertSyncResponse(response)
     }
 
-    private void assertSyncResponse(SyncResponse response) {
-        assertThat(response.added.movies).isNotNull();
-        assertThat(response.added.episodes).isNotNull();
-        assertThat(response.existing.movies).isNotNull();
-        assertThat(response.existing.episodes).isNotNull();
-        assertThat(response.not_found).isNotNull();
-        assertThat(response.deleted).isNull();
+    private fun assertSyncResponse(response: SyncResponse) {
+        Assertions.assertThat(response.added!!.movies).isNotNull
+        Assertions.assertThat(response.added!!.episodes).isNotNull
+        Assertions.assertThat(response.existing!!.movies).isNotNull
+        Assertions.assertThat(response.existing!!.episodes).isNotNull
+        Assertions.assertThat(response.not_found).isNotNull
+        Assertions.assertThat(response.deleted).isNull()
     }
 
     @Test
-    public void test_deleteItemsFromCollection() throws IOException {
-        SyncResponse response = executeCall(getTrakt().sync().deleteItemsFromCollection(buildItemsForDeletion()));
-        assertSyncResponseDelete(response);
+    @Throws(IOException::class)
+    fun test_deleteItemsFromCollection() {
+        val response = executeCall(trakt.sync().deleteItemsFromCollection(buildItemsForDeletion()))
+        assertSyncResponseDelete(response)
     }
 
-    private void assertSyncResponseDelete(SyncResponse response) {
-        assertThat(response.deleted.movies).isNotNull();
-        assertThat(response.deleted.episodes).isNotNull();
-        assertThat(response.existing).isNull();
-        assertThat(response.not_found).isNotNull();
-        assertThat(response.added).isNull();
+    private fun assertSyncResponseDelete(response: SyncResponse) {
+        Assertions.assertThat(response.deleted!!.movies).isNotNull
+        Assertions.assertThat(response.deleted!!.episodes).isNotNull
+        Assertions.assertThat(response.existing).isNull()
+        Assertions.assertThat(response.not_found).isNotNull
+        Assertions.assertThat(response.added).isNull()
     }
 
-    private SyncItems buildItemsForDeletion() {
+    private fun buildItemsForDeletion(): SyncItems {
         // movie
-        SyncMovie movie = new SyncMovie();
-        movie.ids = buildMovieIds();
+        val movie = SyncMovie()
+        movie.ids = buildMovieIds()
 
         // episode
-        SyncEpisode episode2 = new SyncEpisode();
-        episode2.number = 2;
-
-        SyncSeason season = new SyncSeason();
-        season.number = TestData.EPISODE_SEASON;
-        season.episodes = new ArrayList<>();
-        season.episodes.add(episode2);
-
-        SyncShow show = new SyncShow();
-        show.ids = ShowIds.tvdb(TestData.SHOW_TVDB_ID);
-        show.seasons = new ArrayList<>();
-        show.seasons.add(season);
-
-        return new SyncItems().movies(movie).shows(show);
+        val episode2 = SyncEpisode()
+        episode2.number = 2
+        val season = SyncSeason()
+        season.number = TestData.EPISODE_SEASON
+        val episodes: MutableList<SyncEpisode> = ArrayList()
+        episodes.add(episode2)
+        season.episodes = episodes
+        val show = SyncShow().id(ShowIds(tvdb = TestData.SHOW_TVDB_ID))
+        val seasons: MutableList<SyncSeason> = ArrayList()
+        seasons.add(season)
+        show.seasons = seasons
+        return SyncItems().movies(movie).shows(show)
     }
 
     @Test
-    public void test_watchedMovies() throws IOException {
-        List<BaseMovie> watchedMovies = executeCall(getTrakt().sync().watchedMovies(null));
-        assertSyncMovies(watchedMovies, "watched");
+    @Throws(IOException::class)
+    fun test_watchedMovies() {
+        val watchedMovies = executeCall(trakt.sync().watchedMovies(null))
+        assertSyncMovies(watchedMovies, "watched")
     }
 
     @Test
-    public void test_watchedShows() throws IOException {
-        List<BaseShow> watchedShows = executeCall(getTrakt().sync().watchedShows(null));
-        assertSyncShows(watchedShows, "watched");
+    @Throws(IOException::class)
+    fun test_watchedShows() {
+        val watchedShows = executeCall(trakt.sync().watchedShows(null))
+        assertSyncShows(watchedShows, "watched")
     }
 
     @Test
-    public void test_addItemsToWatchedHistory() throws IOException {
+    @Throws(IOException::class)
+    fun test_addItemsToWatchedHistory() {
         // movie
-        SyncMovie movie = new SyncMovie();
-        movie.watched_at = OffsetDateTime.now().minusHours(1);
-        movie.ids = buildMovieIds();
+        val movie = SyncMovie()
+        movie.watched_at = OffsetDateTime.now().minusHours(1)
+        movie.ids = buildMovieIds()
 
         // episode
-        SyncEpisode episode = new SyncEpisode();
-        episode.number = TestData.EPISODE_NUMBER;
-        episode.watched_at = OffsetDateTime.now().minusHours(1);
-        SyncEpisode episode2 = new SyncEpisode();
-        episode2.number = 2;
-        episode2.watched_at = OffsetDateTime.now().minusMinutes(30);
+        val episode = SyncEpisode()
+        episode.number = TestData.EPISODE_NUMBER
+        episode.watched_at = OffsetDateTime.now().minusHours(1)
+        val episode2 = SyncEpisode()
+        episode2.number = 2
+        episode2.watched_at = OffsetDateTime.now().minusMinutes(30)
         // season
-        SyncSeason season = new SyncSeason();
-        season.number = TestData.EPISODE_SEASON;
-        season.episodes = new ArrayList<>();
-        season.episodes.add(episode);
-        season.episodes.add(episode2);
+        val season = SyncSeason()
+        season.number = TestData.EPISODE_SEASON
+        val episodes: MutableList<SyncEpisode> = ArrayList()
+        episodes.add(episode)
+        episodes.add(episode2)
+        season.episodes = episodes
         // show
-        SyncShow show = new SyncShow();
-        show.ids = ShowIds.tvdb(TestData.SHOW_TVDB_ID);
-        show.seasons = new ArrayList<>();
-        show.seasons.add(season);
-
-        SyncItems items = new SyncItems().movies(movie).shows(show);
-
-        SyncResponse response = executeCall(getTrakt().sync().addItemsToWatchedHistory(items));
-        assertThat(response).isNotNull();
-        assertThat(response.added.movies).isNotNull();
-        assertThat(response.added.episodes).isNotNull();
-        assertThat(response.existing).isNull();
-        assertThat(response.deleted).isNull();
-        assertThat(response.not_found).isNotNull();
+        val show = SyncShow()
+        show.ids = ShowIds(tvdb = TestData.SHOW_TVDB_ID)
+        val seasons: MutableList<SyncSeason> = ArrayList()
+        seasons.add(season)
+        show.seasons = seasons
+        val items = SyncItems().movies(movie).shows(show)
+        val response = executeCall(trakt.sync().addItemsToWatchedHistory(items))
+        Assertions.assertThat(response).isNotNull
+        Assertions.assertThat(response.added!!.movies).isNotNull
+        Assertions.assertThat(response.added!!.episodes).isNotNull
+        Assertions.assertThat(response.existing).isNull()
+        Assertions.assertThat(response.deleted).isNull()
+        Assertions.assertThat(response.not_found).isNotNull
     }
 
     @Test
-    public void test_deleteItemsFromWatchedHistory() throws IOException {
-        SyncItems items = buildItemsForDeletion();
-
-        SyncResponse response = executeCall(getTrakt().sync().deleteItemsFromWatchedHistory(items));
-        assertThat(response).isNotNull();
-        assertThat(response.deleted.movies).isNotNull();
-        assertThat(response.deleted.episodes).isNotNull();
-        assertThat(response.added).isNull();
-        assertThat(response.existing).isNull();
-        assertThat(response.not_found).isNotNull();
+    @Throws(IOException::class)
+    fun test_deleteItemsFromWatchedHistory() {
+        val items = buildItemsForDeletion()
+        val response = executeCall(trakt.sync().deleteItemsFromWatchedHistory(items))
+        Assertions.assertThat(response).isNotNull
+        Assertions.assertThat(response.deleted!!.movies).isNotNull
+        Assertions.assertThat(response.deleted!!.episodes).isNotNull
+        Assertions.assertThat(response.added).isNull()
+        Assertions.assertThat(response.existing).isNull()
+        Assertions.assertThat(response.not_found).isNotNull
     }
 
     @Test
-    public void test_ratingsMovies() throws IOException {
-        List<RatedMovie> ratedMovies = executeCall(getTrakt().sync().ratingsMovies(RatingsFilter.ALL,
-                null));
-        assertRatedEntities(ratedMovies);
+    @Throws(IOException::class)
+    fun test_ratingsMovies() {
+        val ratedMovies = executeCall(
+            trakt.sync().ratingsMovies(
+                RatingsFilter.ALL,
+                null
+            )
+        )
+        assertRatedEntities(ratedMovies)
     }
 
     @Test
-    public void test_ratingsMovies_filtered() throws IOException {
-        List<RatedMovie> ratedMovies = executeCall(getTrakt().sync().ratingsMovies(RatingsFilter.TOTALLYNINJA,
-                null));
-        assertThat(ratedMovies).isNotNull();
-        for (RatedMovie movie : ratedMovies) {
-            assertThat(movie.rated_at).isNotNull();
-            assertThat(movie.rating).isEqualTo(Rating.TOTALLYNINJA);
+    @Throws(IOException::class)
+    fun test_ratingsMovies_filtered() {
+        val ratedMovies = executeCall(
+            trakt.sync().ratingsMovies(
+                RatingsFilter.TOTALLYNINJA,
+                null
+            )
+        )
+        Assertions.assertThat(ratedMovies).isNotNull
+        for (movie in ratedMovies) {
+            Assertions.assertThat(movie.rated_at).isNotNull
+            Assertions.assertThat(movie.rating).isEqualTo(Rating.TOTALLYNINJA)
         }
     }
 
     @Test
-    public void test_ratingsShows() throws IOException {
-        List<RatedShow> ratedShows = executeCall(getTrakt().sync().ratingsShows(RatingsFilter.ALL,
-                null));
-        assertRatedEntities(ratedShows);
+    @Throws(IOException::class)
+    fun test_ratingsShows() {
+        val ratedShows = executeCall(
+            trakt.sync().ratingsShows(
+                RatingsFilter.ALL,
+                null
+            )
+        )
+        assertRatedEntities(ratedShows)
     }
 
     @Test
-    public void test_ratingsSeasons() throws IOException {
-        List<RatedSeason> ratedSeasons = executeCall(getTrakt().sync().ratingsSeasons(RatingsFilter.ALL,
-                null));
-        assertRatedEntities(ratedSeasons);
+    @Throws(IOException::class)
+    fun test_ratingsSeasons() {
+        val ratedSeasons = executeCall(
+            trakt.sync().ratingsSeasons(
+                RatingsFilter.ALL,
+                null
+            )
+        )
+        assertRatedEntities(ratedSeasons)
     }
 
     @Test
-    public void test_ratingsEpisodes() throws IOException {
-        List<RatedEpisode> ratedEpisodes = executeCall(getTrakt().sync().ratingsEpisodes(RatingsFilter.ALL,
-                null));
-        assertRatedEntities(ratedEpisodes);
+    @Throws(IOException::class)
+    fun test_ratingsEpisodes() {
+        val ratedEpisodes = executeCall(
+            trakt.sync().ratingsEpisodes(
+                RatingsFilter.ALL,
+                null
+            )
+        )
+        assertRatedEntities(ratedEpisodes)
     }
 
     @Test
-    public void test_addRatings_movie() throws IOException {
-        SyncMovie movie = new SyncMovie()
-                .id(MovieIds.slug(TestData.MOVIE_SLUG))
-                .rating(Rating.MEH);
-
-        SyncItems items = new SyncItems().movies(movie);
-        executeCall(getTrakt().sync().addRatings(items));
+    @Throws(IOException::class)
+    fun test_addRatings_movie() {
+        val movie = SyncMovie()
+            .id(MovieIds(slug = TestData.MOVIE_SLUG))
+            .rating(Rating.MEH)
+        val items = SyncItems().movies(movie)
+        executeCall(trakt.sync().addRatings(items))
     }
 
     @Test
-    public void test_addRatings_show() throws IOException {
-        SyncShow show = new SyncShow()
-                .id(ShowIds.slug(TestData.SHOW_SLUG))
-                .rating(Rating.TERRIBLE);
-
-        SyncItems items = new SyncItems().shows(show);
-        executeCall(getTrakt().sync().addRatings(items));
+    @Throws(IOException::class)
+    fun test_addRatings_show() {
+        val show = SyncShow()
+            .id(ShowIds(slug = TestData.SHOW_SLUG))
+            .rating(Rating.TERRIBLE)
+        val items = SyncItems().shows(show)
+        executeCall(trakt.sync().addRatings(items))
     }
 
     @Test
-    public void test_addRatings_season() throws IOException {
-        SyncSeason season = new SyncSeason()
-                .number(TestData.EPISODE_SEASON)
-                .rating(Rating.FAIR);
-
-        SyncShow show = new SyncShow()
-                .id(ShowIds.slug("community"))
-                .seasons(season);
-
-        SyncItems items = new SyncItems().shows(show);
-        executeCall(getTrakt().sync().addRatings(items));
+    @Throws(IOException::class)
+    fun test_addRatings_season() {
+        val season = SyncSeason()
+            .number(TestData.EPISODE_SEASON)
+            .rating(Rating.FAIR)
+        val show = SyncShow()
+            .id(ShowIds(slug = "community"))
+            .seasons(season)
+        val items = SyncItems().shows(show)
+        executeCall(trakt.sync().addRatings(items))
     }
 
     @Test
-    public void test_addRatings_episode() throws IOException {
-        SyncEpisode episode1 = new SyncEpisode()
-                .number(1)
-                .rating(Rating.TOTALLYNINJA);
-        SyncEpisode episode2 = new SyncEpisode()
-                .number(2)
-                .rating(Rating.GREAT);
-
-        ArrayList<SyncEpisode> episodes = new ArrayList<>();
-        episodes.add(episode1);
-        episodes.add(episode2);
-
-        SyncSeason season = new SyncSeason()
-                .number(TestData.EPISODE_SEASON)
-                .episodes(episodes);
-
-        SyncShow show = new SyncShow()
-                .id(ShowIds.slug(TestData.SHOW_SLUG))
-                .seasons(season);
-
-        SyncItems items = new SyncItems().shows(show);
-        executeCall(getTrakt().sync().addRatings(items));
+    @Throws(IOException::class)
+    fun test_addRatings_episode() {
+        val episode1 = SyncEpisode()
+            .number(1)
+            .rating(Rating.TOTALLYNINJA)
+        val episode2 = SyncEpisode()
+            .number(2)
+            .rating(Rating.GREAT)
+        val episodes = ArrayList<SyncEpisode>()
+        episodes.add(episode1)
+        episodes.add(episode2)
+        val season = SyncSeason()
+            .number(TestData.EPISODE_SEASON)
+            .episodes(episodes)
+        val show = SyncShow()
+            .id(ShowIds(slug = TestData.SHOW_SLUG))
+            .seasons(season)
+        val items = SyncItems().shows(show)
+        executeCall(trakt.sync().addRatings(items))
     }
 
     @Test
-    public void test_deleteRatings() throws IOException {
-        SyncItems items = buildItemsForDeletion();
-
-        SyncResponse response = executeCall(getTrakt().sync().deleteRatings(items));
-        assertThat(response).isNotNull();
-        assertThat(response.deleted.movies).isNotNull();
-        assertThat(response.deleted.shows).isNotNull();
-        assertThat(response.deleted.seasons).isNotNull();
-        assertThat(response.deleted.episodes).isNotNull();
-        assertThat(response.added).isNull();
-        assertThat(response.existing).isNull();
-        assertThat(response.not_found).isNotNull();
+    @Throws(IOException::class)
+    fun test_deleteRatings() {
+        val items = buildItemsForDeletion()
+        val response = executeCall(trakt.sync().deleteRatings(items))
+        Assertions.assertThat(response).isNotNull
+        Assertions.assertThat(response.deleted!!.movies).isNotNull
+        Assertions.assertThat(response.deleted!!.shows).isNotNull
+        Assertions.assertThat(response.deleted!!.seasons).isNotNull
+        Assertions.assertThat(response.deleted!!.episodes).isNotNull
+        Assertions.assertThat(response.added).isNull()
+        Assertions.assertThat(response.existing).isNull()
+        Assertions.assertThat(response.not_found).isNotNull
     }
 
     @Test
-    public void test_watchlistMovies() throws IOException {
-        List<BaseMovie> movies = executeCall(getTrakt().sync().watchlistMovies(null));
-        assertSyncMovies(movies, "watchlist");
+    @Throws(IOException::class)
+    fun test_watchlistMovies() {
+        val movies = executeCall(trakt.sync().watchlistMovies(null))
+        assertSyncMovies(movies, "watchlist")
     }
 
     @Test
-    public void test_watchlistShows() throws IOException {
-        List<BaseShow> shows = executeCall(getTrakt().sync().watchlistShows(null));
-        assertThat(shows).isNotNull();
-        for (BaseShow show : shows) {
-            assertThat(show.show).isNotNull();
-            assertThat(show.listed_at).isNotNull();
+    @Throws(IOException::class)
+    fun test_watchlistShows() {
+        val shows = executeCall(trakt.sync().watchlistShows(null))
+        Assertions.assertThat(shows).isNotNull
+        for (show in shows) {
+            Assertions.assertThat(show.show).isNotNull
+            Assertions.assertThat(show.listed_at).isNotNull
         }
     }
 
     @Test
-    public void test_watchlistSeasons() throws IOException {
-        List<WatchlistedSeason> seasons = executeCall(getTrakt().sync().watchlistSeasons(null));
-        assertThat(seasons).isNotNull();
-        for (WatchlistedSeason season : seasons) {
-            assertThat(season.season).isNotNull();
-            assertThat(season.show).isNotNull();
-            assertThat(season.listed_at).isNotNull();
+    @Throws(IOException::class)
+    fun test_watchlistSeasons() {
+        val seasons = executeCall(trakt.sync().watchlistSeasons(null))
+        Assertions.assertThat(seasons).isNotNull
+        for (season in seasons) {
+            Assertions.assertThat(season.season).isNotNull
+            Assertions.assertThat(season.show).isNotNull
+            Assertions.assertThat(season.listed_at).isNotNull
         }
     }
 
     @Test
-    public void test_watchlistEpisodes() throws IOException {
-        List<WatchlistedEpisode> episodes = executeCall(getTrakt().sync().watchlistEpisodes(null));
-        assertThat(episodes).isNotNull();
-        for (WatchlistedEpisode episode : episodes) {
-            assertThat(episode.episode).isNotNull();
-            assertThat(episode.show).isNotNull();
-            assertThat(episode.listed_at).isNotNull();
+    @Throws(IOException::class)
+    fun test_watchlistEpisodes() {
+        val episodes = executeCall(trakt.sync().watchlistEpisodes(null))
+        Assertions.assertThat(episodes).isNotNull
+        for (episode in episodes) {
+            Assertions.assertThat(episode.episode).isNotNull
+            Assertions.assertThat(episode.show).isNotNull
+            Assertions.assertThat(episode.listed_at).isNotNull
         }
     }
 
     @Test
-    public void test_addItemsToWatchlist_movie() throws IOException {
-        SyncMovie movie = new SyncMovie();
-        movie.ids = buildMovieIds();
-
-        SyncItems items = new SyncItems().movies(movie);
-        addItemsToWatchlist(items);
+    @Throws(IOException::class)
+    fun test_addItemsToWatchlist_movie() {
+        val movie = SyncMovie()
+        movie.ids = buildMovieIds()
+        val items = SyncItems().movies(movie)
+        addItemsToWatchlist(items)
     }
 
     @Test
-    public void test_addItemsToWatchlist_show() throws IOException {
-        SyncShow show = new SyncShow();
-        show.ids = buildShowIds();
-
-        SyncItems items = new SyncItems().shows(show);
-        addItemsToWatchlist(items);
+    @Throws(IOException::class)
+    fun test_addItemsToWatchlist_show() {
+        val show = SyncShow()
+        show.ids = buildShowIds()
+        val items = SyncItems().shows(show)
+        addItemsToWatchlist(items)
     }
 
     @Test
-    public void test_addItemsToWatchlist_season() throws IOException {
+    @Throws(IOException::class)
+    fun test_addItemsToWatchlist_season() {
         // season
-        SyncSeason season = new SyncSeason();
-        season.number = 1;
+        val season = SyncSeason()
+        season.number = 1
 
         // show
-        SyncShow show = new SyncShow();
-        show.ids = ShowIds.slug("community");
-        show.seasons = new ArrayList<>();
-        show.seasons.add(season);
-
-        SyncItems items = new SyncItems().shows(show);
-        addItemsToWatchlist(items);
+        val show = SyncShow()
+        show.ids = ShowIds(slug = "community")
+        val seasons: MutableList<SyncSeason> = ArrayList()
+        seasons.add(season)
+        show.seasons = seasons
+        val items = SyncItems().shows(show)
+        addItemsToWatchlist(items)
     }
 
     @Test
-    public void test_addItemsToWatchlist_episodes() throws IOException {
+    @Throws(IOException::class)
+    fun test_addItemsToWatchlist_episodes() {
         // episode
-        SyncEpisode episode1 = new SyncEpisode();
-        episode1.number = 1;
-        SyncEpisode episode2 = new SyncEpisode();
-        episode2.number = 2;
+        val episode1 = SyncEpisode()
+        episode1.number = 1
+        val episode2 = SyncEpisode()
+        episode2.number = 2
         // season
-        SyncSeason season = new SyncSeason();
-        season.number = TestData.EPISODE_SEASON;
-        season.episodes = new ArrayList<>();
-        season.episodes.add(episode1);
-        season.episodes.add(episode2);
+        val season = SyncSeason()
+        season.number = TestData.EPISODE_SEASON
+        val episodes: MutableList<SyncEpisode> = ArrayList()
+        episodes.add(episode1)
+        episodes.add(episode2)
+        season.episodes = episodes
         // show
-        SyncShow show = new SyncShow();
-        show.ids = ShowIds.tvdb(TestData.SHOW_TVDB_ID);
-        show.seasons = new ArrayList<>();
-        show.seasons.add(season);
-
-        SyncItems items = new SyncItems().shows(show);
-        addItemsToWatchlist(items);
+        val show = SyncShow()
+        show.ids = ShowIds(tvdb = TestData.SHOW_TVDB_ID)
+        val seasons: MutableList<SyncSeason> = ArrayList()
+        seasons.add(season)
+        show.seasons = seasons
+        val items = SyncItems().shows(show)
+        addItemsToWatchlist(items)
     }
 
-    private void addItemsToWatchlist(SyncItems items) throws IOException {
-        SyncResponse requestResponse = executeCall(getTrakt().sync().addItemsToWatchlist(items));
-        assertSyncResponse(requestResponse);
+    @Throws(IOException::class)
+    private fun addItemsToWatchlist(items: SyncItems) {
+        val requestResponse = executeCall(trakt.sync().addItemsToWatchlist(items))
+        assertSyncResponse(requestResponse)
     }
 
     @Test
-    public void test_deleteItemsFromWatchlist() throws IOException {
-        SyncResponse requestResponse = executeCall(getTrakt().sync().deleteItemsFromWatchlist(
-                buildItemsForDeletion()));
-        assertSyncResponseDelete(requestResponse);
+    @Throws(IOException::class)
+    fun test_deleteItemsFromWatchlist() {
+        val requestResponse = executeCall(
+            trakt.sync().deleteItemsFromWatchlist(
+                buildItemsForDeletion()
+            )
+        )
+        assertSyncResponseDelete(requestResponse)
     }
 
-
-    private MovieIds buildMovieIds() {
-        return MovieIds.tmdb(TestData.MOVIE_TMDB_ID);
+    private fun buildMovieIds(): MovieIds {
+        return MovieIds(tmdb = TestData.MOVIE_TMDB_ID)
     }
 
-    private ShowIds buildShowIds() {
-        return ShowIds.slug("the-walking-dead");
+    private fun buildShowIds(): ShowIds {
+        return ShowIds(slug = "the-walking-dead")
     }
-
 }

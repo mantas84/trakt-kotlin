@@ -1,65 +1,64 @@
-package dev.mantasboro.trakt5.services;
+package dev.mantasboro.trakt5.services
 
-import dev.mantasboro.trakt5.BaseTestCase;
-import dev.mantasboro.trakt5.entities.*;
-import org.junit.Test;
+import dev.mantasboro.trakt5.BaseTestCase
+import dev.mantasboro.trakt5.entities.*
+import org.assertj.core.api.Assertions
+import org.junit.Test
+import java.io.IOException
 
-import java.io.IOException;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
-public class ScrobbleTest extends BaseTestCase {
-
-    private ScrobbleProgress genEpisodeProgress(double progress) {
+class ScrobbleTest : BaseTestCase() {
+    private fun genEpisodeProgress(progress: Double): ScrobbleProgress {
         // Use a different episode than for other tests to avoid conflicts.
-        SyncEpisode episode = new SyncEpisode().id( EpisodeIds.tvdb(4647887)); /* Agents of Shield S01E02 */
-        return new ScrobbleProgress(episode, progress, null, null);
+        val episode = SyncEpisode(ids = EpisodeIds(tvdb = 4647887))/* Agents of Shield S01E02 */
+        return ScrobbleProgress(episode = episode, progress = progress, app_version = APP_VERSION, app_date = APP_DATE)
     }
 
-    private ScrobbleProgress genMovieProgress(double progress) {
+    private fun genMovieProgress(progress: Double): ScrobbleProgress {
         // Use a different movie than for other tests to avoid conflicts.
-        SyncMovie movie = new SyncMovie().id(MovieIds.tmdb(333339)); /* Ready Player One */
-        return new ScrobbleProgress(movie, progress, null, null);
+        val movie = SyncMovie().id(MovieIds(tmdb = 333339))/* Ready Player One */
+        return ScrobbleProgress(movie = movie, progress = progress, app_version = APP_VERSION, app_date = APP_DATE)
     }
 
     @Test
-    public void scrobble_episode() throws IOException, InterruptedException {
-        PlaybackResponse playbackResponse = executeCall(getTrakt().scrobble().startWatching(genEpisodeProgress(20.0)));
-        assertThat(playbackResponse.action).isEqualTo("start");
+    @Throws(IOException::class, InterruptedException::class)
+    fun scrobble_episode() {
+        var playbackResponse = executeCall(trakt.scrobble().startWatching(genEpisodeProgress(20.0)))
+        Assertions.assertThat(playbackResponse.action).isEqualTo("start")
 
         // Give the server some time to process the request.
-        Thread.sleep(1500);
-
-        playbackResponse = executeCall(getTrakt().scrobble().pauseWatching(genEpisodeProgress(50.0)));
-        assertThat(playbackResponse.action).isEqualTo("pause");
+        Thread.sleep(1500)
+        playbackResponse = executeCall(trakt.scrobble().pauseWatching(genEpisodeProgress(50.0)))
+        Assertions.assertThat(playbackResponse.action).isEqualTo("pause")
 
         // Give the server some time to process the request.
-        Thread.sleep(1500);
-
-        playbackResponse = executeCall(getTrakt().scrobble().stopWatching(genEpisodeProgress(75.0)));
+        Thread.sleep(1500)
+        playbackResponse = executeCall(trakt.scrobble().stopWatching(genEpisodeProgress(75.0)))
         // Above 80% progress action is "scrobble", below "pause".
         // Pause to avoid blocking the next test until the episode runtime has passed.
-        assertThat(playbackResponse.action).isEqualTo("pause");
+        Assertions.assertThat(playbackResponse.action).isEqualTo("pause")
     }
 
     @Test
-    public void scrobble_movie() throws IOException, InterruptedException {
-        PlaybackResponse playbackResponse = executeCall(getTrakt().scrobble().startWatching(genMovieProgress(20.0)));
-        assertThat(playbackResponse.action).isEqualTo("start");
+    @Throws(IOException::class, InterruptedException::class)
+    fun scrobble_movie() {
+        var playbackResponse = executeCall(trakt.scrobble().startWatching(genMovieProgress(20.0)))
+        Assertions.assertThat(playbackResponse.action).isEqualTo("start")
 
         // Give the server some time to process the request.
-        Thread.sleep(1500);
-
-        playbackResponse = executeCall(getTrakt().scrobble().pauseWatching(genMovieProgress(50.0)));
-        assertThat(playbackResponse.action).isEqualTo("pause");
+        Thread.sleep(1500)
+        playbackResponse = executeCall(trakt.scrobble().pauseWatching(genMovieProgress(50.0)))
+        Assertions.assertThat(playbackResponse.action).isEqualTo("pause")
 
         // Give the server some time to process the request.
-        Thread.sleep(1500);
-
-        playbackResponse = executeCall(getTrakt().scrobble().stopWatching(genMovieProgress(75.0)));
+        Thread.sleep(1500)
+        playbackResponse = executeCall(trakt.scrobble().stopWatching(genMovieProgress(75.0)))
         // Above 80% progress action is "scrobble", below "pause".
         // Pause to avoid blocking the next test until the movie runtime has passed.
-        assertThat(playbackResponse.action).isEqualTo("pause");
+        Assertions.assertThat(playbackResponse.action).isEqualTo("pause")
     }
 
+    companion object {
+        private const val APP_VERSION = "trakt-java-4"
+        private const val APP_DATE = "2014-10-15"
+    }
 }

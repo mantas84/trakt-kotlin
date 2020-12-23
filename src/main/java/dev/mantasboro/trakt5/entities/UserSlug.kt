@@ -1,48 +1,49 @@
-package dev.mantasboro.trakt5.entities;
+package dev.mantasboro.trakt5.entities
 
-public class UserSlug {
+import dev.mantasboro.trakt5.entities.UserSlug
+import java.lang.IllegalArgumentException
 
-    /**
-     * Special user slug for the current user (determined by auth data).
-     */
-    public static final UserSlug ME = new UserSlug("me");
+class UserSlug(userSlug: String?) {
+    private val userSlug: String
 
-    private String userSlug;
+    override fun toString(): String {
+        return userSlug
+    }
 
     /**
      * User slug to pass to the API, performs some simple null and empty checks.
      *
-     * @param userSlug A user slug as returned by the trakt API: {@link User.UserIds}.
-     * @see #ME
+     * @param userSlug A user slug as returned by the trakt API: [User.UserIds].
+     * @see .ME
      */
-    public UserSlug(String userSlug) {
-        if (userSlug == null) {
-            throw new IllegalArgumentException("trakt user slug can not be null.");
-        }
-        userSlug = userSlug.trim();
-        if (userSlug.length() == 0) {
-            throw new IllegalArgumentException("trakt user slug can not be empty.");
-        }
-        this.userSlug = userSlug;
+    init {
+        var userSlug = userSlug
+        requireNotNull(userSlug) { "trakt user slug can not be null." }
+        userSlug = userSlug.trim { it <= ' ' }
+        require(userSlug.isNotEmpty()) { "trakt user slug can not be empty." }
+        this.userSlug = userSlug
     }
 
-    /**
-     * Encodes the username returned from trakt so it is API compatible (currently replaces "." and spaces with "-").
-     */
-    public static UserSlug fromUsername(String username) {
-        if (username == null) {
-            throw new IllegalArgumentException("trakt username can not be null.");
-        }
-        // trakt encodes some special chars in usernames
-        // - points "." as a dash "-"
-        // - spaces " " as a dash "-"
-        // - multiple dashes are reduced to one
-        String slug = username.replace(".", "-").replace(" ", "-").replaceAll("(-)+", "-");
-        return new UserSlug(slug);
-    }
+    companion object {
+        /**
+         * Special user slug for the current user (determined by auth data).
+         */
+        val ME = UserSlug("me")
 
-    @Override
-    public String toString() {
-        return userSlug;
+        /**
+         * Encodes the username returned from trakt so it is API compatible (currently replaces "." and spaces with "-").
+         */
+        fun fromUsername(username: String?): UserSlug {
+            requireNotNull(username) { "trakt username can not be null." }
+            // trakt encodes some special chars in usernames
+            // - points "." as a dash "-"
+            // - spaces " " as a dash "-"
+            // - multiple dashes are reduced to one
+            val slug = username
+                .replace(".", "-")
+                .replace(" ", "-")
+                .replace("(-)+".toRegex(), "-")
+            return UserSlug(slug)
+        }
     }
 }

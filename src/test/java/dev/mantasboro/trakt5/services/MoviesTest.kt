@@ -1,115 +1,130 @@
-package dev.mantasboro.trakt5.services;
+package dev.mantasboro.trakt5.services
 
-import dev.mantasboro.trakt5.BaseTestCase;
-import dev.mantasboro.trakt5.TestData;
-import dev.mantasboro.trakt5.entities.*;
-import dev.mantasboro.trakt5.enums.Extended;
-import dev.mantasboro.trakt5.enums.Type;
-import org.junit.Test;
+import dev.mantasboro.trakt5.BaseTestCase
+import dev.mantasboro.trakt5.TestData
+import dev.mantasboro.trakt5.entities.Movie
+import dev.mantasboro.trakt5.enums.Extended
+import dev.mantasboro.trakt5.enums.Type
+import org.assertj.core.api.Assertions
+import org.junit.Test
+import java.io.IOException
+import java.lang.String
 
-import java.io.IOException;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
-public class MoviesTest extends BaseTestCase {
-
+class MoviesTest : BaseTestCase() {
     @Test
-    public void test_popular() throws IOException {
-        List<Movie> movies = executeCall(getTrakt().movies().popular(2, null, null));
-        assertThat(movies).isNotNull();
-        assertThat(movies.size()).isLessThanOrEqualTo(DEFAULT_PAGE_SIZE);
-        for (Movie movie : movies) {
-            assertMovieNotNull(movie);
+    @Throws(IOException::class)
+    fun test_popular() {
+        val movies = executeCall(trakt.movies().popular(2, null, null))
+        Assertions.assertThat(movies).isNotNull
+        Assertions.assertThat(movies.size).isLessThanOrEqualTo(DEFAULT_PAGE_SIZE)
+        for (movie in movies) {
+            assertMovieNotNull(movie)
         }
     }
 
     @Test
-    public void test_trending() throws IOException {
-        List<TrendingMovie> movies = executeCall(getTrakt().movies().trending(1, null, null));
-        assertThat(movies).isNotNull();
-        assertThat(movies.size()).isLessThanOrEqualTo(DEFAULT_PAGE_SIZE);
-        for (TrendingMovie movie : movies) {
-            assertThat(movie.watchers).isNotNull();
-            assertMovieNotNull(movie.movie);
+    @Throws(IOException::class)
+    fun test_trending() {
+        val movies = executeCall(trakt.movies().trending(1, null, null))
+        Assertions.assertThat(movies).isNotNull
+        Assertions.assertThat(movies.size).isLessThanOrEqualTo(DEFAULT_PAGE_SIZE)
+        for (movie in movies) {
+            Assertions.assertThat(movie.watchers).isNotNull
+            assertMovieNotNull(movie.movie)
         }
     }
 
-    private void assertMovieNotNull(Movie movie) {
-        assertThat(movie.title).isNotEmpty();
-        assertThat(movie.ids).isNotNull();
-        assertThat(movie.ids.trakt).isNotNull();
-        assertThat(movie.year).isNotNull();
+    private fun assertMovieNotNull(movie: Movie) {
+        Assertions.assertThat(movie.title).isNotEmpty
+        Assertions.assertThat(movie.ids).isNotNull
+        Assertions.assertThat(movie.ids!!.trakt).isNotNull
+        Assertions.assertThat(movie.year).isNotNull
     }
 
     @Test
-    public void test_summary_slug() throws IOException {
-        Movie movie = executeCall(getTrakt().movies().summary(TestData.MOVIE_SLUG, Extended.FULL));
-        assertTestMovie(movie);
+    @Throws(IOException::class)
+    fun test_summary_slug() {
+        val movie = executeCall(trakt.movies().summary(TestData.MOVIE_SLUG, Extended.FULL))
+        assertTestMovie(movie)
     }
 
     @Test
-    public void test_summary_trakt_id() throws IOException {
-        Movie movie = executeCall(getTrakt().movies().summary(String.valueOf(TestData.MOVIE_TRAKT_ID),
-                Extended.FULL));
-        assertTestMovie(movie);
-    }
-
-    public static void assertTestMovie(Movie movie) {
-        assertThat(movie).isNotNull();
-        assertThat(movie.ids).isNotNull();
-        assertThat(movie.title).isEqualTo(TestData.MOVIE_TITLE);
-        assertThat(movie.year).isEqualTo(TestData.MOVIE_YEAR);
-        assertThat(movie.ids.trakt).isEqualTo(TestData.MOVIE_TRAKT_ID);
-        assertThat(movie.ids.slug).isEqualTo(TestData.MOVIE_SLUG);
-        assertThat(movie.ids.imdb).isEqualTo(TestData.MOVIE_IMDB_ID);
-        assertThat(movie.ids.tmdb).isEqualTo(TestData.MOVIE_TMDB_ID);
+    @Throws(IOException::class)
+    fun test_summary_trakt_id() {
+        val movie = executeCall(trakt.movies().summary(String.valueOf(TestData.MOVIE_TRAKT_ID), Extended.FULL))
+        assertTestMovie(movie)
     }
 
     @Test
-    public void test_translations() throws IOException {
-        List<MovieTranslation> translations = executeCall(getTrakt().movies().translations("batman-begins-2005"));
-        assertThat(translations).isNotNull();
-        for (Translation translation : translations) {
-            assertThat(translation.language).isNotEmpty();
+    @Throws(IOException::class)
+    fun test_translations() {
+        val translations = executeCall(trakt.movies().translations("batman-begins-2005"))
+        Assertions.assertThat(translations).isNotNull
+        for (translation in translations) {
+            Assertions.assertThat(translation.language).isNotEmpty
         }
     }
 
     @Test
-    public void test_translation() throws IOException {
-        List<MovieTranslation> translations = executeCall(getTrakt().movies().translation("batman-begins-2005",
-                "de"));
-        assertThat(translations).isNotNull();
+    @Throws(IOException::class)
+    fun test_translation() {
+        val translations = executeCall(
+            trakt.movies().translation(
+                "batman-begins-2005",
+                "de"
+            )
+        )
+        Assertions.assertThat(translations).isNotNull
         // we know that Batman Begins has a German translation, otherwise this test would fail
-        assertThat(translations).hasSize(1);
-        assertThat(translations.get(0).language).isEqualTo("de");
+        Assertions.assertThat(translations).hasSize(1)
+        Assertions.assertThat(translations[0].language).isEqualTo("de")
     }
 
     @Test
-    public void test_comments() throws IOException {
-        List<Comment> comments = executeCall(getTrakt().movies().comments(TestData.MOVIE_SLUG, 1, null,
-                null));
-        assertThat(comments).isNotNull();
-        assertThat(comments.size()).isLessThanOrEqualTo(DEFAULT_PAGE_SIZE);
+    @Throws(IOException::class)
+    fun test_comments() {
+        val comments = executeCall(
+            trakt.movies().comments(
+                TestData.MOVIE_SLUG, 1, null,
+                null
+            )
+        )
+        Assertions.assertThat(comments).isNotNull
+        Assertions.assertThat(comments.size).isLessThanOrEqualTo(DEFAULT_PAGE_SIZE)
     }
 
     @Test
-    public void test_people() throws IOException {
-        Credits credits = executeCall(getTrakt().movies().people(TestData.MOVIE_SLUG));
-        assertCast(credits, Type.PERSON);
-        assertCrew(credits, Type.PERSON);
+    @Throws(IOException::class)
+    fun test_people() {
+        val credits = executeCall(trakt.movies().people(TestData.MOVIE_SLUG))
+        assertCast(credits, Type.PERSON)
+        assertCrew(credits, Type.PERSON)
     }
 
     @Test
-    public void test_ratings() throws IOException {
-        Ratings ratings = executeCall(getTrakt().movies().ratings(TestData.MOVIE_SLUG));
-        assertRatings(ratings);
+    @Throws(IOException::class)
+    fun test_ratings() {
+        val ratings = executeCall(trakt.movies().ratings(TestData.MOVIE_SLUG))
+        assertRatings(ratings)
     }
 
     @Test
-    public void test_stats() throws IOException {
-        Stats stats = executeCall(getTrakt().movies().stats(TestData.MOVIE_SLUG));
-        assertStats(stats);
+    @Throws(IOException::class)
+    fun test_stats() {
+        val stats = executeCall(trakt.movies().stats(TestData.MOVIE_SLUG))
+        assertStats(stats)
     }
 
+    companion object {
+        fun assertTestMovie(movie: Movie) {
+            Assertions.assertThat(movie).isNotNull
+            Assertions.assertThat(movie.ids).isNotNull
+            Assertions.assertThat(movie.title).isEqualTo(TestData.MOVIE_TITLE)
+            Assertions.assertThat(movie.year).isEqualTo(TestData.MOVIE_YEAR)
+            Assertions.assertThat(movie.ids!!.trakt).isEqualTo(TestData.MOVIE_TRAKT_ID)
+            Assertions.assertThat(movie.ids!!.slug).isEqualTo(TestData.MOVIE_SLUG)
+            Assertions.assertThat(movie.ids!!.imdb).isEqualTo(TestData.MOVIE_IMDB_ID)
+            Assertions.assertThat(movie.ids!!.tmdb).isEqualTo(TestData.MOVIE_TMDB_ID)
+        }
+    }
 }

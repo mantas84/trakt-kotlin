@@ -1,11 +1,9 @@
-package dev.mantasboro.trakt5.entities;
+package dev.mantasboro.trakt5.entities
 
-public class SyncStats {
-
-    public Integer movies;
-    public Integer shows;
-    public Integer seasons;
-    public Integer episodes;
-    public Integer people;
-
-}
+data class SyncStats(
+    val movies: Int? = null,
+    val shows: Int? = null,
+    val seasons: Int? = null,
+    val episodes: Int? = null,
+    val people: Int? = null,
+)

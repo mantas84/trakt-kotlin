@@ -1,8 +1,6 @@
-package dev.mantasboro.trakt5.entities;
+package dev.mantasboro.trakt5.entities
 
-public class Genre {
-
-    public String name;
-    public String slug;
-
-}
+data class Genre(
+    var name: String?,
+    var slug: String?,
+)

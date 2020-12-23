@@ -1,18 +1,6 @@
-package dev.mantasboro.trakt5.entities;
+package dev.mantasboro.trakt5.entities
 
-public class SyncPerson {
-
-    public PersonIds ids;
-    public String name;
-
-    public SyncPerson id(PersonIds id) {
-        this.ids = id;
-        return this;
-    }
-
-    public SyncPerson name(String name) {
-        this.name = name;
-        return this;
-    }
-
-}
+data class SyncPerson(
+    val ids: PersonIds? = null,
+    val name: String? = null,
+)

@@ -1,13 +1,11 @@
-package dev.mantasboro.trakt5.entities;
+package dev.mantasboro.trakt5.entities
 
-public class SearchResult {
-
-    public String type;
-    public Double score;
-    public Movie movie;
-    public Show show;
-    public Episode episode;
-    public Person person;
-    public TraktList list;
-
-}
+data class SearchResult(
+    val type: String? = null,
+    val score: Double? = null,
+    val movie: Movie? = null,
+    val show: Show? = null,
+    val episode: Episode? = null,
+    val person: Person? = null,
+    val list: TraktList? = null,
+)

@@ -1,12 +1,10 @@
-package dev.mantasboro.trakt5.entities;
+package dev.mantasboro.trakt5.entities
 
-import org.threeten.bp.OffsetDateTime;
+import org.threeten.bp.OffsetDateTime
 
-public class LastActivityMore extends LastActivity {
-
-    public OffsetDateTime watched_at;
-    public OffsetDateTime collected_at;
-    public OffsetDateTime paused_at;
-    public OffsetDateTime hidden_at;
-
+class LastActivityMore : LastActivity() {
+    val watched_at: OffsetDateTime? = null
+    val collected_at: OffsetDateTime? = null
+    val paused_at: OffsetDateTime? = null
+    val hidden_at: OffsetDateTime? = null
 }

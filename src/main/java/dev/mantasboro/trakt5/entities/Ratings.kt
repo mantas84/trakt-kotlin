@@ -1,11 +1,7 @@
-package dev.mantasboro.trakt5.entities;
+package dev.mantasboro.trakt5.entities
 
-import java.util.Map;
-
-public class Ratings {
-
-    public Double rating;
-    public Integer votes;
-    public Map<String, Integer> distribution;
-
-}
+data class Ratings(
+    val rating: Double? = null,
+    val votes: Int? = null,
+    val distribution: Map<String, Int>? = null,
+)

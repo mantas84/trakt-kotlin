@@ -1,26 +1,22 @@
-package dev.mantasboro.trakt5.entities;
+package dev.mantasboro.trakt5.entities
 
-import dev.mantasboro.trakt5.enums.Status;
-import org.threeten.bp.OffsetDateTime;
+import dev.mantasboro.trakt5.enums.Status
+import org.threeten.bp.OffsetDateTime
 
-import java.util.List;
-
-public class Show extends BaseEntity {
-
-    public Integer year;
-    public ShowIds ids;
+class Show(
+    var year: Int? = null,
+    var ids: ShowIds? = null,
 
     // extended info
-    public OffsetDateTime first_aired;
-    public Airs airs;
-    public Integer runtime;
-    public String certification;
-    public String network;
-    public String country;
-    public String trailer;
-    public String homepage;
-    public Status status;
-    public String language;
-    public List<String> genres;
-
-}
+    var first_aired: OffsetDateTime? = null,
+    var airs: Airs? = null,
+    var runtime: Int? = null,
+    var certification: String? = null,
+    var network: String? = null,
+    var country: String? = null,
+    var trailer: String? = null,
+    var homepage: String? = null,
+    var status: Status? = null,
+    var language: String? = null,
+    var genres: List<String>? = null,
+) : BaseEntity()

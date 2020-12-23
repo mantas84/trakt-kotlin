@@ -1,7 +1,3 @@
-package dev.mantasboro.trakt5.entities;
+package dev.mantasboro.trakt5.entities
 
-public class MovieCheckinResponse extends BaseCheckinResponse {
-
-    public Movie movie;
-
-}
+class MovieCheckinResponse(val movie: Movie? = null) : BaseCheckinResponse()

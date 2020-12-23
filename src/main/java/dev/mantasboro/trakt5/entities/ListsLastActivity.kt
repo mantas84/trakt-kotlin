@@ -1,11 +1,9 @@
-package dev.mantasboro.trakt5.entities;
+package dev.mantasboro.trakt5.entities
 
-import org.threeten.bp.OffsetDateTime;
+import org.threeten.bp.OffsetDateTime
 
-public class ListsLastActivity {
-
-    public OffsetDateTime liked_at;
-    public OffsetDateTime updated_at;
-    public OffsetDateTime commented_at;
-
-}
+data class ListsLastActivity(
+    var liked_at: OffsetDateTime? = null,
+    var updated_at: OffsetDateTime? = null,
+    var commented_at: OffsetDateTime? = null,
+)

@@ -1,8 +1,10 @@
-package dev.mantasboro.trakt5.entities;
+package dev.mantasboro.trakt5.entities
 
-public class EpisodeCheckinResponse extends BaseCheckinResponse {
+import org.threeten.bp.OffsetDateTime
 
-    public Episode episode;
-    public Show show;
-
-}
+class EpisodeCheckinResponse(
+    var episode: Episode? = null,
+    var show: Show? = null,
+    watched_at: OffsetDateTime? = null,
+    sharing: ShareSettings? = null
+) : BaseCheckinResponse(watched_at, sharing)

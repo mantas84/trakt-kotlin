@@ -1,7 +1,3 @@
-package dev.mantasboro.trakt5.entities;
+package dev.mantasboro.trakt5.entities
 
-public class MovieTranslation extends Translation {
-
-    public String tagline;
-
-}
+class MovieTranslation(val tagline: String?) : Translation()

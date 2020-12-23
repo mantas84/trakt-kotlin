@@ -1,29 +1,29 @@
-package dev.mantasboro.trakt5.entities;
+package dev.mantasboro.trakt5.entities
 
-import com.google.gson.annotations.SerializedName;
-import org.threeten.bp.OffsetDateTime;
+import com.google.gson.annotations.SerializedName
+import org.threeten.bp.OffsetDateTime
 
-public class User {
+class User {
+    val username: String? = null
 
-    public String username;
     @SerializedName("private")
-    public Boolean isPrivate;
-    public String name;
-    /** If a user is a regular VIP. */
-    public Boolean vip;
-    /** If a user is an execute producer. */
-    public Boolean vip_ep;
-    public UserIds ids;
+    val isPrivate: Boolean? = null
+    val name: String? = null
+
+    /** If a user is a regular VIP.  */
+    val vip: Boolean? = null
+
+    /** If a user is an execute producer.  */
+    var vip_ep: Boolean? = null
+    val ids: UserIds? = null
 
     // full
-    public OffsetDateTime joined_at;
-    public String location;
-    public String about;
-    public String gender;
-    public int age;
-    public Images images;
+    val joined_at: OffsetDateTime? = null
+    val location: String? = null
+    val about: String? = null
+    val gender: String? = null
+    val age = 0
+    val images: Images? = null
 
-    public static class UserIds {
-        public String slug;
-    }
+    data class UserIds(var slug: String? = null)
 }

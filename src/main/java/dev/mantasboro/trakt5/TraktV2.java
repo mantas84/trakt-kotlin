@@ -38,13 +38,18 @@ public class TraktV2 {
 
     @Nullable
     private OkHttpClient okHttpClient;
-    @Nullable private Retrofit retrofit;
+    @Nullable
+    private Retrofit retrofit;
 
     private String apiKey;
-    @Nullable private String clientSecret;
-    @Nullable private String redirectUri;
-    @Nullable private String accessToken;
-    @Nullable private String refreshToken;
+    @Nullable
+    private String clientSecret;
+    @Nullable
+    private String redirectUri;
+    @Nullable
+    private String accessToken;
+    @Nullable
+    private String refreshToken;
 
     /**
      * Get a new API manager instance.
@@ -58,9 +63,9 @@ public class TraktV2 {
     /**
      * Get a new API manager instance capable of calling OAuth2 protected endpoints.
      *
-     * @param apiKey The API key obtained from trakt, currently equal to the OAuth client id.
+     * @param apiKey       The API key obtained from trakt, currently equal to the OAuth client id.
      * @param clientSecret The client secret obtained from trakt.
-     * @param redirectUri The redirect URI to use for OAuth2 token requests.
+     * @param redirectUri  The redirect URI to use for OAuth2 token requests.
      */
     public TraktV2(String apiKey, String clientSecret, String redirectUri) {
         this.apiKey = apiKey;
@@ -190,13 +195,12 @@ public class TraktV2 {
 
     /**
      * Request a code to start the device authentication process from trakt.
-     *
+     * <p>
      * The {@code device_code} and {@code interval} will be used later to poll for the {@code access_token}.
      * The {@code user_code} and {@code verification_url} should be presented to the user.
      */
     public Response<DeviceCode> generateDeviceCode() throws IOException {
-        ClientId clientId = new ClientId();
-        clientId.client_id = apiKey;
+        ClientId clientId = new ClientId(apiKey);
         return authentication().generateDeviceCode(clientId).execute();
     }
 
@@ -215,10 +219,7 @@ public class TraktV2 {
             throw new IllegalStateException("clientSecret not provided");
         }
 
-        DeviceCodeAccessTokenRequest request = new DeviceCodeAccessTokenRequest();
-        request.client_id = apiKey;
-        request.client_secret = clientSecret;
-        request.code = deviceCode;
+        DeviceCodeAccessTokenRequest request = new DeviceCodeAccessTokenRequest(deviceCode,apiKey,clientSecret);
         return authentication().exchangeDeviceCodeForAccessToken(request).execute();
     }
 
@@ -413,7 +414,9 @@ public class TraktV2 {
         return retrofit().create(Sync.class);
     }
 
-    public Scrobble scrobble() { return retrofit().create(Scrobble.class); }
+    public Scrobble scrobble() {
+        return retrofit().create(Scrobble.class);
+    }
 
     public Users users() {
         return retrofit().create(Users.class);

@@ -1,10 +1,8 @@
-package dev.mantasboro.trakt5.entities;
+package dev.mantasboro.trakt5.entities
 
-public class SeasonIds {
-
-    public Integer tvdb;
-    public Integer tmdb;
-    public Integer trakt;
-    public Integer tvrage;
-
-}
+data class SeasonIds(
+    var tvdb: Int? = null,
+    var tmdb: Int? = null,
+    var trakt: Int? = null,
+    var tvrage: Int? = null,
+)

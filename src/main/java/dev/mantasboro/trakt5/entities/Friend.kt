@@ -1,10 +1,9 @@
-package dev.mantasboro.trakt5.entities;
+package dev.mantasboro.trakt5.entities
 
-import org.threeten.bp.OffsetDateTime;
+import org.threeten.bp.OffsetDateTime
 
-public class Friend {
 
-    public OffsetDateTime friends_at;
-    public User user;
-
-}
+data class Friend(
+    val friends_at: OffsetDateTime?,
+    val user: User?
+)

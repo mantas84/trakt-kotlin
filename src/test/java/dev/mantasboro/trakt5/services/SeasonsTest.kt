@@ -1,91 +1,96 @@
-package dev.mantasboro.trakt5.services;
+package dev.mantasboro.trakt5.services
 
-import dev.mantasboro.trakt5.BaseTestCase;
-import dev.mantasboro.trakt5.TestData;
-import dev.mantasboro.trakt5.entities.Episode;
-import dev.mantasboro.trakt5.entities.Ratings;
-import dev.mantasboro.trakt5.entities.Season;
-import dev.mantasboro.trakt5.entities.Stats;
-import dev.mantasboro.trakt5.enums.Extended;
-import org.junit.Test;
+import dev.mantasboro.trakt5.BaseTestCase
+import dev.mantasboro.trakt5.TestData
+import dev.mantasboro.trakt5.entities.Episode
+import dev.mantasboro.trakt5.enums.Extended
+import org.assertj.core.api.Assertions
+import org.junit.Test
+import java.io.IOException
 
-import java.io.IOException;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
-public class SeasonsTest extends BaseTestCase {
-
+class SeasonsTest : BaseTestCase() {
     @Test
-    public void test_summary() throws IOException {
-        List<Season> seasons = executeCall(getTrakt().seasons().summary(TestData.SHOW_SLUG,
-        Extended.FULLEPISODES));
-        assertThat(seasons).isNotNull();
-        assertThat(seasons).hasSize(5);
-        for (Season season : seasons) {
-            assertThat(season).isNotNull();
+    @Throws(IOException::class)
+    fun test_summary() {
+        val seasons = executeCall(
+            trakt.seasons().summary(
+                TestData.SHOW_SLUG,
+                Extended.FULLEPISODES
+            )
+        )
+        Assertions.assertThat(seasons).isNotNull
+        Assertions.assertThat(seasons).hasSize(5)
+        for (season in seasons) {
+            Assertions.assertThat(season).isNotNull
             // must have at least trakt and tvdb id
-            assertThat(season.ids.trakt).isPositive();
-            if (season.ids.tvdb != null) {
-                assertThat(season.ids.tvdb).isPositive();
+            Assertions.assertThat(season.ids!!.trakt).isPositive
+            if (season.ids!!.tvdb != null) {
+                Assertions.assertThat(season.ids!!.tvdb).isPositive
             }
-            assertThat(season.title).isNotNull();
-            assertThat(season.network).isNotNull();
+            Assertions.assertThat(season.title).isNotNull
+            Assertions.assertThat(season.network).isNotNull
             // seasons start at 0 for specials
-            assertThat(season.number).isGreaterThanOrEqualTo(0);
-            assertThat(season.episode_count).isPositive();
-            assertThat(season.aired_episodes).isGreaterThanOrEqualTo(0);
-            assertThat(season.rating).isBetween(0.0, 10.0);
-            assertThat(season.votes).isGreaterThanOrEqualTo(0);
+            Assertions.assertThat(season.number).isGreaterThanOrEqualTo(0)
+            Assertions.assertThat(season.episode_count).isPositive
+            Assertions.assertThat(season.aired_episodes).isGreaterThanOrEqualTo(0)
+            Assertions.assertThat(season.rating).isBetween(0.0, 10.0)
+            Assertions.assertThat(season.votes).isGreaterThanOrEqualTo(0)
             // episode details
             if (season.number == TestData.EPISODE_SEASON) {
-                assertThat(season.episodes).isNotNull();
-                assertThat(season.episodes).isNotEmpty();
-                Episode firstEp = null;
-                for (Episode episode : season.episodes) {
+                Assertions.assertThat(season.episodes).isNotNull
+                Assertions.assertThat(season.episodes).isNotEmpty
+                var firstEp: Episode? = null
+                for (episode in season.episodes!!) {
                     if (episode.number == TestData.EPISODE_NUMBER) {
-                        firstEp = episode;
-                        break;
+                        firstEp = episode
+                        break
                     }
                 }
-                assertThat(firstEp).isNotNull();
-                assertThat(firstEp.title).isEqualTo(TestData.EPISODE_TITLE);
-                assertThat(firstEp.season).isEqualTo(TestData.EPISODE_SEASON);
-                assertThat(firstEp.number).isEqualTo(TestData.EPISODE_NUMBER);
-                assertThat(firstEp.ids.imdb).isEqualTo(TestData.EPISODE_IMDB_ID);
-                assertThat(firstEp.ids.tmdb).isEqualTo(TestData.EPISODE_TMDB_ID);
-                assertThat(firstEp.ids.tvdb).isEqualTo(TestData.EPISODE_TVDB_ID);
-                assertThat(firstEp.overview).isNotEmpty();
+                Assertions.assertThat(firstEp).isNotNull
+                Assertions.assertThat(firstEp!!.title).isEqualTo(TestData.EPISODE_TITLE)
+                Assertions.assertThat(firstEp.season).isEqualTo(TestData.EPISODE_SEASON)
+                Assertions.assertThat(firstEp.number).isEqualTo(TestData.EPISODE_NUMBER)
+                Assertions.assertThat(firstEp.ids!!.imdb).isEqualTo(TestData.EPISODE_IMDB_ID)
+                Assertions.assertThat(firstEp.ids!!.tmdb).isEqualTo(TestData.EPISODE_TMDB_ID)
+                Assertions.assertThat(firstEp.ids!!.tvdb).isEqualTo(TestData.EPISODE_TVDB_ID)
+                Assertions.assertThat(firstEp.overview).isNotEmpty
             }
         }
     }
 
     @Test
-    public void test_season() throws IOException {
-        List<Episode> season = executeCall(getTrakt().seasons().season(TestData.SHOW_SLUG, TestData.EPISODE_SEASON,
-                null));
-        assertThat(season).isNotNull();
-        assertThat(season).isNotEmpty();
-        for (Episode episode : season) {
-            assertThat(episode.season).isEqualTo(TestData.EPISODE_SEASON);
+    @Throws(IOException::class)
+    fun test_season() {
+        val season = executeCall(
+            trakt.seasons().season(
+                TestData.SHOW_SLUG, TestData.EPISODE_SEASON,
+                null
+            )
+        )
+        Assertions.assertThat(season).isNotNull
+        Assertions.assertThat(season).isNotEmpty
+        for (episode in season) {
+            Assertions.assertThat(episode.season).isEqualTo(TestData.EPISODE_SEASON)
         }
     }
 
     @Test
-    public void test_comments() throws IOException {
-        executeCall(getTrakt().seasons().comments(TestData.SHOW_SLUG, TestData.EPISODE_SEASON));
+    @Throws(IOException::class)
+    fun test_comments() {
+        executeCall(trakt.seasons().comments(TestData.SHOW_SLUG, TestData.EPISODE_SEASON))
     }
 
     @Test
-    public void test_ratings() throws IOException {
-        Ratings ratings = executeCall(getTrakt().seasons().ratings(TestData.SHOW_SLUG, TestData.EPISODE_SEASON));
-        assertRatings(ratings);
+    @Throws(IOException::class)
+    fun test_ratings() {
+        val ratings = executeCall(trakt.seasons().ratings(TestData.SHOW_SLUG, TestData.EPISODE_SEASON))
+        assertRatings(ratings)
     }
 
     @Test
-    public void test_stats() throws IOException {
-        Stats stats = executeCall(getTrakt().seasons().stats(TestData.SHOW_SLUG, TestData.EPISODE_SEASON));
-        assertShowStats(stats);
+    @Throws(IOException::class)
+    fun test_stats() {
+        val stats = executeCall(trakt.seasons().stats(TestData.SHOW_SLUG, TestData.EPISODE_SEASON))
+        assertShowStats(stats)
     }
-
 }

@@ -1,10 +1,8 @@
-package dev.mantasboro.trakt5.entities;
+package dev.mantasboro.trakt5.entities
 
-import org.threeten.bp.OffsetDateTime;
+import org.threeten.bp.OffsetDateTime
 
-public class Followed {
-
-    public OffsetDateTime approved_at;
-    public User user;
-
-}
+data class Followed(
+    val approved_at: OffsetDateTime?,
+    val user: User?
+)

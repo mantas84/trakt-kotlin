@@ -1,85 +1,106 @@
-package dev.mantasboro.trakt5.services;
+package dev.mantasboro.trakt5.services
 
-import dev.mantasboro.trakt5.BaseTestCase;
-import dev.mantasboro.trakt5.TestData;
-import dev.mantasboro.trakt5.entities.SearchResult;
-import dev.mantasboro.trakt5.enums.Extended;
-import dev.mantasboro.trakt5.enums.IdType;
-import dev.mantasboro.trakt5.enums.Type;
-import org.junit.Test;
+import dev.mantasboro.trakt5.BaseTestCase
+import dev.mantasboro.trakt5.TestData
+import dev.mantasboro.trakt5.enums.Extended
+import dev.mantasboro.trakt5.enums.IdType
+import dev.mantasboro.trakt5.enums.Type
+import org.assertj.core.api.Assertions
+import org.junit.Test
+import java.io.IOException
+import java.lang.String
 
-import java.io.IOException;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
-public class SearchTest extends BaseTestCase {
-
+class SearchTest : BaseTestCase() {
     @Test
-    public void test_textQuery_show() throws IOException {
-        List<SearchResult> results = executeCall(getTrakt().search().textQueryShow("House",
+    @Throws(IOException::class)
+    fun test_textQuery_show() {
+        val results = executeCall(
+            trakt.search().textQueryShow(
+                "House",
                 null, null, null, null, null, null, null, null, null,
-                Extended.FULL, 1, DEFAULT_PAGE_SIZE));
-        assertThat(results).isNotNull();
-        assertThat(results).isNotEmpty();
-        for (SearchResult result : results) {
-            assertThat(result.score).isPositive();
-            assertThat(result.show).isNotNull();
+                Extended.FULL, 1, DEFAULT_PAGE_SIZE
+            )
+        )
+        Assertions.assertThat(results).isNotNull
+        Assertions.assertThat(results).isNotEmpty
+        for ((_, score, _, show) in results) {
+            Assertions.assertThat(score).isPositive
+            Assertions.assertThat(show).isNotNull
         }
     }
 
     @Test
-    public void test_textQuery_show_withYear() throws IOException {
-        List<SearchResult> results = executeCall(getTrakt().search().textQueryShow("Empire", "2015",
+    @Throws(IOException::class)
+    fun test_textQuery_show_withYear() {
+        val results = executeCall(
+            trakt.search().textQueryShow(
+                "Empire", "2015",
                 null, null, null, null, null, null, null, null,
-                Extended.FULL, 1, DEFAULT_PAGE_SIZE));
-        assertThat(results).isNotNull();
-        assertThat(results).isNotEmpty();
-        for (SearchResult result : results) {
-            assertThat(result.score).isPositive();
-            assertThat(result.show).isNotNull();
+                Extended.FULL, 1, DEFAULT_PAGE_SIZE
+            )
+        )
+        Assertions.assertThat(results).isNotNull
+        Assertions.assertThat(results).isNotEmpty
+        for ((_, score, _, show) in results) {
+            Assertions.assertThat(score).isPositive
+            Assertions.assertThat(show).isNotNull
         }
     }
 
     @Test
-    public void test_textQuery_movie() throws IOException {
-        List<SearchResult> results = executeCall(getTrakt().search().textQueryMovie("Tron",
+    @Throws(IOException::class)
+    fun test_textQuery_movie() {
+        val results = executeCall(
+            trakt.search().textQueryMovie(
+                "Tron",
                 null, null, null, null, null, null, null,
-                Extended.FULL, 1, DEFAULT_PAGE_SIZE));
-        assertThat(results).isNotNull();
-        assertThat(results).isNotEmpty();
-        for (SearchResult result : results) {
-            assertThat(result.score).isPositive();
-            assertThat(result.movie).isNotNull();
+                Extended.FULL, 1, DEFAULT_PAGE_SIZE
+            )
+        )
+        Assertions.assertThat(results).isNotNull
+        Assertions.assertThat(results).isNotEmpty
+        for ((_, score, movie) in results) {
+            Assertions.assertThat(score).isPositive
+            Assertions.assertThat(movie).isNotNull
         }
     }
 
     @Test
-    public void test_textQuery_person() throws IOException {
-        List<SearchResult> results = executeCall(getTrakt().search().textQuery(Type.PERSON, "Bryan Cranston",
+    @Throws(IOException::class)
+    fun test_textQuery_person() {
+        val results = executeCall(
+            trakt.search().textQuery(
+                Type.PERSON, "Bryan Cranston",
                 null, null, null, null, null, null,
-                Extended.FULL, 1, DEFAULT_PAGE_SIZE));
-        assertThat(results).isNotNull();
-        assertThat(results).isNotEmpty();
-        for (SearchResult result : results) {
-            assertThat(result.score).isPositive();
-            assertThat(result.person).isNotNull();
+                Extended.FULL, 1, DEFAULT_PAGE_SIZE
+            )
+        )
+        Assertions.assertThat(results).isNotNull
+        Assertions.assertThat(results).isNotEmpty
+        for ((_, score, _, _, _, person) in results) {
+            Assertions.assertThat(score).isPositive
+            Assertions.assertThat(person).isNotNull
         }
     }
 
     @Test
-    public void test_idLookup() throws IOException {
-        List<SearchResult> results = executeCall(
-                getTrakt().search().idLookup(IdType.TVDB, String.valueOf(TestData.SHOW_TVDB_ID), Type.SHOW,
-                        Extended.FULL, 1, DEFAULT_PAGE_SIZE));
-        assertThat(results).isNotNull();
-        assertThat(results).hasSize(1);
-
+    @Throws(IOException::class)
+    fun test_idLookup() {
+        var results = executeCall(
+            trakt.search().idLookup(
+                IdType.TVDB, String.valueOf(TestData.SHOW_TVDB_ID), Type.SHOW,
+                Extended.FULL, 1, DEFAULT_PAGE_SIZE
+            )
+        )
+        Assertions.assertThat(results).isNotNull
+        Assertions.assertThat(results).hasSize(1)
         results = executeCall(
-                getTrakt().search().idLookup(IdType.TMDB, String.valueOf(TestData.MOVIE_TMDB_ID), Type.MOVIE,
-                        null, 1, DEFAULT_PAGE_SIZE));
-        assertThat(results).isNotNull();
-        assertThat(results).hasSize(1);
+            trakt.search().idLookup(
+                IdType.TMDB, String.valueOf(TestData.MOVIE_TMDB_ID), Type.MOVIE,
+                null, 1, DEFAULT_PAGE_SIZE
+            )
+        )
+        Assertions.assertThat(results).isNotNull
+        Assertions.assertThat(results).hasSize(1)
     }
-
 }

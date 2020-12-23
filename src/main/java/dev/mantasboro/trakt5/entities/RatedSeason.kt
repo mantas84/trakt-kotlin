@@ -1,7 +1,11 @@
-package dev.mantasboro.trakt5.entities;
+package dev.mantasboro.trakt5.entities
 
-public class RatedSeason extends RatedShow {
+import dev.mantasboro.trakt5.enums.Rating
+import org.threeten.bp.OffsetDateTime
 
-    public Season season;
-
-}
+class RatedSeason(
+    val season: Season?,
+    show: Show? = null,
+    rated_at: OffsetDateTime?,
+    rating: Rating?
+) : RatedShow(show, rated_at, rating)

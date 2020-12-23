@@ -1,78 +1,75 @@
-package dev.mantasboro.trakt5.entities;
+package dev.mantasboro.trakt5.entities
 
-import com.google.gson.annotations.SerializedName;
-import dev.mantasboro.trakt5.enums.*;
-import org.threeten.bp.OffsetDateTime;
+import com.google.gson.annotations.SerializedName
+import dev.mantasboro.trakt5.enums.*
+import org.threeten.bp.OffsetDateTime
 
-public class SyncMovie {
+class SyncMovie {
+    var ids: MovieIds? = null
+    var collected_at: OffsetDateTime? = null
+    var watched_at: OffsetDateTime? = null
+    var rated_at: OffsetDateTime? = null
+    var rating: Rating? = null
+    var media_type: MediaType? = null
+    var resolution: Resolution? = null
+    var hdr: Hdr? = null
+    var audio: Audio? = null
+    var audio_channels: AudioChannels? = null
 
-    public MovieIds ids;
-
-    public OffsetDateTime collected_at;
-    public OffsetDateTime watched_at;
-    public OffsetDateTime rated_at;
-    public Rating rating;
-    public MediaType media_type;
-    public Resolution resolution;
-    public Hdr hdr;
-    public Audio audio;
-    public AudioChannels audio_channels;
     @SerializedName("3d")
-    public Boolean is3d;
-
-    public SyncMovie id(MovieIds id) {
-        this.ids = id;
-        return this;
+    var is3d: Boolean? = null
+    fun id(id: MovieIds?): SyncMovie {
+        ids = id
+        return this
     }
 
-    public SyncMovie collectedAt(OffsetDateTime collectedAt) {
-        this.collected_at = collectedAt;
-        return this;
+    fun collectedAt(collectedAt: OffsetDateTime?): SyncMovie {
+        collected_at = collectedAt
+        return this
     }
 
-    public SyncMovie watchedAt(OffsetDateTime watchedAt) {
-        this.watched_at = watchedAt;
-        return this;
+    fun watchedAt(watchedAt: OffsetDateTime?): SyncMovie {
+        watched_at = watchedAt
+        return this
     }
 
-    public SyncMovie ratedAt(OffsetDateTime ratedAt) {
-        this.rated_at = ratedAt;
-        return this;
+    fun ratedAt(ratedAt: OffsetDateTime?): SyncMovie {
+        rated_at = ratedAt
+        return this
     }
 
-    public SyncMovie rating(Rating rating) {
-        this.rating = rating;
-        return this;
+    fun rating(rating: Rating?): SyncMovie {
+        this.rating = rating
+        return this
     }
 
-    public SyncMovie mediaType(MediaType media_type){
-        this.media_type = media_type;
-        return this;
+    fun mediaType(media_type: MediaType?): SyncMovie {
+        this.media_type = media_type
+        return this
     }
 
-    public SyncMovie resolution(Resolution resolution){
-        this.resolution = resolution;
-        return this;
+    fun resolution(resolution: Resolution?): SyncMovie {
+        this.resolution = resolution
+        return this
     }
 
-    public SyncMovie hdr(Hdr hdr){
-        this.hdr = hdr;
-        return this;
+    fun hdr(hdr: Hdr?): SyncMovie {
+        this.hdr = hdr
+        return this
     }
 
-    public SyncMovie audio(Audio audio){
-        this.audio = audio;
-        return this;
+    fun audio(audio: Audio?): SyncMovie {
+        this.audio = audio
+        return this
     }
 
-    public SyncMovie audioChannels(AudioChannels audio_channels){
-        this.audio_channels = audio_channels;
-        return this;
+    fun audioChannels(audio_channels: AudioChannels?): SyncMovie {
+        this.audio_channels = audio_channels
+        return this
     }
 
-    public SyncMovie is3d(Boolean is3d){
-        this.is3d = is3d;
-        return this;
+    fun is3d(is3d: Boolean?): SyncMovie {
+        this.is3d = is3d
+        return this
     }
-
 }

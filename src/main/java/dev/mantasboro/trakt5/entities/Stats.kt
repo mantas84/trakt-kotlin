@@ -1,15 +1,13 @@
-package dev.mantasboro.trakt5.entities;
+package dev.mantasboro.trakt5.entities
 
-public class Stats {
+data class Stats(
+    var watchers: Int? = null,
+    var plays: Int? = null,
+    var collectors: Int? = null,
+    var comments: Int? = null,
+    var lists: Int? = null,
+    var votes: Int? = null,
 
-    public Integer watchers;
-    public Integer plays;
-    public Integer collectors;
-    public Integer comments;
-    public Integer lists;
-    public Integer votes;
-
-    /** Specific to shows, seasons and episodes. */
-    public Integer collected_episodes;
-
-}
+    /** Specific to shows, seasons and episodes.  */
+    var collected_episodes: Int? = null,
+)

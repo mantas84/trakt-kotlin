@@ -1,33 +1,30 @@
-package dev.mantasboro.trakt5.services;
+package dev.mantasboro.trakt5.services
 
-import dev.mantasboro.trakt5.BaseTestCase;
-import dev.mantasboro.trakt5.entities.Genre;
-import org.junit.Test;
+import dev.mantasboro.trakt5.BaseTestCase
+import dev.mantasboro.trakt5.entities.Genre
+import org.assertj.core.api.Assertions
+import org.junit.Test
+import java.io.IOException
 
-import java.io.IOException;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
-public class GenresTest extends BaseTestCase {
-
+class GenresTest : BaseTestCase() {
     @Test
-    public void test_genres_shows() throws IOException {
-        List<Genre> genres = executeCall(getTrakt().genres().shows());
-        assertGenres(genres);
+    @Throws(IOException::class)
+    fun test_genres_shows() {
+        val genres = executeCall(trakt.genres().shows())
+        assertGenres(genres)
     }
 
     @Test
-    public void test_genres_movies() throws IOException {
-        List<Genre> genres = executeCall(getTrakt().genres().movies());
-        assertGenres(genres);
+    @Throws(IOException::class)
+    fun test_genres_movies() {
+        val genres = executeCall(trakt.genres().movies())
+        assertGenres(genres)
     }
 
-    private void assertGenres(List<Genre> genres) {
-        for (Genre genre : genres) {
-            assertThat(genre.name).isNotEmpty();
-            assertThat(genre.slug).isNotEmpty();
+    private fun assertGenres(genres: List<Genre>) {
+        for ((name, slug) in genres) {
+            Assertions.assertThat(name).isNotEmpty
+            Assertions.assertThat(slug).isNotEmpty
         }
     }
-
 }

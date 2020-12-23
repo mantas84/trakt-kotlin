@@ -56,9 +56,9 @@ public class TraktV2Authenticator implements Authenticator {
         }
 
         // store the new tokens
-        String accessToken = body.access_token;
+        String accessToken = body.getAccess_token();
         trakt.accessToken(accessToken);
-        trakt.refreshToken(body.refresh_token);
+        trakt.refreshToken(body.getRefresh_token());
 
         // retry request
         return response.request().newBuilder()

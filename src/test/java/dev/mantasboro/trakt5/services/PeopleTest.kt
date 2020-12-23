@@ -1,42 +1,41 @@
-package dev.mantasboro.trakt5.services;
+package dev.mantasboro.trakt5.services
 
-import dev.mantasboro.trakt5.BaseTestCase;
-import dev.mantasboro.trakt5.entities.Credits;
-import dev.mantasboro.trakt5.entities.Person;
-import dev.mantasboro.trakt5.enums.Extended;
-import dev.mantasboro.trakt5.enums.Type;
-import org.junit.Test;
+import dev.mantasboro.trakt5.BaseTestCase
+import dev.mantasboro.trakt5.enums.Extended
+import dev.mantasboro.trakt5.enums.Type
+import org.assertj.core.api.Assertions
+import org.junit.Test
+import java.io.IOException
 
-import java.io.IOException;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
-public class PeopleTest extends BaseTestCase {
-
-    private static final String TEST_PERSON_SLUG = "bryan-cranston";
-
+class PeopleTest : BaseTestCase() {
     @Test
-    public void test_summary() throws IOException {
-        Person person = executeCall(getTrakt().people().summary(TEST_PERSON_SLUG, Extended.FULL));
-        assertThat(person).isNotNull();
-        assertThat(person.name).isNotEmpty();
-        assertThat(person.ids).isNotNull();
-        assertThat(person.ids.trakt).isNotNull();
-        assertThat(person.ids.slug).isNotNull();
+    @Throws(IOException::class)
+    fun test_summary() {
+        val person = executeCall(trakt.people().summary(TEST_PERSON_SLUG, Extended.FULL))
+        Assertions.assertThat(person).isNotNull
+        Assertions.assertThat(person.name).isNotEmpty
+        Assertions.assertThat(person.ids).isNotNull
+        Assertions.assertThat(person.ids!!.trakt).isNotNull
+        Assertions.assertThat(person.ids!!.slug).isNotNull
     }
 
     @Test
-    public void test_movieCredits() throws IOException {
-        Credits credits = executeCall(getTrakt().people().movieCredits(TEST_PERSON_SLUG));
-        assertCast(credits, Type.MOVIE);
-        assertCrew(credits, Type.MOVIE);
+    @Throws(IOException::class)
+    fun test_movieCredits() {
+        val credits = executeCall(trakt.people().movieCredits(TEST_PERSON_SLUG))
+        assertCast(credits, Type.MOVIE)
+        assertCrew(credits, Type.MOVIE)
     }
 
     @Test
-    public void test_showCredits() throws IOException {
-        Credits credits = executeCall(getTrakt().people().showCredits(TEST_PERSON_SLUG));
-        assertCast(credits, Type.SHOW);
-        assertCrew(credits, Type.SHOW);
+    @Throws(IOException::class)
+    fun test_showCredits() {
+        val credits = executeCall(trakt.people().showCredits(TEST_PERSON_SLUG))
+        assertCast(credits, Type.SHOW)
+        assertCrew(credits, Type.SHOW)
     }
 
+    companion object {
+        private const val TEST_PERSON_SLUG = "bryan-cranston"
+    }
 }

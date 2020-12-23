@@ -1,16 +1,16 @@
-package dev.mantasboro.trakt5.entities;
+package dev.mantasboro.trakt5.entities
 
-import com.google.gson.annotations.SerializedName;
-import dev.mantasboro.trakt5.enums.*;
+import dev.mantasboro.trakt5.entities.ListItemRank
+import com.google.gson.annotations.SerializedName
+import dev.mantasboro.trakt5.enums.*
 
-public class Metadata {
+data class Metadata(
+    val media_type: MediaType?,
+    val resolution: Resolution?,
+    val hdr: Hdr? = null,
+    val audio: Audio? = null,
+    val audio_channels: AudioChannels? = null,
 
-    public MediaType media_type;
-    public Resolution resolution;
-    public Hdr hdr;
-    public Audio audio;
-    public AudioChannels audio_channels;
     @SerializedName("3d")
-    public Boolean is3d;
-
-}
+    val is3d: Boolean? = null,
+)

@@ -1,18 +1,15 @@
-package dev.mantasboro.trakt5.entities;
+package dev.mantasboro.trakt5.entities
 
-import org.threeten.bp.OffsetDateTime;
+import org.threeten.bp.OffsetDateTime
 
-public class Episode extends BaseEntity {
-
-    public Integer season;
-    public Integer number;
-    public EpisodeIds ids;
+class Episode(
+    val season: Int? = null,
+    val number: Int? = null,
+    val ids: EpisodeIds? = null,
 
     // extended info
-    public Integer number_abs;
-    public OffsetDateTime first_aired;
-    public Integer comment_count;
-    public Integer runtime;
-    
-
-}
+    val number_abs: Int? = null,
+    val first_aired: OffsetDateTime? = null,
+    val comment_count: Int? = null,
+    val runtime: Int? = null,
+) : BaseEntity()

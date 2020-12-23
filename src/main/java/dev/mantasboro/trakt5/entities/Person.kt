@@ -1,17 +1,15 @@
-package dev.mantasboro.trakt5.entities;
+package dev.mantasboro.trakt5.entities
 
-import org.threeten.bp.LocalDate;
+import org.threeten.bp.LocalDate
 
-public class Person {
-
-    public String name;
-    public PersonIds ids;
+data class Person(
+    var name: String? = null,
+    var ids: PersonIds? = null,
 
     // extended info
-    public String biography;
-    public LocalDate birthday;
-    public LocalDate death;
-    public String birthplace;
-    public String homepage;
-
-}
+    var biography: String? = null,
+    var birthday: LocalDate? = null,
+    var death: LocalDate? = null,
+    var birthplace: String? = null,
+    var homepage: String? = null,
+)

@@ -1,10 +1,8 @@
-package dev.mantasboro.trakt5.entities;
+package dev.mantasboro.trakt5.entities
 
-public class SyncResponse {
-
-    public SyncStats added;
-    public SyncStats existing;
-    public SyncStats deleted;
-    public SyncErrors not_found;
-
-}
+data class SyncResponse(
+    val added: SyncStats? = null,
+    val existing: SyncStats? = null,
+    val deleted: SyncStats? = null,
+    val not_found: SyncErrors? = null,
+)

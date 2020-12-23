@@ -1,66 +1,57 @@
-package dev.mantasboro.trakt5;
+package dev.mantasboro.trakt5
 
-import dev.mantasboro.trakt5.entities.AccessToken;
-import org.junit.Test;
-import retrofit2.Response;
-
-import java.io.IOException;
-import java.math.BigInteger;
-import java.security.SecureRandom;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import dev.mantasboro.trakt5.TraktV2
+import org.assertj.core.api.Assertions
+import org.junit.Test
+import java.io.IOException
+import java.math.BigInteger
+import java.security.SecureRandom
 
 /**
  * This test should NOT be run with the regular test suite. It requires a valid, temporary (!) auth code to be set.
  */
-public class AuthTest extends BaseTestCase {
+class AuthTest : BaseTestCase() {
 
-    private static final String TEST_CLIENT_SECRET = "";
-    private static final String TEST_AUTH_CODE = "";
-    private static final String TEST_REFRESH_TOKEN = "";
-    private static final String TEST_REDIRECT_URI = "http://localhost";
-
-    private static final TraktV2 trakt = new TestTraktV2(TEST_CLIENT_ID, TEST_CLIENT_SECRET, TEST_REDIRECT_URI);
-
-    @Override
-    protected TraktV2 getTrakt() {
-        return trakt;
+    companion object {
+        private const val TEST_CLIENT_SECRET = ""
+        private const val TEST_AUTH_CODE = ""
+        private const val TEST_REFRESH_TOKEN = ""
+        private const val TEST_REDIRECT_URI = "http://localhost"
+        private val trakt: TraktV2 = TestTraktV2(TEST_CLIENT_ID, TEST_CLIENT_SECRET, TEST_REDIRECT_URI)
     }
 
+    override val trakt: TraktV2 = Companion.trakt
+
     @Test
-    public void test_getAuthorizationRequest() {
-        String sampleState = new BigInteger(130, new SecureRandom()).toString(32);
-
-        String authUrl = getTrakt().buildAuthorizationUrl(sampleState);
-
-        assertThat(authUrl).isNotEmpty();
-        assertThat(authUrl).startsWith(TraktV2.OAUTH2_AUTHORIZATION_URL);
+    fun test_getAuthorizationRequest() {
+        val sampleState = BigInteger(130, SecureRandom()).toString(32)
+        val authUrl = trakt.buildAuthorizationUrl(sampleState)
+        Assertions.assertThat(authUrl).isNotEmpty
+        Assertions.assertThat(authUrl).startsWith(TraktV2.OAUTH2_AUTHORIZATION_URL)
         // trakt does not support scopes, so don't send one (server sets default scope)
-        assertThat(authUrl).doesNotContain("scope");
-
-        System.out.println("Get an auth code at the following URI: " + authUrl);
+        Assertions.assertThat(authUrl).doesNotContain("scope")
+        println("Get an auth code at the following URI: $authUrl")
     }
 
     @Test
-    public void test_getAccessToken() throws IOException {
+    @Throws(IOException::class)
+    fun test_getAccessToken() {
         if (TEST_CLIENT_SECRET.isEmpty() || TEST_AUTH_CODE.isEmpty()) {
-            System.out.print("Skipping test_getAccessTokenRequest test, no valid auth data");
-            return;
+            print("Skipping test_getAccessTokenRequest test, no valid auth data")
+            return
         }
-
-        Response<AccessToken> response = getTrakt().exchangeCodeForAccessToken(TEST_AUTH_CODE);
-        assertAccessTokenResponse(response);
+        val response = trakt.exchangeCodeForAccessToken(TEST_AUTH_CODE)
+        assertAccessTokenResponse(response)
     }
 
     @Test
-    public void test_refreshAccessToken() throws IOException {
+    @Throws(IOException::class)
+    fun test_refreshAccessToken() {
         if (TEST_CLIENT_SECRET.isEmpty() || TEST_REFRESH_TOKEN.isEmpty()) {
-            System.out.print("Skipping test_refreshAccessToken test, no valid auth data");
-            return;
+            print("Skipping test_refreshAccessToken test, no valid auth data")
+            return
         }
-
-        Response<AccessToken> response = getTrakt().refreshAccessToken(getTrakt().refreshToken());
-        assertAccessTokenResponse(response);
+        val response = trakt.refreshAccessToken(trakt.refreshToken())
+        assertAccessTokenResponse(response)
     }
-
 }

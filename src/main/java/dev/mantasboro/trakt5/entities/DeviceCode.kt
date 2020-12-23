@@ -1,11 +1,9 @@
-package dev.mantasboro.trakt5.entities;
+package dev.mantasboro.trakt5.entities
 
-public class DeviceCode {
-
-    public String device_code;
-    public String user_code;
-    public String verification_url;
-    public Integer expires_in;
-    public Integer interval;
-
-}
+data class DeviceCode(
+    val device_code: String? = null,
+    val user_code: String? = null,
+    val verification_url: String? = null,
+    val expires_in: Int? = null,
+    val interval: Int? = null,
+)

@@ -1,16 +1,14 @@
-package dev.mantasboro.trakt5.entities;
+package dev.mantasboro.trakt5.entities
 
-import org.threeten.bp.OffsetDateTime;
+import org.threeten.bp.OffsetDateTime
 
-public class ListEntry {
-
-    public Long id;
-    public Integer rank;
-    public OffsetDateTime listed_at;
-    public String type;
-    public Movie movie;
-    public Show show;
-    public Episode episode;
-    public Person person;
-
-}
+data class ListEntry(
+    val id: Long? = null,
+    val rank: Int? = null,
+    val listed_at: OffsetDateTime? = null,
+    val type: String? = null,
+    val movie: Movie? = null,
+    val show: Show? = null,
+    val episode: Episode? = null,
+    val person: Person? = null,
+)

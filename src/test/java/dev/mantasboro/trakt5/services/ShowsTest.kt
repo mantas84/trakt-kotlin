@@ -1,178 +1,192 @@
-package dev.mantasboro.trakt5.services;
+package dev.mantasboro.trakt5.services
 
-import dev.mantasboro.trakt5.BaseTestCase;
-import dev.mantasboro.trakt5.TestData;
-import dev.mantasboro.trakt5.entities.*;
-import dev.mantasboro.trakt5.enums.Extended;
-import dev.mantasboro.trakt5.enums.Type;
-import org.junit.Test;
+import dev.mantasboro.trakt5.BaseTestCase
+import dev.mantasboro.trakt5.TestData
+import dev.mantasboro.trakt5.entities.BaseShow
+import dev.mantasboro.trakt5.entities.Show
+import dev.mantasboro.trakt5.enums.Extended
+import dev.mantasboro.trakt5.enums.Type
+import org.assertj.core.api.Assertions
+import org.junit.Test
+import java.io.IOException
+import java.lang.String
 
-import java.io.IOException;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
-public class ShowsTest extends BaseTestCase {
-
+class ShowsTest : BaseTestCase() {
     @Test
-    public void test_popular() throws IOException {
-        List<Show> shows = executeCall(getTrakt().shows().popular(2, null, null));
-        assertThat(shows).isNotNull();
-        assertThat(shows.size()).isLessThanOrEqualTo(DEFAULT_PAGE_SIZE);
-        for (Show show : shows) {
-            assertShowNotNull(show);
+    @Throws(IOException::class)
+    fun test_popular() {
+        val shows = executeCall(trakt.shows().popular(2, null, null))
+        Assertions.assertThat(shows).isNotNull
+        Assertions.assertThat(shows.size).isLessThanOrEqualTo(DEFAULT_PAGE_SIZE)
+        for (show in shows) {
+            assertShowNotNull(show)
         }
     }
 
     @Test
-    public void test_trending() throws IOException {
-        List<TrendingShow> shows = executeCall(getTrakt().shows().trending(1, null, null));
-        assertThat(shows).isNotNull();
-        assertThat(shows.size()).isLessThanOrEqualTo(DEFAULT_PAGE_SIZE);
-        for (TrendingShow show : shows) {
-            assertThat(show.watchers).isNotNull();
-            assertShowNotNull(show.show);
+    @Throws(IOException::class)
+    fun test_trending() {
+        val shows = executeCall(trakt.shows().trending(1, null, null))
+        Assertions.assertThat(shows).isNotNull
+        Assertions.assertThat(shows.size).isLessThanOrEqualTo(DEFAULT_PAGE_SIZE)
+        for (show in shows) {
+            Assertions.assertThat(show.watchers).isNotNull
+            assertShowNotNull(show.show)
         }
     }
 
-    private void assertShowNotNull(Show show) {
-        assertThat(show).isNotNull();
-        assertThat(show.title).isNotEmpty();
-        assertThat(show.ids).isNotNull();
-        assertThat(show.ids.trakt).isNotNull();
-        assertThat(show.year).isNotNull();
+    private fun assertShowNotNull(show: Show?) {
+        Assertions.assertThat(show).isNotNull
+        Assertions.assertThat(show!!.title).isNotEmpty
+        Assertions.assertThat(show.ids).isNotNull
+        Assertions.assertThat(show.ids!!.trakt).isNotNull
+        Assertions.assertThat(show.year).isNotNull
     }
 
     @Test
-    public void test_summary_slug() throws IOException {
-        Show show = executeCall(getTrakt().shows().summary(TestData.SHOW_SLUG, Extended.FULL));
-        assertTestShow(show);
+    @Throws(IOException::class)
+    fun test_summary_slug() {
+        val show = executeCall(trakt.shows().summary(TestData.SHOW_SLUG, Extended.FULL))
+        assertTestShow(show)
     }
 
     @Test
-    public void test_summary_trakt_id() throws IOException {
-        Show show = executeCall(
-                getTrakt().shows().summary(String.valueOf(TestData.SHOW_TRAKT_ID), Extended.FULL));
-        assertTestShow(show);
+    @Throws(IOException::class)
+    fun test_summary_trakt_id() {
+        val show = executeCall(
+            trakt.shows().summary(String.valueOf(TestData.SHOW_TRAKT_ID), Extended.FULL)
+        )
+        assertTestShow(show)
     }
 
-    private void assertTestShow(Show show) {
-        assertThat(show).isNotNull();
-        assertThat(show.title).isEqualTo(TestData.SHOW_TITLE);
-        assertThat(show.year).isEqualTo(TestData.SHOW_YEAR);
-        assertThat(show.ids).isNotNull();
-        assertThat(show.ids.trakt).isEqualTo(TestData.SHOW_TRAKT_ID);
-        assertThat(show.ids.slug).isEqualTo(TestData.SHOW_SLUG);
-        assertThat(show.ids.imdb).isEqualTo(TestData.SHOW_IMDB_ID);
-        assertThat(show.ids.tmdb).isEqualTo(TestData.SHOW_TMDB_ID);
-        assertThat(show.ids.tvdb).isEqualTo(TestData.SHOW_TVDB_ID);
-        assertThat(show.ids.tvrage).isEqualTo(TestData.SHOW_TVRAGE_ID);
+    private fun assertTestShow(show: Show) {
+        Assertions.assertThat(show).isNotNull
+        Assertions.assertThat(show.title).isEqualTo(TestData.SHOW_TITLE)
+        Assertions.assertThat(show.year).isEqualTo(TestData.SHOW_YEAR)
+        Assertions.assertThat(show.ids).isNotNull
+        Assertions.assertThat(show.ids!!.trakt).isEqualTo(TestData.SHOW_TRAKT_ID)
+        Assertions.assertThat(show.ids!!.slug).isEqualTo(TestData.SHOW_SLUG)
+        Assertions.assertThat(show.ids!!.imdb).isEqualTo(TestData.SHOW_IMDB_ID)
+        Assertions.assertThat(show.ids!!.tmdb).isEqualTo(TestData.SHOW_TMDB_ID)
+        Assertions.assertThat(show.ids!!.tvdb).isEqualTo(TestData.SHOW_TVDB_ID)
+        Assertions.assertThat(show.ids!!.tvrage).isEqualTo(TestData.SHOW_TVRAGE_ID)
     }
 
     @Test
-    public void test_translations() throws IOException {
-        List<Translation> translations = executeCall(getTrakt().shows().translations("breaking-bad"));
-        assertThat(translations).isNotNull();
-        for (Translation translation : translations) {
-            assertThat(translation.language).isNotEmpty();
+    @Throws(IOException::class)
+    fun test_translations() {
+        val translations = executeCall(trakt.shows().translations("breaking-bad"))
+        Assertions.assertThat(translations).isNotNull
+        for (translation in translations) {
+            Assertions.assertThat(translation.language).isNotEmpty
         }
     }
 
     @Test
-    public void test_translation() throws IOException {
-        List<Translation> translations = executeCall(getTrakt().shows().translation("breaking-bad", "de"));
+    @Throws(IOException::class)
+    fun test_translation() {
+        val translations = executeCall(trakt.shows().translation("breaking-bad", "de"))
         // we know that Breaking Bad has a German translation, otherwise this test would fail
-        assertThat(translations).isNotNull();
-        assertThat(translations).hasSize(1);
-        assertThat(translations.get(0).language).isEqualTo("de");
+        Assertions.assertThat(translations).isNotNull
+        Assertions.assertThat(translations).hasSize(1)
+        Assertions.assertThat(translations[0].language).isEqualTo("de")
     }
 
     @Test
-    public void test_comments() throws IOException {
-        List<Comment> comments = executeCall(getTrakt().shows().comments(TestData.SHOW_SLUG, 1, null,
-                null));
-        assertThat(comments).isNotNull();
-        assertThat(comments.size()).isLessThanOrEqualTo(DEFAULT_PAGE_SIZE);
+    @Throws(IOException::class)
+    fun test_comments() {
+        val comments = executeCall(
+            trakt.shows().comments(
+                TestData.SHOW_SLUG, 1, null,
+                null
+            )
+        )
+        Assertions.assertThat(comments).isNotNull
+        Assertions.assertThat(comments.size).isLessThanOrEqualTo(DEFAULT_PAGE_SIZE)
     }
 
     @Test
-    public void test_people() throws IOException {
-        Credits credits = executeCall(getTrakt().shows().people(TestData.SHOW_SLUG));
-        assertCast(credits, Type.PERSON);
-        assertCrew(credits, Type.PERSON);
+    @Throws(IOException::class)
+    fun test_people() {
+        val credits = executeCall(trakt.shows().people(TestData.SHOW_SLUG))
+        assertCast(credits, Type.PERSON)
+        assertCrew(credits, Type.PERSON)
     }
 
     @Test
-    public void test_ratings() throws IOException {
-        Ratings ratings = executeCall(getTrakt().shows().ratings(TestData.SHOW_SLUG));
-        assertRatings(ratings);
+    @Throws(IOException::class)
+    fun test_ratings() {
+        val ratings = executeCall(trakt.shows().ratings(TestData.SHOW_SLUG))
+        assertRatings(ratings)
     }
 
     @Test
-    public void test_stats() throws IOException {
-        Stats stats = executeCall(getTrakt().shows().stats(TestData.SHOW_SLUG));
-        assertShowStats(stats);
+    @Throws(IOException::class)
+    fun test_stats() {
+        val stats = executeCall(trakt.shows().stats(TestData.SHOW_SLUG))
+        assertShowStats(stats)
     }
 
     @Test
-    public void test_collected_progress() throws IOException {
-        BaseShow show = executeCall(getTrakt()
+    @Throws(IOException::class)
+    fun test_collected_progress() {
+        val show = executeCall(
+            trakt
                 .shows()
                 .collectedProgress(TestData.SHOW_SLUG, null, null, null, null, null)
-        );
-
-        assertThat(show).isNotNull();
-        assertThat(show.last_collected_at).isNotNull();
-        assertProgress(show);
+        )
+        Assertions.assertThat(show).isNotNull
+        Assertions.assertThat(show.last_collected_at).isNotNull
+        assertProgress(show)
     }
 
     @Test
-    public void test_watched_progress() throws IOException {
-        BaseShow show = executeCall(getTrakt()
+    @Throws(IOException::class)
+    fun test_watched_progress() {
+        val show = executeCall(
+            trakt
                 .shows()
                 .watchedProgress(TestData.SHOW_SLUG, null, null, null, null, null)
-        );
-
-        assertThat(show).isNotNull();
-        assertThat(show.last_watched_at).isNotNull();
-        assertProgress(show);
+        )
+        Assertions.assertThat(show).isNotNull
+        Assertions.assertThat(show.last_watched_at).isNotNull
+        assertProgress(show)
     }
 
-    private void assertProgress(BaseShow show) {
-        assertThat(show.aired).isGreaterThan(30);
-        assertThat(show.completed).isGreaterThanOrEqualTo(1);
-        assertThat(show.last_episode).isNotNull();
+    private fun assertProgress(show: BaseShow) {
+        Assertions.assertThat(show.aired).isGreaterThan(30)
+        Assertions.assertThat(show.completed).isGreaterThanOrEqualTo(1)
+        Assertions.assertThat(show.last_episode).isNotNull
 
         // show progress not complete
-        assertThat(show.completed).isLessThan(show.aired);
-        assertThat(show.next_episode).isNotNull();
+        Assertions.assertThat(show.completed).isLessThan(show.aired)
+        Assertions.assertThat(show.next_episode).isNotNull
 
         // Killjoys has 5 aired seasons
-        assertThat(show.seasons).isNotNull();
-        assertThat(show.seasons).hasSize(5);
-
-        BaseSeason season = show.seasons.get(0);
-        assertThat(season.number).isEqualTo(1);
+        Assertions.assertThat(show.seasons).isNotNull
+        Assertions.assertThat(show.seasons).hasSize(5)
+        val (number, episodes, aired, completed) = show.seasons!![0]
+        Assertions.assertThat(number).isEqualTo(1)
         // all aired
-        assertThat(season.aired).isEqualTo(10);
+        Assertions.assertThat(aired).isEqualTo(10)
         // always at least 1 watched
-        assertThat(season.completed).isGreaterThanOrEqualTo(1);
+        Assertions.assertThat(completed).isGreaterThanOrEqualTo(1)
 
         // episode 1 should always be watched
-        assertThat(season.episodes).isNotNull();
-        BaseEpisode episode = season.episodes.get(0);
-        assertThat(episode.number).isEqualTo(1);
-        assertThat(episode.completed).isTrue();
+        Assertions.assertThat(episodes).isNotNull
+        val (number1, _, _, _, completed1) = episodes!![0]
+        Assertions.assertThat(number1).isEqualTo(1)
+        Assertions.assertThat(completed1).isTrue
     }
 
     @Test
-    public void test_related() throws IOException {
-        List<Show> related = executeCall(getTrakt().shows().related(TestData.SHOW_SLUG, 1, null, null));
-        assertThat(related).isNotNull();
-        assertThat(related.size()).isLessThanOrEqualTo(DEFAULT_PAGE_SIZE);
-        for (Show show : related) {
-            assertShowNotNull(show);
+    @Throws(IOException::class)
+    fun test_related() {
+        val related = executeCall(trakt.shows().related(TestData.SHOW_SLUG, 1, null, null))
+        Assertions.assertThat(related).isNotNull
+        Assertions.assertThat(related.size).isLessThanOrEqualTo(DEFAULT_PAGE_SIZE)
+        for (show in related) {
+            assertShowNotNull(show)
         }
     }
-
 }

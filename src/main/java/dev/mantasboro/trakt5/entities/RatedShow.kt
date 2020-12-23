@@ -1,7 +1,10 @@
-package dev.mantasboro.trakt5.entities;
+package dev.mantasboro.trakt5.entities
 
-public class RatedShow extends BaseRatedEntity {
+import dev.mantasboro.trakt5.enums.Rating
+import org.threeten.bp.OffsetDateTime
 
-    public Show show;
-
-}
+open class RatedShow(
+    val show: Show? = null,
+    rated_at: OffsetDateTime?,
+    rating: Rating?
+) : BaseRatedEntity(rated_at, rating)

@@ -1,14 +1,12 @@
-package dev.mantasboro.trakt5.entities;
+package dev.mantasboro.trakt5.entities
 
-import org.threeten.bp.OffsetDateTime;
+import org.threeten.bp.OffsetDateTime
 
-public class LastActivities {
-
-    public OffsetDateTime all;
-    public LastActivityMore movies;
-    public LastActivityMore episodes;
-    public LastActivity shows;
-    public LastActivity seasons;
-    public ListsLastActivity lists;
-
-}
+data class LastActivities(
+    val all: OffsetDateTime? = null,
+    val movies: LastActivityMore? = null,
+    val episodes: LastActivityMore? = null,
+    val shows: LastActivity? = null,
+    val seasons: LastActivity? = null,
+    val lists: ListsLastActivity? = null,
+)

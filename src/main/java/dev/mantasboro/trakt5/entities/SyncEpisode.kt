@@ -1,90 +1,90 @@
-package dev.mantasboro.trakt5.entities;
+package dev.mantasboro.trakt5.entities
 
-import com.google.gson.annotations.SerializedName;
-import dev.mantasboro.trakt5.enums.*;
-import org.threeten.bp.OffsetDateTime;
+import com.google.gson.annotations.SerializedName
+import dev.mantasboro.trakt5.enums.*
+import org.threeten.bp.OffsetDateTime
 
-public class SyncEpisode {
+class SyncEpisode(
+    var season: Int? = null,
+    var number: Int? = null,
 
-    public Integer season;
-    public Integer number;
-    public EpisodeIds ids;
+    var ids: EpisodeIds? = null,
+    var collected_at: OffsetDateTime? = null,
 
-    public OffsetDateTime collected_at;
-    public OffsetDateTime watched_at;
-    public OffsetDateTime rated_at;
-    public Rating rating;
-    public MediaType media_type;
-    public Resolution resolution;
-    public Hdr hdr;
-    public Audio audio;
-    public AudioChannels audio_channels;
+    var watched_at: OffsetDateTime? = null,
+    var rated_at: OffsetDateTime? = null,
+    var rating: Rating? = null,
+    var media_type: MediaType? = null,
+    var resolution: Resolution? = null,
+    var hdr: Hdr? = null,
+    var audio: Audio? = null,
+    var audio_channels: AudioChannels? = null,
     @SerializedName("3d")
-    public Boolean is3d;
+    var is3d: Boolean? = null,
+) {
 
-    public SyncEpisode number(int number) {
-        this.number = number;
-        return this;
+    fun number(number: Int): SyncEpisode {
+        this.number = number
+        return this
     }
 
-    public SyncEpisode season(int season) {
-        this.season = season;
-        return this;
+    fun season(season: Int): SyncEpisode {
+        this.season = season
+        return this
     }
 
-    public SyncEpisode id(EpisodeIds id) {
-        this.ids = id;
-        return this;
+    fun id(id: EpisodeIds?): SyncEpisode {
+        ids = id
+        return this
     }
 
-    public SyncEpisode collectedAt(OffsetDateTime collectedAt) {
-        this.collected_at = collectedAt;
-        return this;
+    fun collectedAt(collectedAt: OffsetDateTime?): SyncEpisode {
+        collected_at = collectedAt
+        return this
     }
 
-    public SyncEpisode watchedAt(OffsetDateTime watchedAt) {
-        this.watched_at = watchedAt;
-        return this;
+    fun watchedAt(watchedAt: OffsetDateTime?): SyncEpisode {
+        watched_at = watchedAt
+        return this
     }
 
-    public SyncEpisode ratedAt(OffsetDateTime ratedAt) {
-        this.rated_at = ratedAt;
-        return this;
+    fun ratedAt(ratedAt: OffsetDateTime?): SyncEpisode {
+        rated_at = ratedAt
+        return this
     }
 
-    public SyncEpisode rating(Rating rating) {
-        this.rating = rating;
-        return this;
+    fun rating(rating: Rating?): SyncEpisode {
+        this.rating = rating
+        return this
     }
 
-    public SyncEpisode mediaType(MediaType media_type){
-        this.media_type = media_type;
-        return this;
+    fun mediaType(media_type: MediaType?): SyncEpisode {
+        this.media_type = media_type
+        return this
     }
 
-    public SyncEpisode resolution(Resolution resolution){
-        this.resolution = resolution;
-        return this;
+    fun resolution(resolution: Resolution?): SyncEpisode {
+        this.resolution = resolution
+        return this
     }
 
-    public SyncEpisode hdr(Hdr hdr){
-        this.hdr = hdr;
-        return this;
+    fun hdr(hdr: Hdr?): SyncEpisode {
+        this.hdr = hdr
+        return this
     }
 
-    public SyncEpisode audio(Audio audio){
-        this.audio = audio;
-        return this;
+    fun audio(audio: Audio?): SyncEpisode {
+        this.audio = audio
+        return this
     }
 
-    public SyncEpisode audioChannels(AudioChannels audio_channels){
-        this.audio_channels = audio_channels;
-        return this;
+    fun audioChannels(audio_channels: AudioChannels?): SyncEpisode {
+        this.audio_channels = audio_channels
+        return this
     }
 
-    public SyncEpisode is3d(Boolean is3d){
-        this.is3d = is3d;
-        return this;
+    fun is3d(is3d: Boolean?): SyncEpisode {
+        this.is3d = is3d
+        return this
     }
-
 }

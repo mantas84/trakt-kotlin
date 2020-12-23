@@ -28,47 +28,47 @@ public class TraktV2Helper {
 
         // rating
         builder.registerTypeAdapter(Rating.class,
-                (JsonDeserializer<Rating>) (json, typeOfT, context) -> Rating.fromValue(json.getAsInt()));
+                (JsonDeserializer<Rating>) (json, typeOfT, context) -> Rating.Companion.fromValue(json.getAsInt()));
         builder.registerTypeAdapter(Rating.class,
-                (JsonSerializer<Rating>) (src, typeOfSrc, context) -> new JsonPrimitive(src.value));
+                (JsonSerializer<Rating>) (src, typeOfSrc, context) -> new JsonPrimitive(src.getValue()));
 
         // status
         builder.registerTypeAdapter(Status.class,
-                (JsonDeserializer<Status>) (json, typeOfT, context) -> Status.fromValue(json.getAsString()));
+                (JsonDeserializer<Status>) (json, typeOfT, context) -> Status.Companion.fromValue(json.getAsString()));
 
         // progress last activity
         builder.registerTypeAdapter(ProgressLastActivity.class,
-                (JsonDeserializer<ProgressLastActivity>) (json, typeOfT, context) -> ProgressLastActivity.fromValue(json.getAsString()));
+                (JsonDeserializer<ProgressLastActivity>) (json, typeOfT, context) -> ProgressLastActivity.Companion.fromValue(json.getAsString()));
 
         // media type
         builder.registerTypeAdapter(MediaType.class,
                 (JsonSerializer<MediaType>) (src, typeOfSrc, context) -> new JsonPrimitive(src.toString()));
         builder.registerTypeAdapter(MediaType.class,
-                (JsonDeserializer<MediaType>) (json, typeOfT, context) -> MediaType.fromValue(json.getAsString()));
+                (JsonDeserializer<MediaType>) (json, typeOfT, context) -> MediaType.Companion.fromValue(json.getAsString()));
 
         // resolution
         builder.registerTypeAdapter(Resolution.class,
                 (JsonSerializer<Resolution>) (src, typeOfSrc, context) -> new JsonPrimitive(src.toString()));
         builder.registerTypeAdapter(Resolution.class,
-                (JsonDeserializer<Resolution>) (json, typeOfT, context) -> Resolution.fromValue(json.getAsString()));
+                (JsonDeserializer<Resolution>) (json, typeOfT, context) -> Resolution.Companion.fromValue(json.getAsString()));
 
         // hdr
         builder.registerTypeAdapter(Hdr.class,
                 (JsonSerializer<Hdr>) (src, typeOfSrc, context) -> new JsonPrimitive(src.toString()));
         builder.registerTypeAdapter(Hdr.class,
-                (JsonDeserializer<Hdr>) (json, typeOfT, context) -> Hdr.fromValue(json.getAsString()));
+                (JsonDeserializer<Hdr>) (json, typeOfT, context) -> Hdr.Companion.fromValue(json.getAsString()));
 
         // audio
         builder.registerTypeAdapter(Audio.class,
                 (JsonSerializer<Audio>) (src, typeOfSrc, context) -> new JsonPrimitive(src.toString()));
         builder.registerTypeAdapter(Audio.class,
-                (JsonDeserializer<Audio>) (json, typeOfT, context) -> Audio.fromValue(json.getAsString()));
+                (JsonDeserializer<Audio>) (json, typeOfT, context) -> Audio.Companion.fromValue(json.getAsString()));
 
         // audio channels
         builder.registerTypeAdapter(AudioChannels.class,
                 (JsonSerializer<AudioChannels>) (src, typeOfSrc, context) -> new JsonPrimitive(src.toString()));
         builder.registerTypeAdapter(AudioChannels.class,
-                (JsonDeserializer<AudioChannels>) (json, typeOfT, context) -> AudioChannels.fromValue(json.getAsString()));
+                (JsonDeserializer<AudioChannels>) (json, typeOfT, context) -> AudioChannels.Companion.fromValue(json.getAsString()));
 
         return builder;
     }

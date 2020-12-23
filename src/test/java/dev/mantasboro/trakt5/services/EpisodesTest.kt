@@ -1,53 +1,63 @@
-package dev.mantasboro.trakt5.services;
+package dev.mantasboro.trakt5.services
 
-import dev.mantasboro.trakt5.BaseTestCase;
-import dev.mantasboro.trakt5.TestData;
-import dev.mantasboro.trakt5.entities.Episode;
-import dev.mantasboro.trakt5.entities.Ratings;
-import dev.mantasboro.trakt5.entities.Stats;
-import dev.mantasboro.trakt5.enums.Extended;
-import org.junit.Test;
+import dev.mantasboro.trakt5.BaseTestCase
+import dev.mantasboro.trakt5.TestData
+import dev.mantasboro.trakt5.enums.Extended
+import org.assertj.core.api.Assertions
+import org.junit.Test
+import java.io.IOException
+import java.lang.String
 
-import java.io.IOException;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
-public class EpisodesTest extends BaseTestCase {
-
+class EpisodesTest : BaseTestCase() {
     @Test
-    public void test_summary() throws IOException {
-        Episode episode = executeCall(getTrakt().episodes().summary(String.valueOf(TestData.SHOW_TRAKT_ID),
+    @Throws(IOException::class)
+    fun test_summary() {
+        val episode = executeCall(
+            trakt.episodes().summary(
+                String.valueOf(TestData.SHOW_TRAKT_ID),
                 TestData.EPISODE_SEASON,
-                TestData.EPISODE_NUMBER, Extended.FULL));
-        assertThat(episode).isNotNull();
-        assertThat(episode.title).isEqualTo(TestData.EPISODE_TITLE);
-        assertThat(episode.season).isEqualTo(TestData.EPISODE_SEASON);
-        assertThat(episode.number).isEqualTo(TestData.EPISODE_NUMBER);
-        assertThat(episode.ids.imdb).isEqualTo(TestData.EPISODE_IMDB_ID);
-        assertThat(episode.ids.tmdb).isEqualTo(TestData.EPISODE_TMDB_ID);
-        assertThat(episode.ids.tvdb).isEqualTo(TestData.EPISODE_TVDB_ID);
-        assertThat(episode.runtime).isGreaterThan(0);
-        assertThat(episode.comment_count).isGreaterThanOrEqualTo(0);
+                TestData.EPISODE_NUMBER, Extended.FULL
+            )
+        )
+        Assertions.assertThat(episode).isNotNull
+        Assertions.assertThat(episode.title).isEqualTo(TestData.EPISODE_TITLE)
+        Assertions.assertThat(episode.season).isEqualTo(TestData.EPISODE_SEASON)
+        Assertions.assertThat(episode.number).isEqualTo(TestData.EPISODE_NUMBER)
+        Assertions.assertThat(episode.ids!!.imdb).isEqualTo(TestData.EPISODE_IMDB_ID)
+        Assertions.assertThat(episode.ids!!.tmdb).isEqualTo(TestData.EPISODE_TMDB_ID)
+        Assertions.assertThat(episode.ids!!.tvdb).isEqualTo(TestData.EPISODE_TVDB_ID)
+        Assertions.assertThat(episode.runtime).isGreaterThan(0)
+        Assertions.assertThat(episode.comment_count).isGreaterThanOrEqualTo(0)
     }
 
     @Test
-    public void test_comments() throws IOException {
-        executeCall(getTrakt().episodes().comments(TestData.SHOW_SLUG, TestData.EPISODE_SEASON,
-                TestData.EPISODE_NUMBER, 1, DEFAULT_PAGE_SIZE, null));
+    @Throws(IOException::class)
+    fun test_comments() {
+        executeCall(
+            trakt.episodes().comments(
+                TestData.SHOW_SLUG, TestData.EPISODE_SEASON,
+                TestData.EPISODE_NUMBER, 1, DEFAULT_PAGE_SIZE, null
+            )
+        )
     }
 
     @Test
-    public void test_ratings() throws IOException {
-        Ratings ratings = executeCall(getTrakt().episodes().ratings(TestData.SHOW_SLUG, TestData.EPISODE_SEASON,
-                TestData.EPISODE_NUMBER));
-        assertRatings(ratings);
+    @Throws(IOException::class)
+    fun test_ratings() {
+        val ratings = executeCall(
+            trakt.episodes().ratings(
+                TestData.SHOW_SLUG, TestData.EPISODE_SEASON,
+                TestData.EPISODE_NUMBER
+            )
+        )
+        assertRatings(ratings)
     }
 
     @Test
-    public void test_stats() throws IOException {
-        Stats stats = executeCall(
-                getTrakt().episodes().stats(TestData.SHOW_SLUG, TestData.EPISODE_SEASON, TestData.EPISODE_NUMBER));
-        assertStats(stats);
+    @Throws(IOException::class)
+    fun test_stats() {
+        val stats =
+            executeCall(trakt.episodes().stats(TestData.SHOW_SLUG, TestData.EPISODE_SEASON, TestData.EPISODE_NUMBER))
+        assertStats(stats)
     }
-
 }

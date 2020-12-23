@@ -1,21 +1,17 @@
-package dev.mantasboro.trakt5.entities;
+package dev.mantasboro.trakt5.entities
 
-import org.threeten.bp.OffsetDateTime;
+import org.threeten.bp.OffsetDateTime
 
-import java.util.List;
-
-public class Season {
-
-    public Integer number;
-    public SeasonIds ids;
-
-    public String title;
-    public String overview;
-    public String network;
-    public OffsetDateTime first_aired;
-    public Double rating;
-    public Integer votes;
-    public Integer episode_count;
-    public Integer aired_episodes;
-    public List<Episode> episodes;
-}
+data class Season(
+    val number: Int? = null,
+    val ids: SeasonIds? = null,
+    val title: String? = null,
+    val overview: String? = null,
+    val network: String? = null,
+    val first_aired: OffsetDateTime? = null,
+    val rating: Double? = null,
+    val votes: Int? = null,
+    val episode_count: Int? = null,
+    val aired_episodes: Int? = null,
+    val episodes: List<Episode>? = null,
+)

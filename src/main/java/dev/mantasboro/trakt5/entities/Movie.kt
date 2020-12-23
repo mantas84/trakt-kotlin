@@ -1,23 +1,20 @@
-package dev.mantasboro.trakt5.entities;
+package dev.mantasboro.trakt5.entities
 
-import org.threeten.bp.LocalDate;
+import org.threeten.bp.LocalDate
 
-import java.util.List;
-
-public class Movie extends BaseEntity {
-
-    public Integer year;
-    public MovieIds ids;
+class Movie : BaseEntity() {
+    val year: Int? = null
+    val ids: MovieIds? = null
 
     // extended info
-    public String certification;
-    public String tagline;
-    /** Date in UTC time. */
-    public LocalDate released;
-    public Integer runtime;
-    public String trailer;
-    public String homepage;
-    public String language;
-    public List<String> genres;
+    val certification: String? = null
+    val tagline: String? = null
 
+    /** Date in UTC time.  */
+    val released: LocalDate? = null
+    val runtime: Int? = null
+    val trailer: String? = null
+    val homepage: String? = null
+    val language: String? = null
+    val genres: List<String>? = null
 }

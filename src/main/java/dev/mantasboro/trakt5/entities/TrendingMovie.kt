@@ -1,7 +1,3 @@
-package dev.mantasboro.trakt5.entities;
+package dev.mantasboro.trakt5.entities
 
-public class TrendingMovie extends BaseTrendingEntity {
-
-    public Movie movie;
-
-}
+class TrendingMovie(val movie: Movie, watchers: Int?) : BaseTrendingEntity(watchers)
