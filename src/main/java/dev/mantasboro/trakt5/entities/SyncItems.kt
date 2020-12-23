@@ -1,7 +1,5 @@
 package dev.mantasboro.trakt5.entities
 
-import java.util.*
-
 class SyncItems {
     var movies: List<SyncMovie>? = null
     var shows: List<SyncShow>? = null

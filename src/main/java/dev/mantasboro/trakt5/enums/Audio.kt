@@ -1,7 +1,5 @@
 package dev.mantasboro.trakt5.enums
 
-import java.util.*
-
 enum class Audio(private val value: String) : TraktEnum {
     LPCM("lpcm"),
     MP3("mp3"),

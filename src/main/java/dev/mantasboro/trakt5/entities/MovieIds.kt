@@ -1,6 +1,5 @@
 package dev.mantasboro.trakt5.entities
 
-
 class MovieIds(
     trakt: Int? = null,
     imdb: String? = null,

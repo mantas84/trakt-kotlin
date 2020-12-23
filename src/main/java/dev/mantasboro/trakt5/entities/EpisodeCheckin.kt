@@ -1,5 +1,6 @@
 package dev.mantasboro.trakt5.entities
 
+@Suppress("LongParameterList")
 class EpisodeCheckin constructor(
     val show: Show? = null,
     val episode: SyncEpisode,

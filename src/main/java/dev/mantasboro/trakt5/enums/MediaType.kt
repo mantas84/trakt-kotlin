@@ -1,7 +1,5 @@
 package dev.mantasboro.trakt5.enums
 
-import java.util.*
-
 enum class MediaType(private val value: String) : TraktEnum {
 
     DIGITAL("digital"),

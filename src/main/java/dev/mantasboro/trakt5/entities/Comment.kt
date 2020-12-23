@@ -2,7 +2,7 @@ package dev.mantasboro.trakt5.entities
 
 import org.threeten.bp.OffsetDateTime
 
-//todo clean up constructors
+// todo clean up constructors
 class Comment {
     var id: Int? = null
     var parent_id: Int? = null

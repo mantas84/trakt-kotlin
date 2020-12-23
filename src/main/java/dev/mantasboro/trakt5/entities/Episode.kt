@@ -2,6 +2,7 @@ package dev.mantasboro.trakt5.entities
 
 import org.threeten.bp.OffsetDateTime
 
+@Suppress("LongParameterList")
 class Episode(
     val season: Int? = null,
     val number: Int? = null,

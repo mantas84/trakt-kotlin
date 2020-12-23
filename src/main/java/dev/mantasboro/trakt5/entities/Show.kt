@@ -3,6 +3,7 @@ package dev.mantasboro.trakt5.entities
 import dev.mantasboro.trakt5.enums.Status
 import org.threeten.bp.OffsetDateTime
 
+@Suppress("LongParameterList")
 class Show(
     var year: Int? = null,
     var ids: ShowIds? = null,

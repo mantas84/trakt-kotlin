@@ -1,7 +1,5 @@
 package dev.mantasboro.trakt5.enums
 
-import java.util.*
-
 enum class Resolution(private val value: String) : TraktEnum {
 
     UHD_4K("uhd_4k"),

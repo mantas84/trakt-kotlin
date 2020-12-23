@@ -1,7 +1,5 @@
 package dev.mantasboro.trakt5.enums
 
-import java.util.*
-
 enum class AudioChannels(private val value: String) : TraktEnum {
     CH1_0("1.0"),
     CH2_0("2.0"),

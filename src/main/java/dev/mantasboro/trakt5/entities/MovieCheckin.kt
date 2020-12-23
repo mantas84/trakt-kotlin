@@ -1,5 +1,6 @@
 package dev.mantasboro.trakt5.entities
 
+@Suppress("LongParameterList")
 class MovieCheckin constructor(
     val movie: SyncMovie,
     sharing: ShareSettings? = null,

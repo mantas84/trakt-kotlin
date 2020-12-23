@@ -5,6 +5,6 @@ data class AccessTokenRequest(
     val client_id: String,
     val client_secret: String,
     val redirect_uri: String,
-){
+) {
     val grant_type: String = "authorization_code"
 }

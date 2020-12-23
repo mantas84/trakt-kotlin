@@ -1,7 +1,5 @@
 package dev.mantasboro.trakt5.enums
 
-import java.util.*
-
 enum class Hdr(private val value: String) : TraktEnum {
 
     DOLBY_VISION("dolby_vision"),

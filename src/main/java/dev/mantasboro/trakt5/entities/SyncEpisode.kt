@@ -1,9 +1,15 @@
 package dev.mantasboro.trakt5.entities
 
 import com.google.gson.annotations.SerializedName
-import dev.mantasboro.trakt5.enums.*
+import dev.mantasboro.trakt5.enums.Audio
+import dev.mantasboro.trakt5.enums.AudioChannels
+import dev.mantasboro.trakt5.enums.Hdr
+import dev.mantasboro.trakt5.enums.MediaType
+import dev.mantasboro.trakt5.enums.Rating
+import dev.mantasboro.trakt5.enums.Resolution
 import org.threeten.bp.OffsetDateTime
 
+@Suppress("LongParameterList")
 class SyncEpisode(
     var season: Int? = null,
     var number: Int? = null,

@@ -12,5 +12,4 @@ enum class SortBy {
     VOTES,
     MY_RATING,
     RANDOM
-
 }

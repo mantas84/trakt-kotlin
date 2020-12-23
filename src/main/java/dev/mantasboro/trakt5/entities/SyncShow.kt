@@ -2,7 +2,6 @@ package dev.mantasboro.trakt5.entities
 
 import dev.mantasboro.trakt5.enums.Rating
 import org.threeten.bp.OffsetDateTime
-import java.util.*
 
 class SyncShow {
     var ids: ShowIds? = null

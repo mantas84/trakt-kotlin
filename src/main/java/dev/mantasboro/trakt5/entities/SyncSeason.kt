@@ -1,8 +1,6 @@
 package dev.mantasboro.trakt5.entities
 
-import dev.mantasboro.trakt5.entities.SyncEpisode
 import dev.mantasboro.trakt5.enums.Rating
-import dev.mantasboro.trakt5.entities.SyncSeason
 import org.threeten.bp.OffsetDateTime
 import java.util.ArrayList
 

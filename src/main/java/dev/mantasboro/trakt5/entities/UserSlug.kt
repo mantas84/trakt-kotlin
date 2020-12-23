@@ -1,8 +1,5 @@
 package dev.mantasboro.trakt5.entities
 
-import dev.mantasboro.trakt5.entities.UserSlug
-import java.lang.IllegalArgumentException
-
 class UserSlug(userSlug: String?) {
     private val userSlug: String
 

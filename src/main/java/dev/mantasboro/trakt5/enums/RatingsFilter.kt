@@ -11,7 +11,7 @@ enum class RatingsFilter(private val value: String) : TraktEnum {
     FAIR("/6"),
     GOOD("/7"),
     GREAT("/8"),
-    SUPERB(        "/9"    ),
+    SUPERB("/9"),
     TOTALLYNINJA("/10");
 
     override fun toString(): String {
