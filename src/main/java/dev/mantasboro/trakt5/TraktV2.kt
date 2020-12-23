@@ -1,63 +1,57 @@
-package dev.mantasboro.trakt5;
+package dev.mantasboro.trakt5
 
-import dev.mantasboro.trakt5.entities.*;
-import dev.mantasboro.trakt5.services.*;
-import okhttp3.OkHttpClient;
-import okhttp3.ResponseBody;
-import org.jetbrains.annotations.Nullable;
-import retrofit2.Converter;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.lang.annotation.Annotation;
-import java.net.URLEncoder;
+import dev.mantasboro.trakt5.entities.AccessToken
+import dev.mantasboro.trakt5.entities.AccessTokenRefreshRequest
+import dev.mantasboro.trakt5.entities.AccessTokenRequest
+import dev.mantasboro.trakt5.entities.CheckinError
+import dev.mantasboro.trakt5.entities.ClientId
+import dev.mantasboro.trakt5.entities.DeviceCode
+import dev.mantasboro.trakt5.entities.DeviceCodeAccessTokenRequest
+import dev.mantasboro.trakt5.entities.TraktError
+import dev.mantasboro.trakt5.entities.TraktOAuthError
+import dev.mantasboro.trakt5.services.Authentication
+import dev.mantasboro.trakt5.services.Calendars
+import dev.mantasboro.trakt5.services.Checkin
+import dev.mantasboro.trakt5.services.Comments
+import dev.mantasboro.trakt5.services.Episodes
+import dev.mantasboro.trakt5.services.Genres
+import dev.mantasboro.trakt5.services.Movies
+import dev.mantasboro.trakt5.services.People
+import dev.mantasboro.trakt5.services.Recommendations
+import dev.mantasboro.trakt5.services.Scrobble
+import dev.mantasboro.trakt5.services.Search
+import dev.mantasboro.trakt5.services.Seasons
+import dev.mantasboro.trakt5.services.Shows
+import dev.mantasboro.trakt5.services.Sync
+import dev.mantasboro.trakt5.services.Users
+import okhttp3.OkHttpClient
+import okhttp3.OkHttpClient.Builder
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import java.io.IOException
+import java.io.UnsupportedEncodingException
+import java.net.URLEncoder
 
 /**
  * Helper class for easy usage of the trakt v2 API using retrofit.
  */
-public class TraktV2 {
-
-    /**
-     * trakt API v2 URL.
-     */
-    public static final String API_HOST = "api.trakt.tv";
-    public static final String API_URL = "https://" + API_HOST + "/";
-    public static final String API_VERSION = "2";
-
-    public static final String SITE_URL = "https://trakt.tv";
-    public static final String OAUTH2_AUTHORIZATION_URL = SITE_URL + "/oauth/authorize";
-
-    public static final String HEADER_AUTHORIZATION = "Authorization";
-    public static final String HEADER_CONTENT_TYPE = "Content-Type";
-    public static final String CONTENT_TYPE_JSON = "application/json";
-    public static final String HEADER_TRAKT_API_VERSION = "trakt-api-version";
-    public static final String HEADER_TRAKT_API_KEY = "trakt-api-key";
-
-    @Nullable
-    private OkHttpClient okHttpClient;
-    @Nullable
-    private Retrofit retrofit;
-
-    private String apiKey;
-    @Nullable
-    private String clientSecret;
-    @Nullable
-    private String redirectUri;
-    @Nullable
-    private String accessToken;
-    @Nullable
-    private String refreshToken;
+open class TraktV2 {
+    private var okHttpClient: OkHttpClient? = null
+    private var retrofit: Retrofit? = null
+    private var apiKey: String
+    private var clientSecret: String? = null
+    private var redirectUri: String? = null
+    private var accessToken: String? = null
+    private var refreshToken: String? = null
 
     /**
      * Get a new API manager instance.
      *
      * @param apiKey The API key obtained from trakt, currently equal to the OAuth client id.
      */
-    public TraktV2(String apiKey) {
-        this.apiKey = apiKey;
+    constructor(apiKey: String) {
+        this.apiKey = apiKey
     }
 
     /**
@@ -67,275 +61,268 @@ public class TraktV2 {
      * @param clientSecret The client secret obtained from trakt.
      * @param redirectUri  The redirect URI to use for OAuth2 token requests.
      */
-    public TraktV2(String apiKey, String clientSecret, String redirectUri) {
-        this.apiKey = apiKey;
-        this.clientSecret = clientSecret;
-        this.redirectUri = redirectUri;
+    constructor(apiKey: String, clientSecret: String?, redirectUri: String?) {
+        this.apiKey = apiKey
+        this.clientSecret = clientSecret
+        this.redirectUri = redirectUri
     }
 
-    public String apiKey() {
-        return apiKey;
+    fun apiKey(): String {
+        return apiKey
     }
 
-    public TraktV2 apiKey(String apiKey) {
-        this.apiKey = apiKey;
-        return this;
+    fun apiKey(apiKey: String): TraktV2 {
+        this.apiKey = apiKey
+        return this
     }
 
-    @Nullable
-    public String accessToken() {
-        return accessToken;
+    fun accessToken(): String? {
+        return accessToken
     }
 
     /**
      * Sets the OAuth 2.0 access token to be appended to requests.
      *
-     * <p> If set, some methods will return user-specific data.
      *
-     * @param accessToken A valid access token, obtained via e.g. {@link #exchangeCodeForAccessToken(String)}.
+     *  If set, some methods will return user-specific data.
+     *
+     * @param accessToken A valid access token, obtained via e.g. [.exchangeCodeForAccessToken].
      */
-    public TraktV2 accessToken(@Nullable String accessToken) {
-        this.accessToken = accessToken;
-        return this;
+    fun accessToken(accessToken: String?): TraktV2 {
+        this.accessToken = accessToken
+        return this
     }
 
-    @Nullable
-    public String refreshToken() {
-        return refreshToken;
+    fun refreshToken(): String? {
+        return refreshToken
     }
 
     /**
      * Sets the OAuth 2.0 refresh token to be used, in case the current access token has expired, to get a new access
      * token.
      */
-    public TraktV2 refreshToken(@Nullable String refreshToken) {
-        this.refreshToken = refreshToken;
-        return this;
+    fun refreshToken(refreshToken: String?): TraktV2 {
+        this.refreshToken = refreshToken
+        return this
     }
 
     /**
-     * Creates a {@link Retrofit.Builder} that sets the base URL, adds a Gson converter and sets {@link #okHttpClient()}
+     * Creates a [Retrofit.Builder] that sets the base URL, adds a Gson converter and sets [.okHttpClient]
      * as its client.
      *
-     * @see #okHttpClient()
+     * @see .okHttpClient
      */
-    protected Retrofit.Builder retrofitBuilder() {
-        return new Retrofit.Builder()
-                .baseUrl(API_URL)
-                .addConverterFactory(GsonConverterFactory.create(dev.mantasboro.trakt5.TraktV2Helper.getGsonBuilder().create()))
-                .client(okHttpClient());
+    protected fun retrofitBuilder(): Retrofit.Builder {
+        return Retrofit.Builder()
+            .baseUrl(API_URL)
+            .addConverterFactory(GsonConverterFactory.create(TraktV2Helper.gsonBuilder.create()))
+            .client(okHttpClient())
     }
 
     /**
      * Returns the default OkHttp client instance. It is strongly recommended to override this and use your app
      * instance.
      *
-     * @see #setOkHttpClientDefaults(OkHttpClient.Builder)
+     * @see .setOkHttpClientDefaults
      */
-    protected synchronized OkHttpClient okHttpClient() {
+    @Synchronized
+    protected fun okHttpClient(): OkHttpClient {
         if (okHttpClient == null) {
-            OkHttpClient.Builder builder = new OkHttpClient.Builder();
-            setOkHttpClientDefaults(builder);
-            okHttpClient = builder.build();
+            val builder = Builder()
+            setOkHttpClientDefaults(builder)
+            okHttpClient = builder.build()
         }
-        return okHttpClient;
+        return okHttpClient!!
     }
 
     /**
-     * Adds {@link dev.mantasboro.trakt5.TraktV2Interceptor} as an application interceptor and {@link dev.mantasboro.trakt5.TraktV2Authenticator} as an authenticator.
+     * Adds [dev.mantasboro.trakt5.TraktV2Interceptor] as an application interceptor and [dev.mantasboro.trakt5.TraktV2Authenticator] as an authenticator.
      */
-    protected void setOkHttpClientDefaults(OkHttpClient.Builder builder) {
-        builder.addInterceptor(new dev.mantasboro.trakt5.TraktV2Interceptor(this));
-        builder.authenticator(new dev.mantasboro.trakt5.TraktV2Authenticator(this));
+    protected open fun setOkHttpClientDefaults(builder: Builder) {
+        builder.addInterceptor(TraktV2Interceptor(this))
+        builder.authenticator(TraktV2Authenticator(this))
     }
 
     /**
-     * Return the {@link Retrofit} instance. If called for the first time builds the instance.
+     * Return the [Retrofit] instance. If called for the first time builds the instance.
      */
-    protected Retrofit retrofit() {
+    protected fun retrofit(): Retrofit? {
         if (retrofit == null) {
-            retrofit = retrofitBuilder().build();
+            retrofit = retrofitBuilder().build()
         }
-        return retrofit;
+        return retrofit
     }
 
     /**
      * Build an OAuth 2.0 authorization URL to obtain an authorization code.
      *
-     * <p>Send the user to the URL. Once the user authorized your app, the server will redirect to {@code redirectUri}
-     * with the authorization code and the sent state in the query parameter {@code code}.
      *
-     * <p>Ensure the state matches, then supply the authorization code to {@link #exchangeCodeForAccessToken} to get an
+     * Send the user to the URL. Once the user authorized your app, the server will redirect to `redirectUri`
+     * with the authorization code and the sent state in the query parameter `code`.
+     *
+     *
+     * Ensure the state matches, then supply the authorization code to [.exchangeCodeForAccessToken] to get an
      * access token.
      *
      * @param state State variable to prevent request forgery attacks.
      */
-    public String buildAuthorizationUrl(String state) {
-        if (redirectUri == null) {
-            throw new IllegalStateException("redirectUri not provided");
-        }
-
-        @SuppressWarnings("StringBufferReplaceableByString")
-        StringBuilder authUrl = new StringBuilder(OAUTH2_AUTHORIZATION_URL);
-        authUrl.append("?").append("response_type=code");
-        authUrl.append("&").append("redirect_uri=").append(urlEncode(redirectUri));
-        authUrl.append("&").append("state=").append(urlEncode(state));
-        authUrl.append("&").append("client_id=").append(urlEncode(apiKey()));
-        return authUrl.toString();
+    fun buildAuthorizationUrl(state: String): String {
+        checkNotNull(redirectUri) { "redirectUri not provided" }
+        val authUrl = StringBuilder(OAUTH2_AUTHORIZATION_URL)
+        authUrl.append("?").append("response_type=code")
+        authUrl.append("&").append("redirect_uri=").append(urlEncode(redirectUri!!))
+        authUrl.append("&").append("state=").append(urlEncode(state))
+        authUrl.append("&").append("client_id=").append(urlEncode(apiKey()))
+        return authUrl.toString()
     }
 
-    private String urlEncode(String content) {
-        try {
+    private fun urlEncode(content: String): String {
+        return try {
             // can not use java.nio.charset.StandardCharsets as on Android only available since API 19
-            return URLEncoder.encode(content, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new UnsupportedOperationException(e);
+            URLEncoder.encode(content, "UTF-8")
+        } catch (e: UnsupportedEncodingException) {
+            throw UnsupportedOperationException(e)
         }
     }
 
     /**
      * Request a code to start the device authentication process from trakt.
-     * <p>
-     * The {@code device_code} and {@code interval} will be used later to poll for the {@code access_token}.
-     * The {@code user_code} and {@code verification_url} should be presented to the user.
+     *
+     *
+     * The `device_code` and `interval` will be used later to poll for the `access_token`.
+     * The `user_code` and `verification_url` should be presented to the user.
      */
-    public Response<DeviceCode> generateDeviceCode() throws IOException {
-        ClientId clientId = new ClientId(apiKey);
-        return authentication().generateDeviceCode(clientId).execute();
+    @Throws(IOException::class)
+    fun generateDeviceCode(): Response<DeviceCode> {
+        val clientId = ClientId(apiKey)
+        return authentication().generateDeviceCode(clientId).execute()
     }
 
     /**
      * Request an access token from trakt using device authentication.
      *
-     * <p>Supply the received access token to {@link #accessToken(String)} and store the refresh token to later refresh
+     *
+     * Supply the received access token to [.accessToken] and store the refresh token to later refresh
      * the access token once it has expired.
      *
-     * <p>On failure re-authorization of your app is required (see {@link #generateDeviceCode()}).
      *
-     * @param deviceCode A valid device code (see {@link #generateDeviceCode()}).
+     * On failure re-authorization of your app is required (see [.generateDeviceCode]).
+     *
+     * @param deviceCode A valid device code (see [.generateDeviceCode]).
      */
-    public Response<AccessToken> exchangeDeviceCodeForAccessToken(String deviceCode) throws IOException {
-        if (clientSecret == null) {
-            throw new IllegalStateException("clientSecret not provided");
-        }
-
-        DeviceCodeAccessTokenRequest request = new DeviceCodeAccessTokenRequest(deviceCode,apiKey,clientSecret);
-        return authentication().exchangeDeviceCodeForAccessToken(request).execute();
+    @Throws(IOException::class)
+    fun exchangeDeviceCodeForAccessToken(deviceCode: String?): Response<AccessToken> {
+        checkNotNull(clientSecret) { "clientSecret not provided" }
+        val request = DeviceCodeAccessTokenRequest(deviceCode, apiKey, clientSecret)
+        return authentication().exchangeDeviceCodeForAccessToken(request).execute()
     }
 
     /**
      * Request an access token from trakt.
      *
-     * <p>Supply the received access token to {@link #accessToken(String)} and store the refresh token to later refresh
+     *
+     * Supply the received access token to [.accessToken] and store the refresh token to later refresh
      * the access token once it has expired.
      *
-     * <p>On failure re-authorization of your app is required (see {@link #buildAuthorizationUrl}).
      *
-     * @param authCode A valid authorization code (see {@link #buildAuthorizationUrl(String)}).
+     * On failure re-authorization of your app is required (see [.buildAuthorizationUrl]).
+     *
+     * @param authCode A valid authorization code (see [.buildAuthorizationUrl]).
      */
-    public Response<AccessToken> exchangeCodeForAccessToken(String authCode) throws IOException {
-        if (clientSecret == null) {
-            throw new IllegalStateException("clientSecret not provided");
-        }
-        if (redirectUri == null) {
-            throw new IllegalStateException("redirectUri not provided");
-        }
-
+    @Throws(IOException::class)
+    fun exchangeCodeForAccessToken(authCode: String?): Response<AccessToken> {
+        checkNotNull(clientSecret) { "clientSecret not provided" }
+        checkNotNull(redirectUri) { "redirectUri not provided" }
         return authentication().exchangeCodeForAccessToken(
-                new AccessTokenRequest(
-                        authCode,
-                        apiKey(),
-                        clientSecret,
-                        redirectUri)
-        ).execute();
+            AccessTokenRequest(
+                authCode!!,
+                apiKey(),
+                clientSecret!!,
+                redirectUri!!
+            )
+        ).execute()
     }
 
     /**
      * Request to refresh an expired access token for trakt. If your app is still authorized, returns a response which
      * includes a new access token.
      *
-     * <p>Supply the received access token to {@link #accessToken(String)} and store the refresh token to later refresh
+     *
+     * Supply the received access token to [.accessToken] and store the refresh token to later refresh
      * the access token once it has expired.
      *
-     * <p>On failure re-authorization of your app is required (see {@link #buildAuthorizationUrl}).
+     *
+     * On failure re-authorization of your app is required (see [.buildAuthorizationUrl]).
      */
-    public Response<AccessToken> refreshAccessToken(String refreshToken) throws IOException {
-        if (clientSecret == null) {
-            throw new IllegalStateException("clientSecret not provided");
-        }
-        if (redirectUri == null) {
-            throw new IllegalStateException("redirectUri not provided");
-        }
-
+    @Throws(IOException::class)
+    fun refreshAccessToken(refreshToken: String?): Response<AccessToken> {
+        checkNotNull(clientSecret) { "clientSecret not provided" }
+        checkNotNull(redirectUri) { "redirectUri not provided" }
         return authentication().refreshAccessToken(
-                new AccessTokenRefreshRequest(
-                        refreshToken,
-                        apiKey(),
-                        clientSecret,
-                        redirectUri
-                )
-        ).execute();
+            AccessTokenRefreshRequest(
+                refreshToken!!,
+                apiKey(),
+                clientSecret!!,
+                redirectUri!!
+            )
+        ).execute()
     }
 
     /**
-     * If the response code is 409 tries to convert the body into a {@link CheckinError}.
+     * If the response code is 409 tries to convert the body into a [CheckinError].
      */
-    @Nullable
-    public CheckinError checkForCheckinError(Response<?> response) {
+    fun checkForCheckinError(response: Response<*>): CheckinError? {
         if (response.code() != 409) {
-            return null; // only code 409 can be a check-in error
+            return null // only code 409 can be a check-in error
         }
-        Converter<ResponseBody, CheckinError> errorConverter =
-                retrofit().responseBodyConverter(CheckinError.class, new Annotation[0]);
-        try {
-            //noinspection ConstantConditions never null if unsuccessful
-            return errorConverter.convert(response.errorBody());
-        } catch (IOException e) {
-            return new CheckinError(); // null values
-        }
-    }
-
-    /**
-     * If the response is not successful, tries to parse the error body into a {@link TraktError}.
-     */
-    @Nullable
-    public TraktError checkForTraktError(Response<?> response) {
-        if (response.isSuccessful()) {
-            return null;
-        }
-        Converter<ResponseBody, TraktError> errorConverter =
-                retrofit().responseBodyConverter(TraktError.class, new Annotation[0]);
-        try {
-            //noinspection ConstantConditions never null if unsuccessful
-            return errorConverter.convert(response.errorBody());
-        } catch (IOException ignored) {
-            return new TraktError(); // null values
+        val errorConverter = retrofit()!!.responseBodyConverter<CheckinError>(
+            CheckinError::class.java, arrayOfNulls(0)
+        )
+        return try {
+            errorConverter.convert(response.errorBody())
+        } catch (e: IOException) {
+            CheckinError() // null values
         }
     }
 
     /**
-     * If the {@link Authentication} response is not successful,
-     * tries to parse the error body into a {@link TraktOAuthError}.
+     * If the response is not successful, tries to parse the error body into a [TraktError].
      */
-    @Nullable
-    public TraktOAuthError checkForTraktOAuthError(Response<?> response) {
-        if (response.isSuccessful()) {
-            return null;
+    fun checkForTraktError(response: Response<*>): TraktError? {
+        if (response.isSuccessful) {
+            return null
         }
-        Converter<ResponseBody, TraktOAuthError> errorConverter = retrofit()
-                .responseBodyConverter(TraktOAuthError.class, new Annotation[0]);
+        val errorConverter = retrofit()!!.responseBodyConverter<TraktError>(
+            TraktError::class.java, arrayOfNulls(0)
+        )
+        return try {
+            errorConverter.convert(response.errorBody())
+        } catch (ignored: IOException) {
+            TraktError() // null values
+        }
+    }
 
+    /**
+     * If the [Authentication] response is not successful,
+     * tries to parse the error body into a [TraktOAuthError].
+     */
+    fun checkForTraktOAuthError(response: Response<*>): TraktOAuthError? {
+        if (response.isSuccessful) {
+            return null
+        }
+        val errorConverter =
+            retrofit()!!.responseBodyConverter<TraktOAuthError>(TraktOAuthError::class.java, arrayOfNulls(0))
         if (response.errorBody() != null) {
             try {
-                return errorConverter.convert(response.errorBody());
-            } catch (IOException ignored) {
+                return errorConverter.convert(response.errorBody())
+            } catch (ignored: IOException) {
             }
         }
-        return new TraktOAuthError(); // null values
+        return TraktOAuthError() // null values
     }
 
-    public Authentication authentication() {
-        return retrofit().create(Authentication.class);
+    fun authentication(): Authentication {
+        return retrofit()!!.create(Authentication::class.java)
     }
 
     /**
@@ -343,8 +330,8 @@ public class TraktV2 {
      * items returned will be limited to what the user has watched, collected, or added to their watchlist. You'll most
      * likely want to send OAuth to make the calendar more relevant to the user.
      */
-    public Calendars calendars() {
-        return retrofit().create(Calendars.class);
+    fun calendars(): Calendars {
+        return retrofit()!!.create(Calendars::class.java)
     }
 
     /**
@@ -352,8 +339,8 @@ public class TraktV2 {
      * the gaps. You might be watching live tv, at a friend's house, or watching a movie in theaters. You can simply
      * checkin from your phone or tablet in those situations.
      */
-    public Checkin checkin() {
-        return retrofit().create(Checkin.class);
+    fun checkin(): Checkin {
+        return retrofit()!!.create(Checkin::class.java)
     }
 
     /**
@@ -361,32 +348,32 @@ public class TraktV2 {
      * reviews. Each comment can have replies and can be voted up or down. These votes are used to determine popular
      * comments.
      */
-    public Comments comments() {
-        return retrofit().create(Comments.class);
+    fun comments(): Comments {
+        return retrofit()!!.create(Comments::class.java)
     }
 
     /**
      * One or more genres are attached to all movies and shows. Some API methods allow filtering by genre, so it's good
      * to cache this list in your app.
      */
-    public Genres genres() {
-        return retrofit().create(Genres.class);
+    fun genres(): Genres {
+        return retrofit()!!.create(Genres::class.java)
     }
 
-    public Movies movies() {
-        return retrofit().create(Movies.class);
+    fun movies(): Movies {
+        return retrofit()!!.create(Movies::class.java)
     }
 
-    public People people() {
-        return retrofit().create(People.class);
+    fun people(): People {
+        return retrofit()!!.create(People::class.java)
     }
 
     /**
      * Recommendations are based on the watched history for a user and their friends. There are other factors that go
      * into the algorithm as well to further personalize what gets recommended.
      */
-    public Recommendations recommendations() {
-        return retrofit().create(Recommendations.class);
+    fun recommendations(): Recommendations {
+        return retrofit()!!.create(Recommendations::class.java)
     }
 
     /**
@@ -394,32 +381,47 @@ public class TraktV2 {
      * helpful if you have an external ID and want to get the trakt ID and info. This method will search for movies,
      * shows, episodes, people, users, and lists.
      */
-    public Search search() {
-        return retrofit().create(Search.class);
+    fun search(): Search {
+        return retrofit()!!.create(Search::class.java)
     }
 
-    public Shows shows() {
-        return retrofit().create(Shows.class);
+    fun shows(): Shows {
+        return retrofit()!!.create(Shows::class.java)
     }
 
-    public Seasons seasons() {
-        return retrofit().create(Seasons.class);
+    fun seasons(): Seasons {
+        return retrofit()!!.create(Seasons::class.java)
     }
 
-    public Episodes episodes() {
-        return retrofit().create(Episodes.class);
+    fun episodes(): Episodes {
+        return retrofit()!!.create(Episodes::class.java)
     }
 
-    public Sync sync() {
-        return retrofit().create(Sync.class);
+    fun sync(): Sync {
+        return retrofit()!!.create(Sync::class.java)
     }
 
-    public Scrobble scrobble() {
-        return retrofit().create(Scrobble.class);
+    fun scrobble(): Scrobble {
+        return retrofit()!!.create(Scrobble::class.java)
     }
 
-    public Users users() {
-        return retrofit().create(Users.class);
+    fun users(): Users {
+        return retrofit()!!.create(Users::class.java)
     }
 
+    companion object {
+        /**
+         * trakt API v2 URL.
+         */
+        const val API_HOST = "api.trakt.tv"
+        const val API_URL = "https://" + API_HOST + "/"
+        const val API_VERSION = "2"
+        const val SITE_URL = "https://trakt.tv"
+        const val OAUTH2_AUTHORIZATION_URL = SITE_URL + "/oauth/authorize"
+        const val HEADER_AUTHORIZATION = "Authorization"
+        const val HEADER_CONTENT_TYPE = "Content-Type"
+        const val CONTENT_TYPE_JSON = "application/json"
+        const val HEADER_TRAKT_API_VERSION = "trakt-api-version"
+        const val HEADER_TRAKT_API_KEY = "trakt-api-key"
+    }
 }

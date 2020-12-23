@@ -1,76 +1,139 @@
-package dev.mantasboro.trakt5;
+package dev.mantasboro.trakt5
 
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonPrimitive;
-import com.google.gson.JsonSerializer;
-import dev.mantasboro.trakt5.enums.*;
-import org.threeten.bp.LocalDate;
-import org.threeten.bp.OffsetDateTime;
+import com.google.gson.GsonBuilder
+import com.google.gson.JsonDeserializationContext
+import com.google.gson.JsonDeserializer
+import com.google.gson.JsonElement
+import com.google.gson.JsonPrimitive
+import com.google.gson.JsonSerializationContext
+import com.google.gson.JsonSerializer
+import dev.mantasboro.trakt5.enums.Audio
+import dev.mantasboro.trakt5.enums.AudioChannels
+import dev.mantasboro.trakt5.enums.Hdr
+import dev.mantasboro.trakt5.enums.MediaType
+import dev.mantasboro.trakt5.enums.ProgressLastActivity
+import dev.mantasboro.trakt5.enums.Rating
+import dev.mantasboro.trakt5.enums.Rating.Companion.fromValue
+import dev.mantasboro.trakt5.enums.Resolution
+import dev.mantasboro.trakt5.enums.Status
+import org.threeten.bp.LocalDate
+import org.threeten.bp.OffsetDateTime
+import java.lang.reflect.Type
 
-public class TraktV2Helper {
+object TraktV2Helper {
+    // Note: for enums always add a serializer, GSON does not use .toString() by default like retrofit!
+    // Or use @SerializedName as an alternative.
 
-    public static GsonBuilder getGsonBuilder() {
-        GsonBuilder builder = new GsonBuilder();
+    // trakt exclusively uses ISO 8601 date times with milliseconds and time zone offset
+    // such as '2011-12-03T10:15:30.000+01:00' or '2011-12-03T10:15:30.000Z'
+    // dates are in ISO 8601 format as well
 
-        // Note: for enums always add a serializer, GSON does not use .toString() by default like retrofit!
-        // Or use @SerializedName as an alternative.
+    // rating
 
-        // trakt exclusively uses ISO 8601 date times with milliseconds and time zone offset
-        // such as '2011-12-03T10:15:30.000+01:00' or '2011-12-03T10:15:30.000Z'
-        builder.registerTypeAdapter(OffsetDateTime.class,
-                (JsonDeserializer<OffsetDateTime>) (json, typeOfT, context) -> OffsetDateTime.parse(json.getAsString()));
-        builder.registerTypeAdapter(OffsetDateTime.class,
-                (JsonSerializer<OffsetDateTime>) (src, typeOfSrc, context) -> new JsonPrimitive(src.toString()));
-        // dates are in ISO 8601 format as well
-        builder.registerTypeAdapter(LocalDate.class,
-                (JsonDeserializer<LocalDate>) (json, typeOfT, context) -> LocalDate.parse(json.getAsString()));
+    // status
 
-        // rating
-        builder.registerTypeAdapter(Rating.class,
-                (JsonDeserializer<Rating>) (json, typeOfT, context) -> Rating.Companion.fromValue(json.getAsInt()));
-        builder.registerTypeAdapter(Rating.class,
-                (JsonSerializer<Rating>) (src, typeOfSrc, context) -> new JsonPrimitive(src.getValue()));
+    // progress last activity
 
-        // status
-        builder.registerTypeAdapter(Status.class,
-                (JsonDeserializer<Status>) (json, typeOfT, context) -> Status.Companion.fromValue(json.getAsString()));
+    // media type
 
-        // progress last activity
-        builder.registerTypeAdapter(ProgressLastActivity.class,
-                (JsonDeserializer<ProgressLastActivity>) (json, typeOfT, context) -> ProgressLastActivity.Companion.fromValue(json.getAsString()));
+    // resolution
 
-        // media type
-        builder.registerTypeAdapter(MediaType.class,
-                (JsonSerializer<MediaType>) (src, typeOfSrc, context) -> new JsonPrimitive(src.toString()));
-        builder.registerTypeAdapter(MediaType.class,
-                (JsonDeserializer<MediaType>) (json, typeOfT, context) -> MediaType.Companion.fromValue(json.getAsString()));
+    // hdr
 
-        // resolution
-        builder.registerTypeAdapter(Resolution.class,
-                (JsonSerializer<Resolution>) (src, typeOfSrc, context) -> new JsonPrimitive(src.toString()));
-        builder.registerTypeAdapter(Resolution.class,
-                (JsonDeserializer<Resolution>) (json, typeOfT, context) -> Resolution.Companion.fromValue(json.getAsString()));
+    // audio
 
-        // hdr
-        builder.registerTypeAdapter(Hdr.class,
-                (JsonSerializer<Hdr>) (src, typeOfSrc, context) -> new JsonPrimitive(src.toString()));
-        builder.registerTypeAdapter(Hdr.class,
-                (JsonDeserializer<Hdr>) (json, typeOfT, context) -> Hdr.Companion.fromValue(json.getAsString()));
+    // audio channels
+    val gsonBuilder: GsonBuilder
+        get() {
+            val builder = GsonBuilder()
 
-        // audio
-        builder.registerTypeAdapter(Audio.class,
-                (JsonSerializer<Audio>) (src, typeOfSrc, context) -> new JsonPrimitive(src.toString()));
-        builder.registerTypeAdapter(Audio.class,
-                (JsonDeserializer<Audio>) (json, typeOfT, context) -> Audio.Companion.fromValue(json.getAsString()));
+            // Note: for enums always add a serializer, GSON does not use .toString() by default like retrofit!
+            // Or use @SerializedName as an alternative.
 
-        // audio channels
-        builder.registerTypeAdapter(AudioChannels.class,
-                (JsonSerializer<AudioChannels>) (src, typeOfSrc, context) -> new JsonPrimitive(src.toString()));
-        builder.registerTypeAdapter(AudioChannels.class,
-                (JsonDeserializer<AudioChannels>) (json, typeOfT, context) -> AudioChannels.Companion.fromValue(json.getAsString()));
+            // trakt exclusively uses ISO 8601 date times with milliseconds and time zone offset
+            // such as '2011-12-03T10:15:30.000+01:00' or '2011-12-03T10:15:30.000Z'
+            builder.registerTypeAdapter(OffsetDateTime::class.java,
+                JsonDeserializer { json: JsonElement, typeOfT: Type?, context: JsonDeserializationContext? ->
+                    OffsetDateTime.parse(json.asString)
+                } as JsonDeserializer<OffsetDateTime>)
+            builder.registerTypeAdapter(OffsetDateTime::class.java,
+                JsonSerializer { src: OffsetDateTime, typeOfSrc: Type?, context: JsonSerializationContext? ->
+                    JsonPrimitive(src.toString())
+                } as JsonSerializer<OffsetDateTime>)
+            // dates are in ISO 8601 format as well
+            builder.registerTypeAdapter(LocalDate::class.java,
+                JsonDeserializer { json: JsonElement, typeOfT: Type?, context: JsonDeserializationContext? ->
+                    LocalDate.parse(json.asString)
+                } as JsonDeserializer<LocalDate>)
 
-        return builder;
-    }
+            // rating
+            builder.registerTypeAdapter(Rating::class.java,
+                JsonDeserializer { json: JsonElement, typeOfT: Type?, context: JsonDeserializationContext? ->
+                    fromValue(json.asInt)
+                } as JsonDeserializer<Rating>)
+            builder.registerTypeAdapter(Rating::class.java,
+                JsonSerializer { src: Rating, typeOfSrc: Type?, context: JsonSerializationContext? -> JsonPrimitive(src.value) } as JsonSerializer<Rating>)
 
+            // status
+            builder.registerTypeAdapter(
+                Status::class.java,
+                JsonDeserializer { json: JsonElement, typeOfT: Type?, context: JsonDeserializationContext? ->
+                    Status.fromValue(json.asString)
+                })
+
+            // progress last activity
+            builder.registerTypeAdapter(ProgressLastActivity::class.java,
+                JsonDeserializer { json: JsonElement, typeOfT: Type?, context: JsonDeserializationContext? ->
+                    ProgressLastActivity.fromValue(json.asString)
+                })
+
+            // media type
+            builder.registerTypeAdapter(MediaType::class.java,
+                JsonSerializer { src: MediaType, typeOfSrc: Type?, context: JsonSerializationContext? ->
+                    JsonPrimitive(src.toString())
+                } as JsonSerializer<MediaType>)
+            builder.registerTypeAdapter(
+                MediaType::class.java,
+                JsonDeserializer { json: JsonElement, typeOfT: Type?, context: JsonDeserializationContext? ->
+                    MediaType.fromValue(json.asString)
+                })
+
+            // resolution
+            builder.registerTypeAdapter(Resolution::class.java,
+                JsonSerializer { src: Resolution, typeOfSrc: Type?, context: JsonSerializationContext? ->
+                    JsonPrimitive(src.toString())
+                } as JsonSerializer<Resolution>)
+            builder.registerTypeAdapter(
+                Resolution::class.java,
+                JsonDeserializer { json: JsonElement, typeOfT: Type?, context: JsonDeserializationContext? ->
+                    Resolution.fromValue(json.asString)
+                })
+
+            // hdr
+            builder.registerTypeAdapter(Hdr::class.java,
+                JsonSerializer { src: Hdr, typeOfSrc: Type?, context: JsonSerializationContext? -> JsonPrimitive(src.toString()) } as JsonSerializer<Hdr>)
+            builder.registerTypeAdapter(Hdr::class.java,
+                JsonDeserializer { json: JsonElement, typeOfT: Type?, context: JsonDeserializationContext? ->
+                    Hdr.fromValue(json.asString)
+                })
+
+            // audio
+            builder.registerTypeAdapter(Audio::class.java,
+                JsonSerializer { src: Audio, typeOfSrc: Type?, context: JsonSerializationContext? -> JsonPrimitive(src.toString()) } as JsonSerializer<Audio>)
+            builder.registerTypeAdapter(Audio::class.java,
+                JsonDeserializer { json: JsonElement, typeOfT: Type?, context: JsonDeserializationContext? ->
+                    Audio.fromValue(json.asString)
+                })
+
+            // audio channels
+            builder.registerTypeAdapter(AudioChannels::class.java,
+                JsonSerializer { src: AudioChannels, typeOfSrc: Type?, context: JsonSerializationContext? ->
+                    JsonPrimitive(src.toString())
+                } as JsonSerializer<AudioChannels>)
+            builder.registerTypeAdapter(AudioChannels::class.java,
+                JsonDeserializer { json: JsonElement, typeOfT: Type?, context: JsonDeserializationContext? ->
+                    AudioChannels.fromValue(json.asString)
+                })
+            return builder
+        }
 }

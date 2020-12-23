@@ -1,48 +1,44 @@
-package dev.mantasboro.trakt5.services;
+package dev.mantasboro.trakt5.services
 
-import dev.mantasboro.trakt5.entities.*;
-import retrofit2.Call;
-import retrofit2.http.Body;
-import retrofit2.http.POST;
+import dev.mantasboro.trakt5.entities.AccessToken
+import dev.mantasboro.trakt5.entities.AccessTokenRefreshRequest
+import dev.mantasboro.trakt5.entities.AccessTokenRequest
+import dev.mantasboro.trakt5.entities.ClientId
+import dev.mantasboro.trakt5.entities.DeviceCode
+import dev.mantasboro.trakt5.entities.DeviceCodeAccessTokenRequest
+import retrofit2.Call
+import retrofit2.http.Body
+import retrofit2.http.POST
 
-public interface Authentication {
+interface Authentication {
+    @POST("oauth/token")
+    fun exchangeCodeForAccessToken(@Body tokenRequest: AccessTokenRequest): Call<AccessToken>
 
     @POST("oauth/token")
-    Call<AccessToken> exchangeCodeForAccessToken(
-            @Body AccessTokenRequest tokenRequest
-    );
-
-    @POST("oauth/token")
-    Call<AccessToken> refreshAccessToken(
-            @Body AccessTokenRefreshRequest refreshRequest
-    );
+    fun refreshAccessToken(@Body refreshRequest: AccessTokenRefreshRequest): Call<AccessToken>
 
     /**
      * Generate new codes to start the device authentication process.
-     * The {@code device_code} and {@code interval} will be used later to poll for the {@code access_token}.
-     * The {@code user_code} and {@code verification_url} should be presented to the user.
+     * The `device_code` and `interval` will be used later to poll for the `access_token`.
+     * The `user_code` and `verification_url` should be presented to the user.
      * @param clientId Application Client Id
      */
     @POST("oauth/device/code")
-    Call<DeviceCode> generateDeviceCode(
-            @Body ClientId clientId
-    );
+    fun generateDeviceCode(@Body clientId: ClientId): Call<DeviceCode>
 
     /**
-     * Use the {@code device_code} and poll at the {@code interval} (in seconds) to check if the user has
-     * authorized you app. Use {@code expires_in} to stop polling after that many seconds, and gracefully
+     * Use the `device_code` and poll at the `interval` (in seconds) to check if the user has
+     * authorized you app. Use `expires_in` to stop polling after that many seconds, and gracefully
      * instruct the user to restart the process.
-     * <b>It is important to poll at the correct interval and also stop polling when expired.</b>
+     * **It is important to poll at the correct interval and also stop polling when expired.**
      *
-     * When you receive a {@code 200} success response, save the {@code access_token} so your app can
-     * authenticate the user in methods that require it. The {@code access_token} is valid for 3 months.
-     * Save and use the {@code refresh_token} to get a new {@code access_token} without asking the user
+     * When you receive a `200` success response, save the `access_token` so your app can
+     * authenticate the user in methods that require it. The `access_token` is valid for 3 months.
+     * Save and use the `refresh_token` to get a new `access_token` without asking the user
      * to re-authenticate.
      * @param deviceCodeAccessTokenRequest Device Code
      */
     @POST("oauth/device/token")
-    Call<AccessToken> exchangeDeviceCodeForAccessToken(
-            @Body DeviceCodeAccessTokenRequest deviceCodeAccessTokenRequest
-    );
-
+    fun exchangeDeviceCodeForAccessToken(@Body deviceCodeAccessTokenRequest: DeviceCodeAccessTokenRequest):
+            Call<AccessToken>
 }

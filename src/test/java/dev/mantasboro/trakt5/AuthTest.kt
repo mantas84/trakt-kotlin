@@ -33,25 +33,25 @@ class AuthTest : BaseTestCase() {
         println("Get an auth code at the following URI: $authUrl")
     }
 
-    @Test
-    @Throws(IOException::class)
-    fun test_getAccessToken() {
-        if (TEST_CLIENT_SECRET.isEmpty() || TEST_AUTH_CODE.isEmpty()) {
-            print("Skipping test_getAccessTokenRequest test, no valid auth data")
-            return
-        }
-        val response = trakt.exchangeCodeForAccessToken(TEST_AUTH_CODE)
-        assertAccessTokenResponse(response)
-    }
-
-    @Test
-    @Throws(IOException::class)
-    fun test_refreshAccessToken() {
-        if (TEST_CLIENT_SECRET.isEmpty() || TEST_REFRESH_TOKEN.isEmpty()) {
-            print("Skipping test_refreshAccessToken test, no valid auth data")
-            return
-        }
-        val response = trakt.refreshAccessToken(trakt.refreshToken())
-        assertAccessTokenResponse(response)
-    }
+//    @Test
+//    @Throws(IOException::class)
+//    fun test_getAccessToken() {
+//        if (TEST_CLIENT_SECRET.isEmpty() || TEST_AUTH_CODE.isEmpty()) {
+//            print("Skipping test_getAccessTokenRequest test, no valid auth data")
+//            return
+//        }
+//        val response = trakt.exchangeCodeForAccessToken(TEST_AUTH_CODE)
+//        assertAccessTokenResponse(response)
+//    }
+//
+//    @Test
+//    @Throws(IOException::class)
+//    fun test_refreshAccessToken() {
+//        if (TEST_CLIENT_SECRET.isEmpty() || TEST_REFRESH_TOKEN.isEmpty()) {
+//            print("Skipping test_refreshAccessToken test, no valid auth data")
+//            return
+//        }
+//        val response = trakt.refreshAccessToken(trakt.refreshToken())
+//        assertAccessTokenResponse(response)
+//    }
 }

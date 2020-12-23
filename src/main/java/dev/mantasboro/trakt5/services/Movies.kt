@@ -1,41 +1,44 @@
-package dev.mantasboro.trakt5.services;
+package dev.mantasboro.trakt5.services
 
-import dev.mantasboro.trakt5.entities.*;
-import dev.mantasboro.trakt5.enums.Extended;
-import retrofit2.Call;
-import retrofit2.http.GET;
-import retrofit2.http.Path;
-import retrofit2.http.Query;
+import dev.mantasboro.trakt5.entities.Comment
+import dev.mantasboro.trakt5.entities.Credits
+import dev.mantasboro.trakt5.entities.Movie
+import dev.mantasboro.trakt5.entities.MovieTranslation
+import dev.mantasboro.trakt5.entities.Ratings
+import dev.mantasboro.trakt5.entities.Stats
+import dev.mantasboro.trakt5.entities.TrendingMovie
+import dev.mantasboro.trakt5.enums.Extended
+import retrofit2.Call
+import retrofit2.http.GET
+import retrofit2.http.Path
+import retrofit2.http.Query
 
-import java.util.List;
-
-public interface Movies {
-
+interface Movies {
     /**
      * Returns the most popular movies. Popularity is calculated using the rating percentage and the number of ratings.
      *
-     * @param page Number of page of results to be returned. If {@code null} defaults to 1.
-     * @param limit Number of results to return per page. If {@code null} defaults to 10.
+     * @param page Number of page of results to be returned. If `null` defaults to 1.
+     * @param limit Number of results to return per page. If `null` defaults to 10.
      */
     @GET("movies/popular")
-    Call<List<Movie>> popular(
-            @Query("page") Integer page,
-            @Query("limit") Integer limit,
-            @Query(value = "extended", encoded = true) Extended extended
-    );
+    fun popular(
+        @Query("page") page: Int?,
+        @Query("limit") limit: Int?,
+        @Query(value = "extended", encoded = true) extended: Extended?
+    ): Call<List<Movie>>
 
     /**
      * Returns all movies being watched right now. Movies with the most users are returned first.
      *
-     * @param page Number of page of results to be returned. If {@code null} defaults to 1.
-     * @param limit Number of results to return per page. If {@code null} defaults to 10.
+     * @param page Number of page of results to be returned. If `null` defaults to 1.
+     * @param limit Number of results to return per page. If `null` defaults to 10.
      */
     @GET("movies/trending")
-    Call<List<TrendingMovie>> trending(
-            @Query("page") Integer page,
-            @Query("limit") Integer limit,
-            @Query(value = "extended", encoded = true) Extended extended
-    );
+    fun trending(
+        @Query("page") page: Int?,
+        @Query("limit") limit: Int?,
+        @Query(value = "extended", encoded = true) extended: Extended?
+    ): Call<List<TrendingMovie>>
 
     /**
      * Returns a single movie's details.
@@ -43,10 +46,10 @@ public interface Movies {
      * @param movieId trakt ID, trakt slug, or IMDB ID. Example: "tron-legacy-2010".
      */
     @GET("movies/{id}")
-    Call<Movie> summary(
-            @Path("id") String movieId,
-            @Query(value = "extended", encoded = true) Extended extended
-    );
+    fun summary(
+        @Path("id") movieId: String,
+        @Query(value = "extended", encoded = true) extended: Extended?
+    ): Call<Movie>
 
     /**
      * Returns all translations for a movie, including language and translated values for title, tagline and overview.
@@ -54,9 +57,9 @@ public interface Movies {
      * @param movieId trakt ID, trakt slug, or IMDB ID. Example: "tron-legacy-2010".
      */
     @GET("movies/{id}/translations")
-    Call<List<MovieTranslation>> translations(
-            @Path("id") String movieId
-    );
+    fun translations(
+        @Path("id") movieId: String
+    ): Call<List<MovieTranslation>>
 
     /**
      * Returns a single translation for a movie. If the translation does not exist, the returned list will be empty.
@@ -65,25 +68,25 @@ public interface Movies {
      * @param language 2-letter language code (ISO 639-1).
      */
     @GET("movies/{id}/translations/{language}")
-    Call<List<MovieTranslation>> translation(
-            @Path("id") String movieId,
-            @Path("language") String language
-    );
+    fun translation(
+        @Path("id") movieId: String,
+        @Path("language") language: String?
+    ): Call<List<MovieTranslation>>
 
     /**
      * Returns all top level comments for a movie. Most recent comments returned first.
      *
      * @param movieId trakt ID, trakt slug, or IMDB ID. Example: "tron-legacy-2010".
-     * @param page Number of page of results to be returned. If {@code null} defaults to 1.
-     * @param limit Number of results to return per page. If {@code null} defaults to 10.
+     * @param page Number of page of results to be returned. If `null` defaults to 1.
+     * @param limit Number of results to return per page. If `null` defaults to 10.
      */
     @GET("movies/{id}/comments")
-    Call<List<Comment>> comments(
-            @Path("id") String movieId,
-            @Query("page") Integer page,
-            @Query("limit") Integer limit,
-            @Query(value = "extended", encoded = true) Extended extended
-    );
+    fun comments(
+        @Path("id") movieId: String,
+        @Query("page") page: Int?,
+        @Query("limit") limit: Int?,
+        @Query(value = "extended", encoded = true) extended: Extended?
+    ): Call<List<Comment>>
 
     /**
      * Returns all actors, directors, writers, and producers for a movie.
@@ -91,9 +94,7 @@ public interface Movies {
      * @param movieId trakt ID, trakt slug, or IMDB ID. Example: "tron-legacy-2010".
      */
     @GET("movies/{id}/people")
-    Call<Credits> people(
-            @Path("id") String movieId
-    );
+    fun people(@Path("id") movieId: String): Call<Credits?>?
 
     /**
      * Returns rating (between 0 and 10) and distribution for a movie.
@@ -101,16 +102,11 @@ public interface Movies {
      * @param movieId trakt ID, trakt slug, or IMDB ID. Example: "tron-legacy-2010".
      */
     @GET("movies/{id}/ratings")
-    Call<Ratings> ratings(
-            @Path("id") String movieId
-    );
+    fun ratings(@Path("id") movieId: String): Call<Ratings>
 
     /**
      * Returns lots of movie stats.
      */
     @GET("movies/{id}/stats")
-    Call<Stats> stats(
-            @Path("id") String movieId
-    );
-
+    fun stats(@Path("id") movieId: String): Call<Stats>
 }

@@ -1,26 +1,27 @@
-package dev.mantasboro.trakt5.services;
+package dev.mantasboro.trakt5.services
 
-import dev.mantasboro.trakt5.entities.*;
-import dev.mantasboro.trakt5.enums.Extended;
-import retrofit2.Call;
-import retrofit2.http.GET;
-import retrofit2.http.Path;
-import retrofit2.http.Query;
+import dev.mantasboro.trakt5.entities.Comment
+import dev.mantasboro.trakt5.entities.Episode
+import dev.mantasboro.trakt5.entities.Ratings
+import dev.mantasboro.trakt5.entities.Season
+import dev.mantasboro.trakt5.entities.Stats
+import dev.mantasboro.trakt5.enums.Extended
+import retrofit2.Call
+import retrofit2.http.GET
+import retrofit2.http.Path
+import retrofit2.http.Query
 
-import java.util.List;
-
-public interface Seasons {
-
+interface Seasons {
     /**
      * Returns all seasons for a show including the number of episodes in each season.
      *
      * @param showId trakt ID, trakt slug, or IMDB ID. Example: "game-of-thrones".
      */
     @GET("shows/{id}/seasons")
-    Call<List<Season>> summary(
-            @Path("id") String showId,
-            @Query(value = "extended", encoded = true) Extended extended
-    );
+    fun summary(
+        @Path("id") showId: String,
+        @Query(value = "extended", encoded = true) extended: Extended?
+    ): Call<List<Season>>
 
     /**
      * Returns all episodes for a specific season of a show.
@@ -29,11 +30,11 @@ public interface Seasons {
      * @param season Season number.
      */
     @GET("shows/{id}/seasons/{season}")
-    Call<List<Episode>> season(
-            @Path("id") String showId,
-            @Path("season") int season,
-            @Query(value = "extended", encoded = true) Extended extended
-    );
+    fun season(
+        @Path("id") showId: String,
+        @Path("season") season: Int,
+        @Query(value = "extended", encoded = true) extended: Extended?
+    ): Call<List<Episode>>
 
     /**
      * Returns all top level comments for a season. Most recent comments returned first.
@@ -42,10 +43,10 @@ public interface Seasons {
      * @param season Season number.
      */
     @GET("shows/{id}/seasons/{season}/comments")
-    Call<List<Comment>> comments(
-            @Path("id") String showId,
-            @Path("season") int season
-    );
+    fun comments(
+        @Path("id") showId: String,
+        @Path("season") season: Int
+    ): Call<List<Comment>>
 
     /**
      * Returns rating (between 0 and 10) and distribution for a season.
@@ -54,18 +55,17 @@ public interface Seasons {
      * @param season Season number.
      */
     @GET("shows/{id}/seasons/{season}/ratings")
-    Call<Ratings> ratings(
-            @Path("id") String showId,
-            @Path("season") int season
-    );
+    fun ratings(
+        @Path("id") showId: String,
+        @Path("season") season: Int
+    ): Call<Ratings>
 
     /**
      * Returns lots of season stats.
      */
     @GET("shows/{id}/seasons/{season}/stats")
-    Call<Stats> stats(
-            @Path("id") String showId,
-            @Path("season") int season
-    );
-
+    fun stats(
+        @Path("id") showId: String?,
+        @Path("season") season: Int
+    ): Call<Stats>
 }

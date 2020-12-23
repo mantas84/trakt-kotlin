@@ -1,94 +1,95 @@
-package dev.mantasboro.trakt5.services;
+package dev.mantasboro.trakt5.services
 
-import dev.mantasboro.trakt5.entities.SearchResult;
-import dev.mantasboro.trakt5.enums.Extended;
-import dev.mantasboro.trakt5.enums.IdType;
-import dev.mantasboro.trakt5.enums.Type;
-import retrofit2.Call;
-import retrofit2.http.GET;
-import retrofit2.http.Path;
-import retrofit2.http.Query;
+import dev.mantasboro.trakt5.entities.SearchResult
+import dev.mantasboro.trakt5.enums.Extended
+import dev.mantasboro.trakt5.enums.IdType
+import dev.mantasboro.trakt5.enums.Type
+import retrofit2.Call
+import retrofit2.http.GET
+import retrofit2.http.Path
+import retrofit2.http.Query
 
-import java.util.List;
-
-public interface Search {
-
+interface Search {
     /**
      * Search all text fields that a media object contains (i.e. title, overview, etc). Results are ordered by the most relevant score.
      *
-     * @see <a href="http://docs.trakt.apiary.io/#reference/search/text-query/get-text-query-results">Search - Text Query</a>
-     * @see <a href="http://docs.trakt.apiary.io/#introduction/filters">Filters</a>
-     * @see <a href="http://docs.trakt.apiary.io/#introduction/extended-info">Extended</a>
-     * @see <a href="http://docs.trakt.apiary.io/#introduction/pagination">Pagination</a>
+     * @see [Search - Text Query](http://docs.trakt.apiary.io/.reference/search/text-query/get-text-query-results)
+     *
+     * @see [Filters](http://docs.trakt.apiary.io/.introduction/filters)
+     *
+     * @see [Extended](http://docs.trakt.apiary.io/.introduction/extended-info)
+     *
+     * @see [Pagination](http://docs.trakt.apiary.io/.introduction/pagination)
      */
     @GET("search/{type}")
-    Call<List<SearchResult>> textQuery(
-            @Path("type") Type type,
-            @Query("query") String query,
-            @Query("years") String years,
-            @Query("genres") String genres,
-            @Query("languages") String languages,
-            @Query("countries") String countries,
-            @Query("runtimes") String runtimes,
-            @Query("ratings") String ratings,
-            @Query("extended") Extended extended,
-            @Query("page") Integer page,
-            @Query("limit") Integer limit
-    );
+    fun textQuery(
+        @Path("type") type: Type,
+        @Query("query") query: String?,
+        @Query("years") years: String?,
+        @Query("genres") genres: String?,
+        @Query("languages") languages: String?,
+        @Query("countries") countries: String?,
+        @Query("runtimes") runtimes: String?,
+        @Query("ratings") ratings: String?,
+        @Query("extended") extended: Extended?,
+        @Query("page") page: Int?,
+        @Query("limit") limit: Int?
+    ): Call<List<SearchResult>>
 
     /**
-     * @see #textQuery textQuery
+     * @see .textQuery textQuery
      */
     @GET("search/movie")
-    Call<List<SearchResult>> textQueryMovie(
-            @Query("query") String query,
-            @Query("years") String years,
-            @Query("genres") String genres,
-            @Query("languages") String languages,
-            @Query("countries") String countries,
-            @Query("runtimes") String runtimes,
-            @Query("ratings") String ratings,
-            @Query("certifications") String certifications,
-            @Query("extended") Extended extended,
-            @Query("page") Integer page,
-            @Query("limit") Integer limit
-    );
+    fun textQueryMovie(
+        @Query("query") query: String?,
+        @Query("years") years: String?,
+        @Query("genres") genres: String?,
+        @Query("languages") languages: String?,
+        @Query("countries") countries: String?,
+        @Query("runtimes") runtimes: String?,
+        @Query("ratings") ratings: String?,
+        @Query("certifications") certifications: String?,
+        @Query("extended") extended: Extended?,
+        @Query("page") page: Int?,
+        @Query("limit") limit: Int?
+    ): Call<List<SearchResult>>
 
     /**
-     * @see #textQuery textQuery
+     * @see .textQuery textQuery
      */
     @GET("search/show")
-    Call<List<SearchResult>> textQueryShow(
-            @Query("query") String query,
-            @Query("years") String years,
-            @Query("genres") String genres,
-            @Query("languages") String languages,
-            @Query("countries") String countries,
-            @Query("runtimes") String runtimes,
-            @Query("ratings") String ratings,
-            @Query("certifications") String certifications,
-            @Query("networks") String networks,
-            @Query("status") String status,
-            @Query("extended") Extended extended,
-            @Query("page") Integer page,
-            @Query("limit") Integer limit
-    );
+    fun textQueryShow(
+        @Query("query") query: String?,
+        @Query("years") years: String?,
+        @Query("genres") genres: String?,
+        @Query("languages") languages: String?,
+        @Query("countries") countries: String?,
+        @Query("runtimes") runtimes: String?,
+        @Query("ratings") ratings: String?,
+        @Query("certifications") certifications: String?,
+        @Query("networks") networks: String?,
+        @Query("status") status: String?,
+        @Query("extended") extended: Extended?,
+        @Query("page") page: Int?,
+        @Query("limit") limit: Int?
+    ): Call<List<SearchResult>>
 
     /**
      * Lookup items by their Trakt, IMDB, TMDB, TVDB, or TVRage ID.
      *
-     * @see <a href="http://docs.trakt.apiary.io/#reference/search/id-lookup/get-id-lookup-results">Search - ID Lookup</a>
-     * @see <a href="http://docs.trakt.apiary.io/#introduction/extended-info">Extended</a>
-     * @see <a href="http://docs.trakt.apiary.io/#introduction/pagination">Pagination</a>
+     * @see [Search - ID Lookup](http://docs.trakt.apiary.io/.reference/search/id-lookup/get-id-lookup-results)
+     *
+     * @see [Extended](http://docs.trakt.apiary.io/.introduction/extended-info)
+     *
+     * @see [Pagination](http://docs.trakt.apiary.io/.introduction/pagination)
      */
     @GET("search/{id_type}/{id}")
-    Call<List<SearchResult>> idLookup(
-            @Path(value = "id_type", encoded = true) IdType idType,
-            @Path(value = "id", encoded = true) String id,
-            @Query("type") Type type,
-            @Query("extended") Extended extended,
-            @Query("page") Integer page,
-            @Query("limit") Integer limit
-    );
-
+    fun idLookup(
+        @Path(value = "id_type", encoded = true) idType: IdType?,
+        @Path(value = "id", encoded = true) id: String?,
+        @Query("type") type: Type?,
+        @Query("extended") extended: Extended?,
+        @Query("page") page: Int?,
+        @Query("limit") limit: Int?
+    ): Call<List<SearchResult>>
 }

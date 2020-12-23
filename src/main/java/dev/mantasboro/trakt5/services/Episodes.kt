@@ -1,19 +1,16 @@
-package dev.mantasboro.trakt5.services;
+package dev.mantasboro.trakt5.services
 
-import dev.mantasboro.trakt5.entities.Comment;
-import dev.mantasboro.trakt5.entities.Episode;
-import dev.mantasboro.trakt5.entities.Ratings;
-import dev.mantasboro.trakt5.entities.Stats;
-import dev.mantasboro.trakt5.enums.Extended;
-import retrofit2.Call;
-import retrofit2.http.GET;
-import retrofit2.http.Path;
-import retrofit2.http.Query;
+import dev.mantasboro.trakt5.entities.Comment
+import dev.mantasboro.trakt5.entities.Episode
+import dev.mantasboro.trakt5.entities.Ratings
+import dev.mantasboro.trakt5.entities.Stats
+import dev.mantasboro.trakt5.enums.Extended
+import retrofit2.Call
+import retrofit2.http.GET
+import retrofit2.http.Path
+import retrofit2.http.Query
 
-import java.util.List;
-
-public interface Episodes {
-
+interface Episodes {
     /**
      * Returns a single episode's details.
      *
@@ -22,12 +19,12 @@ public interface Episodes {
      * @param episode Episode number.
      */
     @GET("shows/{id}/seasons/{season}/episodes/{episode}")
-    Call<Episode> summary(
-            @Path("id") String showId,
-            @Path("season") int season,
-            @Path("episode") int episode,
-            @Query(value = "extended", encoded = true) Extended extended
-    );
+    fun summary(
+        @Path("id") showId: String,
+        @Path("season") season: Int,
+        @Path("episode") episode: Int,
+        @Query(value = "extended", encoded = true) extended: Extended?
+    ): Call<Episode>
 
     /**
      * Returns all top level comments for an episode. Most recent comments returned first.
@@ -37,14 +34,14 @@ public interface Episodes {
      * @param episode Episode number.
      */
     @GET("shows/{id}/seasons/{season}/episodes/{episode}/comments")
-    Call<List<Comment>> comments(
-            @Path("id") String showId,
-            @Path("season") int season,
-            @Path("episode") int episode,
-            @Query("page") Integer page,
-            @Query("limit") Integer limit,
-            @Query(value = "extended", encoded = true) Extended extended
-    );
+    fun comments(
+        @Path("id") showId: String,
+        @Path("season") season: Int,
+        @Path("episode") episode: Int,
+        @Query("page") page: Int?,
+        @Query("limit") limit: Int?,
+        @Query(value = "extended", encoded = true) extended: Extended?
+    ): Call<List<Comment>>
 
     /**
      * Returns rating (between 0 and 10) and distribution for an episode.
@@ -54,20 +51,19 @@ public interface Episodes {
      * @param episode Episode number.
      */
     @GET("shows/{id}/seasons/{season}/episodes/{episode}/ratings")
-    Call<Ratings> ratings(
-            @Path("id") String showId,
-            @Path("season") int season,
-            @Path("episode") int episode
-    );
+    fun ratings(
+        @Path("id") showId: String,
+        @Path("season") season: Int,
+        @Path("episode") episode: Int
+    ): Call<Ratings>
 
     /**
      * Returns lots of episode stats.
      */
     @GET("shows/{id}/seasons/{season}/episodes/{episode}/stats")
-    Call<Stats> stats(
-            @Path("id") String showId,
-            @Path("season") int season,
-            @Path("episode") int episode
-    );
-
+    fun stats(
+        @Path("id") showId: String,
+        @Path("season") season: Int,
+        @Path("episode") episode: Int
+    ): Call<Stats>
 }

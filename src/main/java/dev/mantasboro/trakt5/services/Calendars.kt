@@ -1,58 +1,55 @@
-package dev.mantasboro.trakt5.services;
+package dev.mantasboro.trakt5.services
 
-import dev.mantasboro.trakt5.entities.CalendarMovieEntry;
-import dev.mantasboro.trakt5.entities.CalendarShowEntry;
-import retrofit2.Call;
-import retrofit2.http.GET;
-import retrofit2.http.Path;
+import dev.mantasboro.trakt5.entities.CalendarMovieEntry
+import dev.mantasboro.trakt5.entities.CalendarShowEntry
+import retrofit2.Call
+import retrofit2.http.GET
+import retrofit2.http.Path
 
-import java.util.List;
-
-public interface Calendars {
-
+interface Calendars {
     /**
-     * <b>OAuth Required</b>
+     * **OAuth Required**
      *
-     * @see #shows(String, int)
+     * @see .shows
      */
     @GET("calendars/my/shows/{startdate}/{days}")
-    Call<List<CalendarShowEntry>> myShows(
-            @Path("startdate") String startDate,
-            @Path("days") int days
-    );
+    fun myShows(
+        @Path("startdate") startDate: String,
+        @Path("days") days: Int
+    ): Call<List<CalendarShowEntry>>
 
     /**
-     * <b>OAuth Required</b>
+     * **OAuth Required**
      *
-     * @see #newShows(String, int)
+     * @see .newShows
      */
     @GET("calendars/my/shows/new/{startdate}/{days}")
-    Call<List<CalendarShowEntry>> myNewShows(
-            @Path("startdate") String startDate,
-            @Path("days") int days
-    );
+    fun myNewShows(
+        @Path("startdate") startDate: String,
+        @Path("days") days: Int
+    ): Call<List<CalendarShowEntry>>
 
     /**
-     * <b>OAuth Required</b>
+     * **OAuth Required**
      *
-     * @see #seasonPremieres(String, int)
+     * @see .seasonPremieres
      */
     @GET("calendars/my/shows/premieres/{startdate}/{days}")
-    Call<List<CalendarShowEntry>> mySeasonPremieres(
-            @Path("startdate") String startDate,
-            @Path("days") int days
-    );
+    fun mySeasonPremieres(
+        @Path("startdate") startDate: String,
+        @Path("days") days: Int
+    ): Call<List<CalendarShowEntry>>
 
     /**
-     * <b>OAuth Required</b>
+     * **OAuth Required**
      *
-     * @see #movies(String, int)
+     * @see .movies
      */
     @GET("calendars/my/movies/{startdate}/{days}")
-    Call<List<CalendarMovieEntry>> myMovies(
-            @Path("startdate") String startDate,
-            @Path("days") int days
-    );
+    fun myMovies(
+        @Path("startdate") startDate: String,
+        @Path("days") days: Int
+    ): Call<List<CalendarMovieEntry>>
 
     /**
      * Returns all shows airing during the time period specified.
@@ -61,10 +58,10 @@ public interface Calendars {
      * @param days Number of days to display. Example: 7.
      */
     @GET("calendars/all/shows/{startdate}/{days}")
-    Call<List<CalendarShowEntry>> shows(
-            @Path("startdate") String startDate,
-            @Path("days") int days
-    );
+    fun shows(
+        @Path("startdate") startDate: String,
+        @Path("days") days: Int
+    ): Call<List<CalendarShowEntry>>
 
     /**
      * Returns all new show premieres (season 1, episode 1) airing during the time period specified.
@@ -73,10 +70,10 @@ public interface Calendars {
      * @param days Number of days to display. Example: 7.
      */
     @GET("calendars/all/shows/new/{startdate}/{days}")
-    Call<List<CalendarShowEntry>> newShows(
-            @Path("startdate") String startDate,
-            @Path("days") int days
-    );
+    fun newShows(
+        @Path("startdate") startDate: String,
+        @Path("days") days: Int
+    ): Call<List<CalendarShowEntry>>
 
     /**
      * Returns all show premieres (any season, episode 1) airing during the time period specified.
@@ -85,10 +82,10 @@ public interface Calendars {
      * @param days Number of days to display. Example: 7.
      */
     @GET("calendars/all/shows/premieres/{startdate}/{days}")
-    Call<List<CalendarShowEntry>> seasonPremieres(
-            @Path("startdate") String startDate,
-            @Path("days") int days
-    );
+    fun seasonPremieres(
+        @Path("startdate") startDate: String,
+        @Path("days") days: Int
+    ): Call<List<CalendarShowEntry>>
 
     /**
      * Returns all movies with a release date during the time period specified.
@@ -97,9 +94,8 @@ public interface Calendars {
      * @param days Number of days to display. Example: 7.
      */
     @GET("calendars/all/movies/{startdate}/{days}")
-    Call<List<CalendarMovieEntry>> movies(
-            @Path("startdate") String startDate,
-            @Path("days") int days
-    );
-
+    fun movies(
+        @Path("startdate") startDate: String,
+        @Path("days") days: Int
+    ): Call<List<CalendarMovieEntry>>
 }

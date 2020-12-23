@@ -1,425 +1,472 @@
-package dev.mantasboro.trakt5.services;
+package dev.mantasboro.trakt5.services
 
-import dev.mantasboro.trakt5.entities.*;
-import dev.mantasboro.trakt5.enums.Extended;
-import dev.mantasboro.trakt5.enums.HistoryType;
-import dev.mantasboro.trakt5.enums.RatingsFilter;
-import org.threeten.bp.OffsetDateTime;
-import retrofit2.Call;
-import retrofit2.http.Body;
-import retrofit2.http.DELETE;
-import retrofit2.http.GET;
-import retrofit2.http.POST;
-import retrofit2.http.PUT;
-import retrofit2.http.Path;
-import retrofit2.http.Query;
+import dev.mantasboro.trakt5.entities.BaseMovie
+import dev.mantasboro.trakt5.entities.BaseShow
+import dev.mantasboro.trakt5.entities.Followed
+import dev.mantasboro.trakt5.entities.Follower
+import dev.mantasboro.trakt5.entities.Friend
+import dev.mantasboro.trakt5.entities.HistoryEntry
+import dev.mantasboro.trakt5.entities.ListEntry
+import dev.mantasboro.trakt5.entities.ListItemRank
+import dev.mantasboro.trakt5.entities.ListReorderResponse
+import dev.mantasboro.trakt5.entities.RatedEpisode
+import dev.mantasboro.trakt5.entities.RatedMovie
+import dev.mantasboro.trakt5.entities.RatedSeason
+import dev.mantasboro.trakt5.entities.RatedShow
+import dev.mantasboro.trakt5.entities.Settings
+import dev.mantasboro.trakt5.entities.SyncItems
+import dev.mantasboro.trakt5.entities.SyncResponse
+import dev.mantasboro.trakt5.entities.TraktList
+import dev.mantasboro.trakt5.entities.User
+import dev.mantasboro.trakt5.entities.UserSlug
+import dev.mantasboro.trakt5.entities.WatchlistedEpisode
+import dev.mantasboro.trakt5.entities.WatchlistedSeason
+import dev.mantasboro.trakt5.enums.Extended
+import dev.mantasboro.trakt5.enums.HistoryType
+import dev.mantasboro.trakt5.enums.RatingsFilter
+import org.threeten.bp.OffsetDateTime
+import retrofit2.Call
+import retrofit2.http.Body
+import retrofit2.http.DELETE
+import retrofit2.http.GET
+import retrofit2.http.POST
+import retrofit2.http.PUT
+import retrofit2.http.Path
+import retrofit2.http.Query
 
-import java.util.List;
-
-public interface Users {
-
+interface Users {
     /**
-     * <b>OAuth Required</b>
+     * **OAuth Required**
      *
-     * <p> Get the user's settings so you can align your app's experience with what they're used to on the trakt
+     *
+     *  Get the user's settings so you can align your app's experience with what they're used to on the trakt
      * website.
      */
     @GET("users/settings")
-    Call<Settings> settings();
+    fun settings(): Call<Settings?>?
 
     /**
-     * <b>OAuth Optional</b>
+     * **OAuth Optional**
      *
-     * <p> Get a user's profile information. If the user is private, info will only be returned if you send OAuth and
+     *
+     *  Get a user's profile information. If the user is private, info will only be returned if you send OAuth and
      * are either that user or an approved follower.
      *
      * @param userSlug Example: "sean".
      */
     @GET("users/{username}")
-    Call<User> profile(
-            @Path("username") UserSlug userSlug,
-            @Query(value = "extended", encoded = true) Extended extended
-    );
+    fun profile(
+        @Path("username") userSlug: UserSlug?,
+        @Query(value = "extended", encoded = true) extended: Extended?
+    ): Call<User?>?
 
     /**
-     * <b>OAuth Optional</b>
+     * **OAuth Optional**
      *
-     * <p> Get all collected movies in a user's collection. A collected item indicates availability to watch digitally
+     *
+     *  Get all collected movies in a user's collection. A collected item indicates availability to watch digitally
      * or on physical media.
      *
      * @param userSlug Example: "sean".
      */
     @GET("users/{username}/collection/movies")
-    Call<List<BaseMovie>> collectionMovies(
-            @Path("username") UserSlug userSlug,
-            @Query(value = "extended", encoded = true) Extended extended
-    );
+    fun collectionMovies(
+        @Path("username") userSlug: UserSlug?,
+        @Query(value = "extended", encoded = true) extended: Extended?
+    ): Call<List<BaseMovie?>?>?
 
     /**
-     * <b>OAuth Optional</b>
+     * **OAuth Optional**
      *
-     * <p> Get all collected shows in a user's collection. A collected item indicates availability to watch digitally or
+     *
+     *  Get all collected shows in a user's collection. A collected item indicates availability to watch digitally or
      * on physical media.
      *
      * @param userSlug Example: "sean".
      */
     @GET("users/{username}/collection/shows")
-    Call<List<BaseShow>> collectionShows(
-            @Path("username") UserSlug userSlug,
-            @Query(value = "extended", encoded = true) Extended extended
-    );
+    fun collectionShows(
+        @Path("username") userSlug: UserSlug?,
+        @Query(value = "extended", encoded = true) extended: Extended?
+    ): Call<List<BaseShow?>?>?
 
     /**
-     * <b>OAuth Optional</b>
+     * **OAuth Optional**
      *
-     * <p> Returns all custom lists for a user.
+     *
+     *  Returns all custom lists for a user.
      */
     @GET("users/{username}/lists")
-    Call<List<TraktList>> lists(
-            @Path("username") UserSlug userSlug
-    );
+    fun lists(
+        @Path("username") userSlug: UserSlug?
+    ): Call<List<TraktList?>?>?
 
     /**
-     * <b>OAuth Required</b>
+     * **OAuth Required**
      *
-     * <p> Create a new custom list. The name is the only required field, but the other info is recommended to ask for.
+     *
+     *  Create a new custom list. The name is the only required field, but the other info is recommended to ask for.
      */
     @POST("users/{username}/lists")
-    Call<TraktList> createList(
-            @Path("username") UserSlug userSlug,
-            @Body TraktList list
-    );
+    fun createList(
+        @Path("username") userSlug: UserSlug?,
+        @Body list: TraktList?
+    ): Call<TraktList?>?
 
     /**
-     * <b>OAuth Required</b>
+     * **OAuth Required**
      *
-     * <p> Update a custom list by sending 1 or more parameters. If you update the list name, the original slug will
+     *
+     *  Update a custom list by sending 1 or more parameters. If you update the list name, the original slug will
      * still be retained so existing references to this list won't break.
      */
     @PUT("users/{username}/lists/{id}")
-    Call<TraktList> updateList(
-            @Path("username") UserSlug userSlug,
-            @Path("id") String id,
-            @Body TraktList list
-    );
+    fun updateList(
+        @Path("username") userSlug: UserSlug?,
+        @Path("id") id: String?,
+        @Body list: TraktList?
+    ): Call<TraktList?>?
 
     /**
-     * <b>OAuth Required</b>
+     * **OAuth Required**
      *
-     * <p> Remove a custom list and all items it contains.
+     *
+     *  Remove a custom list and all items it contains.
      */
     @DELETE("users/{username}/lists/{id}")
-    Call<Void> deleteList(
-            @Path("username") UserSlug userSlug,
-            @Path("id") String id
-    );
+    fun deleteList(
+        @Path("username") userSlug: UserSlug?,
+        @Path("id") id: String?
+    ): Call<Void?>?
 
     /**
-     * <b>OAuth Optional</b>
+     * **OAuth Optional**
      *
-     * <p> Get all items on a custom list. Items can be movies, shows, seasons, episodes, or people.
+     *
+     *  Get all items on a custom list. Items can be movies, shows, seasons, episodes, or people.
      */
     @GET("users/{username}/lists/{id}/items")
-    Call<List<ListEntry>> listItems(
-            @Path("username") UserSlug userSlug,
-            @Path("id") String id,
-            @Query(value = "extended", encoded = true) Extended extended
-    );
+    fun listItems(
+        @Path("username") userSlug: UserSlug?,
+        @Path("id") id: String?,
+        @Query(value = "extended", encoded = true) extended: Extended?
+    ): Call<List<ListEntry?>?>?
 
     /**
-     * <b>OAuth Required</b>
+     * **OAuth Required**
      *
-     * <p> Add one or more items to a custom list. Items can be movies, shows, seasons, episodes, or people.
+     *
+     *  Add one or more items to a custom list. Items can be movies, shows, seasons, episodes, or people.
      */
     @POST("users/{username}/lists/{id}/items")
-    Call<SyncResponse> addListItems(
-            @Path("username") UserSlug userSlug,
-            @Path("id") String id,
-            @Body SyncItems items
-    );
+    fun addListItems(
+        @Path("username") userSlug: UserSlug?,
+        @Path("id") id: String?,
+        @Body items: SyncItems?
+    ): Call<SyncResponse?>?
 
     /**
-     * <b>OAuth Required</b>
+     * **OAuth Required**
      *
-     * <p> Remove one or more items from a custom list.
+     *
+     *  Remove one or more items from a custom list.
      */
     @POST("users/{username}/lists/{id}/items/remove")
-    Call<SyncResponse> deleteListItems(
-            @Path("username") UserSlug userSlug,
-            @Path("id") String id,
-            @Body SyncItems items
-    );
+    fun deleteListItems(
+        @Path("username") userSlug: UserSlug?,
+        @Path("id") id: String?,
+        @Body items: SyncItems?
+    ): Call<SyncResponse?>?
 
     /**
-     * <b>OAuth Required</b>
+     * **OAuth Required**
      *
-     * <p> Reorder all items on a list by sending the updated rank of list item ids.
+     *
+     *  Reorder all items on a list by sending the updated rank of list item ids.
      */
     @POST("users/{username}/lists/{id}/items/reorder")
-    Call<ListReorderResponse> reorderListItems(
-            @Path("username") UserSlug userSlug,
-            @Path("id") String id,
-            @Body ListItemRank rank
-    );
+    fun reorderListItems(
+        @Path("username") userSlug: UserSlug?,
+        @Path("id") id: String?,
+        @Body rank: ListItemRank?
+    ): Call<ListReorderResponse?>?
 
     /**
-     * <b>OAuth Required</b>
+     * **OAuth Required**
      *
-     * <p>If the user has a private profile, the follow request will require approval (approved_at will be null). If a
+     *
+     * If the user has a private profile, the follow request will require approval (approved_at will be null). If a
      * user is public, they will be followed immediately (approved_at will have a date).
      *
-     * <p>Note: If this user is already being followed, a 409 HTTP status code will returned.
+     *
+     * Note: If this user is already being followed, a 409 HTTP status code will returned.
      */
     @POST("users/{username}/follow")
-    Call<Followed> follow(
-            @Path("username") UserSlug userSlug
-    );
+    fun follow(
+        @Path("username") userSlug: UserSlug?
+    ): Call<Followed?>?
 
     /**
-     * <b>OAuth Required</b>
+     * **OAuth Required**
      *
-     * <p>Unfollow someone you already follow.
+     *
+     * Unfollow someone you already follow.
      */
     @DELETE("users/{username}/follow")
-    Call<Void> unfollow(
-            @Path("username") UserSlug userSlug
-    );
+    fun unfollow(
+        @Path("username") userSlug: UserSlug?
+    ): Call<Void?>?
 
     /**
-     * <b>OAuth Optional</b>
+     * **OAuth Optional**
      *
-     * <p>Returns all followers including when the relationship began.
+     *
+     * Returns all followers including when the relationship began.
      */
     @GET("users/{username}/followers")
-    Call<List<Follower>> followers(
-            @Path("username") UserSlug userSlug,
-            @Query(value = "extended", encoded = true) Extended extended
-    );
+    fun followers(
+        @Path("username") userSlug: UserSlug?,
+        @Query(value = "extended", encoded = true) extended: Extended?
+    ): Call<List<Follower?>?>?
 
     /**
-     * <b>OAuth Optional</b>
+     * **OAuth Optional**
      *
-     * <p>Returns all user's they follow including when the relationship began.
+     *
+     * Returns all user's they follow including when the relationship began.
      */
     @GET("users/{username}/following")
-    Call<List<Follower>> following(
-            @Path("username") UserSlug userSlug,
-            @Query(value = "extended", encoded = true) Extended extended
-    );
+    fun following(
+        @Path("username") userSlug: UserSlug?,
+        @Query(value = "extended", encoded = true) extended: Extended?
+    ): Call<List<Follower?>?>?
 
     /**
-     * <b>OAuth Optional</b>
+     * **OAuth Optional**
      *
-     * <p>Returns all friends for a user including when the relationship began. Friendship is a 2 way relationship where
+     *
+     * Returns all friends for a user including when the relationship began. Friendship is a 2 way relationship where
      * each user follows the other.
      */
     @GET("users/{username}/friends")
-    Call<List<Friend>> friends(
-            @Path("username") UserSlug userSlug,
-            @Query(value = "extended", encoded = true) Extended extended
-    );
+    fun friends(
+        @Path("username") userSlug: UserSlug?,
+        @Query(value = "extended", encoded = true) extended: Extended?
+    ): Call<List<Friend?>?>?
 
     /**
-     * <b>OAuth Optional</b>
+     * **OAuth Optional**
      *
-     * <p>Returns movies and episodes that a user has watched, sorted by most recent.
      *
-     * <p>The {@code id} uniquely identifies each history event and can be used to remove events individually using the
-     * {@code POST /sync/history/remove method}. The action will be set to {@code scrobble}, {@code checkin}, or {@code
-     * watch}.
+     * Returns movies and episodes that a user has watched, sorted by most recent.
+     *
+     *
+     * The `id` uniquely identifies each history event and can be used to remove events individually using the
+     * `POST /sync/history/remove method`. The action will be set to `scrobble`, `checkin`, or `watch`.
      *
      * @param userSlug Example: "sean".
      */
     @GET("users/{username}/history")
-    Call<List<HistoryEntry>> history(
-            @Path("username") UserSlug userSlug,
-            @Query("page") Integer page,
-            @Query("limit") Integer limit,
-            @Query(value = "extended", encoded = true) Extended extended,
-            @Query("start_at") OffsetDateTime startAt,
-            @Query("end_at") OffsetDateTime endAt
-    );
+    fun history(
+        @Path("username") userSlug: UserSlug?,
+        @Query("page") page: Int?,
+        @Query("limit") limit: Int?,
+        @Query(value = "extended", encoded = true) extended: Extended?,
+        @Query("start_at") startAt: OffsetDateTime?,
+        @Query("end_at") endAt: OffsetDateTime?
+    ): Call<List<HistoryEntry?>?>?
 
     /**
-     * <b>OAuth Optional</b>
+     * **OAuth Optional**
      *
-     * <p>Returns movies or episodes that a user has watched, sorted by most recent.
      *
-     * <p>The {@code id} uniquely identifies each history event and can be used to remove events individually using the
-     * {@code POST /sync/history/remove method}. The action will be set to {@code scrobble}, {@code checkin}, or {@code
-     * watch}.
+     * Returns movies or episodes that a user has watched, sorted by most recent.
+     *
+     *
+     * The `id` uniquely identifies each history event and can be used to remove events individually using the
+     * `POST /sync/history/remove method`. The action will be set to `scrobble`, `checkin`, or `watch`.
      *
      * @param userSlug Example: "sean".
      */
     @GET("users/{username}/history/{type}")
-    Call<List<HistoryEntry>> history(
-            @Path("username") UserSlug userSlug,
-            @Path("type") HistoryType type,
-            @Query("page") Integer page,
-            @Query("limit") Integer limit,
-            @Query(value = "extended", encoded = true) Extended extended,
-            @Query("start_at") OffsetDateTime startAt,
-            @Query("end_at") OffsetDateTime endAt
-    );
+    fun history(
+        @Path("username") userSlug: UserSlug?,
+        @Path("type") type: HistoryType?,
+        @Query("page") page: Int?,
+        @Query("limit") limit: Int?,
+        @Query(value = "extended", encoded = true) extended: Extended?,
+        @Query("start_at") startAt: OffsetDateTime?,
+        @Query("end_at") endAt: OffsetDateTime?
+    ): Call<List<HistoryEntry?>?>?
 
     /**
-     * <b>OAuth Optional</b>
+     * **OAuth Optional**
      *
-     * <p>Returns the history for just the specified item. For example, {@code /history/movies/12601} would return all
-     * watches for TRON: Legacy and {@code /history/shows/1388} would return all watched episodes for Breaking Bad. If
-     * an invalid {@code id} is sent, a 404 error will be returned. If the {@code id} is valid, but there is no history,
+     *
+     * Returns the history for just the specified item. For example, `/history/movies/12601` would return all
+     * watches for TRON: Legacy and `/history/shows/1388` would return all watched episodes for Breaking Bad. If
+     * an invalid `id` is sent, a 404 error will be returned. If the `id` is valid, but there is no history,
      * an empty array will be returned.
      *
-     * <p>The {@code id} uniquely identifies each history event and can be used to remove events individually using the
-     * {@code POST /sync/history/remove method}. The action will be set to {@code scrobble}, {@code checkin}, or {@code
-     * watch}.
+     *
+     * The `id` uniquely identifies each history event and can be used to remove events individually using the
+     * `POST /sync/history/remove method`. The action will be set to `scrobble`, `checkin`, or `watch`.
      *
      * @param userSlug Example: "sean".
      */
     @GET("users/{username}/history/{type}/{id}")
-    Call<List<HistoryEntry>> history(
-            @Path("username") UserSlug userSlug,
-            @Path("type") HistoryType type,
-            @Path("id") int id,
-            @Query("page") Integer page,
-            @Query("limit") Integer limit,
-            @Query(value = "extended", encoded = true) Extended extended,
-            @Query("start_at") OffsetDateTime startAt,
-            @Query("end_at") OffsetDateTime endAt
-    );
+    fun history(
+        @Path("username") userSlug: UserSlug?,
+        @Path("type") type: HistoryType?,
+        @Path("id") id: Int,
+        @Query("page") page: Int?,
+        @Query("limit") limit: Int?,
+        @Query(value = "extended", encoded = true) extended: Extended?,
+        @Query("start_at") startAt: OffsetDateTime?,
+        @Query("end_at") endAt: OffsetDateTime?
+    ): Call<List<HistoryEntry?>?>?
 
     /**
-     * <b>OAuth Optional</b>
+     * **OAuth Optional**
      *
-     * <p> Get a user's ratings filtered by movies. You can filter for a specific rating between 1 and 10.
+     *
+     *  Get a user's ratings filtered by movies. You can filter for a specific rating between 1 and 10.
      *
      * @param userSlug Example: "sean".
      * @param filter Filter for a specific rating.
      */
     @GET("users/{username}/ratings/movies{rating}")
-    Call<List<RatedMovie>> ratingsMovies(
-            @Path("username") UserSlug userSlug,
-            @Path(value = "rating", encoded = true) RatingsFilter filter,
-            @Query(value = "extended", encoded = true) Extended extended
-    );
+    fun ratingsMovies(
+        @Path("username") userSlug: UserSlug?,
+        @Path(value = "rating", encoded = true) filter: RatingsFilter?,
+        @Query(value = "extended", encoded = true) extended: Extended?
+    ): Call<List<RatedMovie?>?>?
 
     /**
-     * <b>OAuth Optional</b>
+     * **OAuth Optional**
      *
-     * <p> Get a user's ratings filtered by shows. You can filter for a specific rating between 1 and 10.
+     *
+     *  Get a user's ratings filtered by shows. You can filter for a specific rating between 1 and 10.
      *
      * @param userSlug Example: "sean".
      * @param filter Filter for a specific rating.
      */
     @GET("users/{username}/ratings/shows{rating}")
-    Call<List<RatedShow>> ratingsShows(
-            @Path("username") UserSlug userSlug,
-            @Path(value = "rating", encoded = true) RatingsFilter filter,
-            @Query(value = "extended", encoded = true) Extended extended
-    );
+    fun ratingsShows(
+        @Path("username") userSlug: UserSlug?,
+        @Path(value = "rating", encoded = true) filter: RatingsFilter?,
+        @Query(value = "extended", encoded = true) extended: Extended?
+    ): Call<List<RatedShow?>?>?
 
     /**
-     * <b>OAuth Optional</b>
+     * **OAuth Optional**
      *
-     * <p> Get a user's ratings filtered by seasons. You can filter for a specific rating between 1 and 10.
+     *
+     *  Get a user's ratings filtered by seasons. You can filter for a specific rating between 1 and 10.
      *
      * @param userSlug Example: "sean".
      * @param filter Filter for a specific rating.
      */
     @GET("users/{username}/ratings/seasons{rating}")
-    Call<List<RatedSeason>> ratingsSeasons(
-            @Path("username") UserSlug userSlug,
-            @Path(value = "rating", encoded = true) RatingsFilter filter,
-            @Query(value = "extended", encoded = true) Extended extended
-    );
+    fun ratingsSeasons(
+        @Path("username") userSlug: UserSlug?,
+        @Path(value = "rating", encoded = true) filter: RatingsFilter?,
+        @Query(value = "extended", encoded = true) extended: Extended?
+    ): Call<List<RatedSeason?>?>?
 
     /**
-     * <b>OAuth Optional</b>
+     * **OAuth Optional**
      *
-     * <p> Get a user's ratings filtered by episodes. You can filter for a specific rating between 1 and 10.
+     *
+     *  Get a user's ratings filtered by episodes. You can filter for a specific rating between 1 and 10.
      *
      * @param userSlug Example: "sean".
      * @param filter Filter for a specific rating.
      */
     @GET("users/{username}/ratings/episodes{rating}")
-    Call<List<RatedEpisode>> ratingsEpisodes(
-            @Path("username") UserSlug userSlug,
-            @Path(value = "rating", encoded = true) RatingsFilter filter,
-            @Query(value = "extended", encoded = true) Extended extended
-    );
+    fun ratingsEpisodes(
+        @Path("username") userSlug: UserSlug?,
+        @Path(value = "rating", encoded = true) filter: RatingsFilter?,
+        @Query(value = "extended", encoded = true) extended: Extended?
+    ): Call<List<RatedEpisode?>?>?
 
     /**
-     * <b>OAuth Optional</b>
+     * **OAuth Optional**
      *
-     * <p>Returns all items in a user's watchlist filtered by movies. When an item is watched, it will be automatically
+     *
+     * Returns all items in a user's watchlist filtered by movies. When an item is watched, it will be automatically
      * removed from the watchlist. To track what the user is actively watching, use the progress APIs.
      */
     @GET("users/{username}/watchlist/movies")
-    Call<List<BaseMovie>> watchlistMovies(
-            @Path("username") UserSlug userSlug,
-            @Query(value = "extended", encoded = true) Extended extended
-    );
+    fun watchlistMovies(
+        @Path("username") userSlug: UserSlug?,
+        @Query(value = "extended", encoded = true) extended: Extended?
+    ): Call<List<BaseMovie?>?>?
 
     /**
-     * <b>OAuth Optional</b>
+     * **OAuth Optional**
      *
-     * <p>Returns all items in a user's watchlist filtered by shows. When an item is watched, it will be automatically
+     *
+     * Returns all items in a user's watchlist filtered by shows. When an item is watched, it will be automatically
      * removed from the watchlist. To track what the user is actively watching, use the progress APIs.
      */
     @GET("users/{username}/watchlist/shows")
-    Call<List<BaseShow>> watchlistShows(
-            @Path("username") UserSlug userSlug,
-            @Query(value = "extended", encoded = true) Extended extended
-    );
+    fun watchlistShows(
+        @Path("username") userSlug: UserSlug?,
+        @Query(value = "extended", encoded = true) extended: Extended?
+    ): Call<List<BaseShow?>?>?
 
     /**
-     * <b>OAuth Optional</b>
+     * **OAuth Optional**
      *
-     * <p>Returns all items in a user's watchlist filtered by seasons. When an item is watched, it will be automatically
+     *
+     * Returns all items in a user's watchlist filtered by seasons. When an item is watched, it will be automatically
      * removed from the watchlist. To track what the user is actively watching, use the progress APIs.
      */
     @GET("users/{username}/watchlist/seasons")
-    Call<List<WatchlistedSeason>> watchlistSeasons(
-            @Path("username") UserSlug userSlug,
-            @Query(value = "extended", encoded = true) Extended extended
-    );
+    fun watchlistSeasons(
+        @Path("username") userSlug: UserSlug?,
+        @Query(value = "extended", encoded = true) extended: Extended?
+    ): Call<List<WatchlistedSeason?>?>?
 
     /**
-     * <b>OAuth Optional</b>
+     * **OAuth Optional**
      *
-     * <p>Returns all items in a user's watchlist filtered by episodes. When an item is watched, it will be
+     *
+     * Returns all items in a user's watchlist filtered by episodes. When an item is watched, it will be
      * automatically removed from the watchlist. To track what the user is actively watching, use the progress APIs.
      */
     @GET("users/{username}/watchlist/episodes")
-    Call<List<WatchlistedEpisode>> watchlistEpisodes(
-            @Path("username") UserSlug userSlug,
-            @Query(value = "extended", encoded = true) Extended extended
-    );
+    fun watchlistEpisodes(
+        @Path("username") userSlug: UserSlug?,
+        @Query(value = "extended", encoded = true) extended: Extended?
+    ): Call<List<WatchlistedEpisode?>?>?
 
     /**
-     * <b>OAuth Optional</b>
+     * **OAuth Optional**
      *
-     * <p> Returns all movies or shows a user has watched sorted by most plays.
+     *
+     *  Returns all movies or shows a user has watched sorted by most plays.
      *
      * @param userSlug Example: "sean".
      */
     @GET("users/{username}/watched/movies")
-    Call<List<BaseMovie>> watchedMovies(
-            @Path("username") UserSlug userSlug,
-            @Query(value = "extended", encoded = true) Extended extended
-    );
+    fun watchedMovies(
+        @Path("username") userSlug: UserSlug?,
+        @Query(value = "extended", encoded = true) extended: Extended?
+    ): Call<List<BaseMovie?>?>?
 
     /**
-     * <b>OAuth Optional</b>
+     * **OAuth Optional**
      *
-     * <p> Returns all movies or shows a user has watched sorted by most plays.
+     *
+     *  Returns all movies or shows a user has watched sorted by most plays.
      *
      * @param userSlug Example: "sean".
      */
     @GET("users/{username}/watched/shows")
-    Call<List<BaseShow>> watchedShows(
-            @Path("username") UserSlug userSlug,
-            @Query(value = "extended", encoded = true) Extended extended
-    );
-
+    fun watchedShows(
+        @Path("username") userSlug: UserSlug?,
+        @Query(value = "extended", encoded = true) extended: Extended?
+    ): Call<List<BaseShow?>?>?
 }

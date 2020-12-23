@@ -1,42 +1,46 @@
-package dev.mantasboro.trakt5.services;
+package dev.mantasboro.trakt5.services
 
-import dev.mantasboro.trakt5.entities.*;
-import dev.mantasboro.trakt5.enums.Extended;
-import dev.mantasboro.trakt5.enums.ProgressLastActivity;
-import retrofit2.Call;
-import retrofit2.http.GET;
-import retrofit2.http.Path;
-import retrofit2.http.Query;
+import dev.mantasboro.trakt5.entities.BaseShow
+import dev.mantasboro.trakt5.entities.Comment
+import dev.mantasboro.trakt5.entities.Credits
+import dev.mantasboro.trakt5.entities.Ratings
+import dev.mantasboro.trakt5.entities.Show
+import dev.mantasboro.trakt5.entities.Stats
+import dev.mantasboro.trakt5.entities.Translation
+import dev.mantasboro.trakt5.entities.TrendingShow
+import dev.mantasboro.trakt5.enums.Extended
+import dev.mantasboro.trakt5.enums.ProgressLastActivity
+import retrofit2.Call
+import retrofit2.http.GET
+import retrofit2.http.Path
+import retrofit2.http.Query
 
-import java.util.List;
-
-public interface Shows {
-
+interface Shows {
     /**
      * Returns the most popular shows. Popularity is calculated using the rating percentage and the number of ratings.
      *
-     * @param page Number of page of results to be returned. If {@code null} defaults to 1.
-     * @param limit Number of results to return per page. If {@code null} defaults to 10.
+     * @param page Number of page of results to be returned. If `null` defaults to 1.
+     * @param limit Number of results to return per page. If `null` defaults to 10.
      */
     @GET("shows/popular")
-    Call<List<Show>> popular(
-            @Query("page") Integer page,
-            @Query("limit") Integer limit,
-            @Query(value = "extended", encoded = true) Extended extended
-    );
+    fun popular(
+        @Query("page") page: Int?,
+        @Query("limit") limit: Int?,
+        @Query(value = "extended", encoded = true) extended: Extended?
+    ): Call<List<Show>>
 
     /**
      * Returns all shows being watched right now. Shows with the most users are returned first.
      *
-     * @param page Number of page of results to be returned. If {@code null} defaults to 1.
-     * @param limit Number of results to return per page. If {@code null} defaults to 10.
+     * @param page Number of page of results to be returned. If `null` defaults to 1.
+     * @param limit Number of results to return per page. If `null` defaults to 10.
      */
     @GET("shows/trending")
-    Call<List<TrendingShow>> trending(
-            @Query("page") Integer page,
-            @Query("limit") Integer limit,
-            @Query(value = "extended", encoded = true) Extended extended
-    );
+    fun trending(
+        @Query("page") page: Int?,
+        @Query("limit") limit: Int?,
+        @Query(value = "extended", encoded = true) extended: Extended?
+    ): Call<List<TrendingShow>>
 
     /**
      * Returns a single shows's details.
@@ -44,10 +48,10 @@ public interface Shows {
      * @param showId trakt ID, trakt slug, or IMDB ID. Example: "game-of-thrones".
      */
     @GET("shows/{id}")
-    Call<Show> summary(
-            @Path("id") String showId,
-            @Query(value = "extended", encoded = true) Extended extended
-    );
+    fun summary(
+        @Path("id") showId: String,
+        @Query(value = "extended", encoded = true) extended: Extended?
+    ): Call<Show>
 
     /**
      * Returns all translations for a show, including language and translated values for title and overview.
@@ -55,9 +59,9 @@ public interface Shows {
      * @param showId trakt ID, trakt slug, or IMDB ID. Example: "game-of-thrones".
      */
     @GET("shows/{id}/translations")
-    Call<List<Translation>> translations(
-            @Path("id") String showId
-    );
+    fun translations(
+        @Path("id") showId: String
+    ): Call<List<Translation>>
 
     /**
      * Returns a single translation for a show. If the translation does not exist, the returned list will be empty.
@@ -66,47 +70,51 @@ public interface Shows {
      * @param language 2-letter language code (ISO 639-1).
      */
     @GET("shows/{id}/translations/{language}")
-    Call<List<Translation>> translation(
-            @Path("id") String showId,
-            @Path("language") String language
-    );
+    fun translation(
+        @Path("id") showId: String,
+        @Path("language") language: String?
+    ): Call<List<Translation>>
 
     /**
      * Returns all top level comments for a show. Most recent comments returned first.
      *
      * @param showId trakt ID, trakt slug, or IMDB ID. Example: "game-of-thrones".
-     * @param page Number of page of results to be returned. If {@code null} defaults to 1.
-     * @param limit Number of results to return per page. If {@code null} defaults to 10.
+     * @param page Number of page of results to be returned. If `null` defaults to 1.
+     * @param limit Number of results to return per page. If `null` defaults to 10.
      */
     @GET("shows/{id}/comments")
-    Call<List<Comment>> comments(
-            @Path("id") String showId,
-            @Query("page") Integer page,
-            @Query("limit") Integer limit,
-            @Query(value = "extended", encoded = true) Extended extended
-    );
+    fun comments(
+        @Path("id") showId: String,
+        @Query("page") page: Int?,
+        @Query("limit") limit: Int?,
+        @Query(value = "extended", encoded = true) extended: Extended?
+    ): Call<List<Comment>>
 
     /**
-     * <b>OAuth Required</b>
+     * **OAuth Required**
      *
-     * <p>Returns collection progress for show including details on all seasons and episodes. The {@code next_episode}
-     * will be the next episode the user should collect, if there are no upcoming episodes it will be set to {@code
-     * null}.
      *
-     * <p>By default, any hidden seasons will be removed from the response and stats. To include these and adjust the
-     * completion stats, set the {@code hidden} flag to {@code true}.
+     * Returns collection progress for show including details on all seasons and episodes. The `next_episode`
+     * will be the next episode the user should collect, if there are no upcoming episodes it will be set to `null`.
      *
-     * <p>By default, specials will be excluded from the response. Set the {@code specials} flag to {@code true} to
+     *
+     * By default, any hidden seasons will be removed from the response and stats. To include these and adjust the
+     * completion stats, set the `hidden` flag to `true`.
+     *
+     *
+     * By default, specials will be excluded from the response. Set the `specials` flag to `true` to
      * include season 0 and adjust the stats accordingly. If you'd like to include specials, but not adjust the stats,
-     * set {@code count_specials} to {@code false}.
+     * set `count_specials` to `false`.
      *
-     * <p>By default, the {@code last_episode} and {@code next_episode} are calculated using the last {@code aired}
+     *
+     * By default, the `last_episode` and `next_episode` are calculated using the last `aired`
      * episode the user has collected, even if they've collected older episodes more recently. To use their last
-     * collected episode for these calculations, set the {@code last_activity} flag to {@code collected}.
+     * collected episode for these calculations, set the `last_activity` flag to `collected`.
      *
-     * <b>Note:</b>
+     * **Note:**
      *
-     * <p>Only aired episodes are used to calculate progress. Episodes in the future or without an air date are ignored.
+     *
+     * Only aired episodes are used to calculate progress. Episodes in the future or without an air date are ignored.
      *
      * @param showId trakt ID, trakt slug, or IMDB ID. Example: "game-of-thrones".
      * @param hidden Include any hidden seasons.
@@ -117,37 +125,41 @@ public interface Shows {
      * these calculations, set the last_activity flag to collected or watched respectively.
      */
     @GET("shows/{id}/progress/collection")
-    Call<BaseShow> collectedProgress(
-            @Path("id") String showId,
-            @Query("hidden") Boolean hidden,
-            @Query("specials") Boolean specials,
-            @Query("count_specials") Boolean countSpecials,
-            @Query("last_activity") ProgressLastActivity lastActivity,
-            @Query(value = "extended", encoded = true) Extended extended
-    );
+    fun collectedProgress(
+        @Path("id") showId: String,
+        @Query("hidden") hidden: Boolean?,
+        @Query("specials") specials: Boolean?,
+        @Query("count_specials") countSpecials: Boolean?,
+        @Query("last_activity") lastActivity: ProgressLastActivity?,
+        @Query(value = "extended", encoded = true) extended: Extended?
+    ): Call<BaseShow>
 
     /**
-     * <b>OAuth Required</b>
+     * **OAuth Required**
      *
-     * Returns watched progress for show including details on all seasons and episodes. The {@code next_episode} will be
-     * the next episode the user should watch, if there are no upcoming episodes it will be set to {@code null}.
-     * If not {@code null}, the {@code reset_at} date is when the user started re-watching the show. Your app can adjust
-     * the progress by ignoring episodes with a {@code last_watched_at} prior to the {@code reset_at}.
+     * Returns watched progress for show including details on all seasons and episodes. The `next_episode` will be
+     * the next episode the user should watch, if there are no upcoming episodes it will be set to `null`.
+     * If not `null`, the `reset_at` date is when the user started re-watching the show. Your app can adjust
+     * the progress by ignoring episodes with a `last_watched_at` prior to the `reset_at`.
      *
-     * <p>By default, any hidden seasons will be removed from the response and stats. To include these and adjust the
-     * completion stats, set the {@code hidden} flag to {@code true}.
      *
-     * <p>By default, specials will be excluded from the response. Set the {@code specials} flag to {@code true} to
+     * By default, any hidden seasons will be removed from the response and stats. To include these and adjust the
+     * completion stats, set the `hidden` flag to `true`.
+     *
+     *
+     * By default, specials will be excluded from the response. Set the `specials` flag to `true` to
      * include season 0 and adjust the stats accordingly. If you'd like to include specials, but not adjust the stats,
-     * set {@code count_specials} to {@code false}.
+     * set `count_specials` to `false`.
      *
-     * <p>By default, the {@code last_episode} and {@code next_episode} are calculated using the last {@code aired}
+     *
+     * By default, the `last_episode` and `next_episode` are calculated using the last `aired`
      * episode the user has watched, even if they've watched older episodes more recently. To use their last watched
-     * episode for these calculations, set the {@code last_activity} flag to {@code watched}.
+     * episode for these calculations, set the `last_activity` flag to `watched`.
      *
-     * <b>Note:</b>
+     * **Note:**
      *
-     * <p>Only aired episodes are used to calculate progress. Episodes in the future or without an air date are ignored.
+     *
+     * Only aired episodes are used to calculate progress. Episodes in the future or without an air date are ignored.
      *
      * @param showId trakt ID, trakt slug, or IMDB ID. Example: "game-of-thrones".
      * @param hidden Include any hidden seasons.
@@ -158,14 +170,14 @@ public interface Shows {
      * these calculations, set the last_activity flag to collected or watched respectively.
      */
     @GET("shows/{id}/progress/watched")
-    Call<BaseShow> watchedProgress(
-            @Path("id") String showId,
-            @Query("hidden") Boolean hidden,
-            @Query("specials") Boolean specials,
-            @Query("count_specials") Boolean countSpecials,
-            @Query("last_activity") ProgressLastActivity lastActivity,
-            @Query(value = "extended", encoded = true) Extended extended
-    );
+    fun watchedProgress(
+        @Path("id") showId: String,
+        @Query("hidden") hidden: Boolean?,
+        @Query("specials") specials: Boolean?,
+        @Query("count_specials") countSpecials: Boolean?,
+        @Query("last_activity") lastActivity: ProgressLastActivity?,
+        @Query(value = "extended", encoded = true) extended: Extended?
+    ): Call<BaseShow>
 
     /**
      * Returns all actors, directors, writers, and producers for a show.
@@ -173,9 +185,7 @@ public interface Shows {
      * @param showId trakt ID, trakt slug, or IMDB ID. Example: "game-of-thrones".
      */
     @GET("shows/{id}/people")
-    Call<Credits> people(
-            @Path("id") String showId
-    );
+    fun people(@Path("id") showId: String?): Call<Credits>
 
     /**
      * Returns rating (between 0 and 10) and distribution for a show.
@@ -183,27 +193,24 @@ public interface Shows {
      * @param showId trakt ID, trakt slug, or IMDB ID. Example: "game-of-thrones".
      */
     @GET("shows/{id}/ratings")
-    Call<Ratings> ratings(
-            @Path("id") String showId
-    );
+    fun ratings(@Path("id") showId: String): Call<Ratings>
 
     /**
      * Returns lots of show stats.
      */
     @GET("shows/{id}/stats")
-    Call<Stats> stats(
-            @Path("id") String showId
-    );
+    fun stats(
+        @Path("id") showId: String
+    ): Call<Stats>
 
     /**
      * Returns related and similar shows.
      */
     @GET("shows/{id}/related")
-    Call<List<Show>> related(
-            @Path("id") String showId,
-            @Query("page") Integer page,
-            @Query("limit") Integer limit,
-            @Query(value = "extended", encoded = true) Extended extended
-    );
-
+    fun related(
+        @Path("id") showId: String,
+        @Query("page") page: Int?,
+        @Query("limit") limit: Int?,
+        @Query(value = "extended", encoded = true) extended: Extended?
+    ): Call<List<Show>>
 }
