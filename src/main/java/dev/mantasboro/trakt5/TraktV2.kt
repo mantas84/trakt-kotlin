@@ -414,10 +414,10 @@ open class TraktV2 {
          * trakt API v2 URL.
          */
         const val API_HOST = "api.trakt.tv"
-        const val API_URL = "https://" + API_HOST + "/"
+        const val API_URL = "https://$API_HOST/"
         const val API_VERSION = "2"
         const val SITE_URL = "https://trakt.tv"
-        const val OAUTH2_AUTHORIZATION_URL = SITE_URL + "/oauth/authorize"
+        const val OAUTH2_AUTHORIZATION_URL = "$SITE_URL/oauth/authorize"
         const val HEADER_AUTHORIZATION = "Authorization"
         const val HEADER_CONTENT_TYPE = "Content-Type"
         const val CONTENT_TYPE_JSON = "application/json"

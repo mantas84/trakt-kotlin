@@ -10,11 +10,14 @@ import com.google.gson.JsonSerializer
 import dev.mantasboro.trakt5.enums.Audio
 import dev.mantasboro.trakt5.enums.AudioChannels
 import dev.mantasboro.trakt5.enums.Hdr
+import dev.mantasboro.trakt5.enums.ListPrivacy
 import dev.mantasboro.trakt5.enums.MediaType
 import dev.mantasboro.trakt5.enums.ProgressLastActivity
 import dev.mantasboro.trakt5.enums.Rating
 import dev.mantasboro.trakt5.enums.Rating.Companion.fromValue
 import dev.mantasboro.trakt5.enums.Resolution
+import dev.mantasboro.trakt5.enums.SortBy
+import dev.mantasboro.trakt5.enums.SortHow
 import dev.mantasboro.trakt5.enums.Status
 import org.threeten.bp.LocalDate
 import org.threeten.bp.OffsetDateTime
@@ -133,6 +136,36 @@ object TraktV2Helper {
             builder.registerTypeAdapter(AudioChannels::class.java,
                 JsonDeserializer { json: JsonElement, typeOfT: Type?, context: JsonDeserializationContext? ->
                     AudioChannels.fromValue(json.asString)
+                })
+
+            // ListPrivacy
+            builder.registerTypeAdapter(ListPrivacy::class.java,
+                JsonSerializer { src: ListPrivacy, typeOfSrc: Type?, context: JsonSerializationContext? ->
+                    JsonPrimitive(src.toString())
+                } as JsonSerializer<ListPrivacy>)
+            builder.registerTypeAdapter(ListPrivacy::class.java,
+                JsonDeserializer { json: JsonElement, typeOfT: Type?, context: JsonDeserializationContext? ->
+                    ListPrivacy.fromValue(json.asString)
+                })
+
+            // SortBy
+            builder.registerTypeAdapter(SortBy::class.java,
+                JsonSerializer { src: SortBy, typeOfSrc: Type?, context: JsonSerializationContext? ->
+                    JsonPrimitive(src.toString())
+                } as JsonSerializer<SortBy>)
+            builder.registerTypeAdapter(SortBy::class.java,
+                JsonDeserializer { json: JsonElement, typeOfT: Type?, context: JsonDeserializationContext? ->
+                    SortBy.fromValue(json.asString)
+                })
+
+            // SortHow
+            builder.registerTypeAdapter(SortHow::class.java,
+                JsonSerializer { src: SortHow, typeOfSrc: Type?, context: JsonSerializationContext? ->
+                    JsonPrimitive(src.toString())
+                } as JsonSerializer<SortHow>)
+            builder.registerTypeAdapter(SortHow::class.java,
+                JsonDeserializer { json: JsonElement, typeOfT: Type?, context: JsonDeserializationContext? ->
+                    SortHow.fromValue(json.asString)
                 })
             return builder
         }

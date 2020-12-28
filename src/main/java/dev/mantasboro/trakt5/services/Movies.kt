@@ -94,7 +94,7 @@ interface Movies {
      * @param movieId trakt ID, trakt slug, or IMDB ID. Example: "tron-legacy-2010".
      */
     @GET("movies/{id}/people")
-    fun people(@Path("id") movieId: String): Call<Credits?>?
+    fun people(@Path("id") movieId: String): Call<Credits>
 
     /**
      * Returns rating (between 0 and 10) and distribution for a movie.

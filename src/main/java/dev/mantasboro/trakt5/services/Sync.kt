@@ -291,7 +291,7 @@ interface Sync {
      */
     @GET("sync/watchlist/episodes")
     fun watchlistEpisodes(
-        @Query(value = "extended", encoded = true) extended: Extended
+        @Query(value = "extended", encoded = true) extended: Extended?
     ): Call<List<WatchlistedEpisode>>
 
     /**

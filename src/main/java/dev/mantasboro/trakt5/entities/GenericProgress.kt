@@ -1,8 +1,8 @@
 package dev.mantasboro.trakt5.entities
 
 abstract class GenericProgress(
-    open val episode: SyncEpisode? = null,
+    val episode: SyncEpisode? = null,
     val show: SyncShow? = null,
-    open val movie: SyncMovie? = null,
-    open val progress: Double? = null,
+    val movie: SyncMovie? = null,
+    val progress: Double? = null,
 )

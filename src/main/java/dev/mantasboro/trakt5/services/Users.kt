@@ -43,7 +43,7 @@ interface Users {
      * website.
      */
     @GET("users/settings")
-    fun settings(): Call<Settings?>?
+    fun settings(): Call<Settings>
 
     /**
      * **OAuth Optional**
@@ -58,7 +58,7 @@ interface Users {
     fun profile(
         @Path("username") userSlug: UserSlug?,
         @Query(value = "extended", encoded = true) extended: Extended?
-    ): Call<User?>?
+    ): Call<User>
 
     /**
      * **OAuth Optional**
@@ -73,7 +73,7 @@ interface Users {
     fun collectionMovies(
         @Path("username") userSlug: UserSlug?,
         @Query(value = "extended", encoded = true) extended: Extended?
-    ): Call<List<BaseMovie?>?>?
+    ): Call<List<BaseMovie>>
 
     /**
      * **OAuth Optional**
@@ -88,7 +88,7 @@ interface Users {
     fun collectionShows(
         @Path("username") userSlug: UserSlug?,
         @Query(value = "extended", encoded = true) extended: Extended?
-    ): Call<List<BaseShow?>?>?
+    ): Call<List<BaseShow>>
 
     /**
      * **OAuth Optional**
@@ -99,7 +99,7 @@ interface Users {
     @GET("users/{username}/lists")
     fun lists(
         @Path("username") userSlug: UserSlug?
-    ): Call<List<TraktList?>?>?
+    ): Call<List<TraktList>>
 
     /**
      * **OAuth Required**
@@ -111,7 +111,7 @@ interface Users {
     fun createList(
         @Path("username") userSlug: UserSlug?,
         @Body list: TraktList?
-    ): Call<TraktList?>?
+    ): Call<TraktList>
 
     /**
      * **OAuth Required**
@@ -125,7 +125,7 @@ interface Users {
         @Path("username") userSlug: UserSlug?,
         @Path("id") id: String?,
         @Body list: TraktList?
-    ): Call<TraktList?>?
+    ): Call<TraktList>
 
     /**
      * **OAuth Required**
@@ -137,7 +137,7 @@ interface Users {
     fun deleteList(
         @Path("username") userSlug: UserSlug?,
         @Path("id") id: String?
-    ): Call<Void?>?
+    ): Call<Void>
 
     /**
      * **OAuth Optional**
@@ -150,7 +150,7 @@ interface Users {
         @Path("username") userSlug: UserSlug?,
         @Path("id") id: String?,
         @Query(value = "extended", encoded = true) extended: Extended?
-    ): Call<List<ListEntry?>?>?
+    ): Call<List<ListEntry>>
 
     /**
      * **OAuth Required**
@@ -163,7 +163,7 @@ interface Users {
         @Path("username") userSlug: UserSlug?,
         @Path("id") id: String?,
         @Body items: SyncItems?
-    ): Call<SyncResponse?>?
+    ): Call<SyncResponse>
 
     /**
      * **OAuth Required**
@@ -176,7 +176,7 @@ interface Users {
         @Path("username") userSlug: UserSlug?,
         @Path("id") id: String?,
         @Body items: SyncItems?
-    ): Call<SyncResponse?>?
+    ): Call<SyncResponse>
 
     /**
      * **OAuth Required**
@@ -189,7 +189,7 @@ interface Users {
         @Path("username") userSlug: UserSlug?,
         @Path("id") id: String?,
         @Body rank: ListItemRank?
-    ): Call<ListReorderResponse?>?
+    ): Call<ListReorderResponse>
 
     /**
      * **OAuth Required**
@@ -204,7 +204,7 @@ interface Users {
     @POST("users/{username}/follow")
     fun follow(
         @Path("username") userSlug: UserSlug?
-    ): Call<Followed?>?
+    ): Call<Followed>
 
     /**
      * **OAuth Required**
@@ -215,7 +215,7 @@ interface Users {
     @DELETE("users/{username}/follow")
     fun unfollow(
         @Path("username") userSlug: UserSlug?
-    ): Call<Void?>?
+    ): Call<Void>
 
     /**
      * **OAuth Optional**
@@ -227,7 +227,7 @@ interface Users {
     fun followers(
         @Path("username") userSlug: UserSlug?,
         @Query(value = "extended", encoded = true) extended: Extended?
-    ): Call<List<Follower?>?>?
+    ): Call<List<Follower>>
 
     /**
      * **OAuth Optional**
@@ -239,7 +239,7 @@ interface Users {
     fun following(
         @Path("username") userSlug: UserSlug?,
         @Query(value = "extended", encoded = true) extended: Extended?
-    ): Call<List<Follower?>?>?
+    ): Call<List<Follower>>
 
     /**
      * **OAuth Optional**
@@ -252,7 +252,7 @@ interface Users {
     fun friends(
         @Path("username") userSlug: UserSlug?,
         @Query(value = "extended", encoded = true) extended: Extended?
-    ): Call<List<Friend?>?>?
+    ): Call<List<Friend>>
 
     /**
      * **OAuth Optional**
@@ -274,7 +274,7 @@ interface Users {
         @Query(value = "extended", encoded = true) extended: Extended?,
         @Query("start_at") startAt: OffsetDateTime?,
         @Query("end_at") endAt: OffsetDateTime?
-    ): Call<List<HistoryEntry?>?>?
+    ): Call<List<HistoryEntry>>
 
     /**
      * **OAuth Optional**
@@ -297,7 +297,7 @@ interface Users {
         @Query(value = "extended", encoded = true) extended: Extended?,
         @Query("start_at") startAt: OffsetDateTime?,
         @Query("end_at") endAt: OffsetDateTime?
-    ): Call<List<HistoryEntry?>?>?
+    ): Call<List<HistoryEntry>>
 
     /**
      * **OAuth Optional**
@@ -324,7 +324,7 @@ interface Users {
         @Query(value = "extended", encoded = true) extended: Extended?,
         @Query("start_at") startAt: OffsetDateTime?,
         @Query("end_at") endAt: OffsetDateTime?
-    ): Call<List<HistoryEntry?>?>?
+    ): Call<List<HistoryEntry>>
 
     /**
      * **OAuth Optional**
@@ -340,7 +340,7 @@ interface Users {
         @Path("username") userSlug: UserSlug?,
         @Path(value = "rating", encoded = true) filter: RatingsFilter?,
         @Query(value = "extended", encoded = true) extended: Extended?
-    ): Call<List<RatedMovie?>?>?
+    ): Call<List<RatedMovie>>
 
     /**
      * **OAuth Optional**
@@ -356,7 +356,7 @@ interface Users {
         @Path("username") userSlug: UserSlug?,
         @Path(value = "rating", encoded = true) filter: RatingsFilter?,
         @Query(value = "extended", encoded = true) extended: Extended?
-    ): Call<List<RatedShow?>?>?
+    ): Call<List<RatedShow>>
 
     /**
      * **OAuth Optional**
@@ -372,7 +372,7 @@ interface Users {
         @Path("username") userSlug: UserSlug?,
         @Path(value = "rating", encoded = true) filter: RatingsFilter?,
         @Query(value = "extended", encoded = true) extended: Extended?
-    ): Call<List<RatedSeason?>?>?
+    ): Call<List<RatedSeason>>
 
     /**
      * **OAuth Optional**
@@ -388,7 +388,7 @@ interface Users {
         @Path("username") userSlug: UserSlug?,
         @Path(value = "rating", encoded = true) filter: RatingsFilter?,
         @Query(value = "extended", encoded = true) extended: Extended?
-    ): Call<List<RatedEpisode?>?>?
+    ): Call<List<RatedEpisode>>
 
     /**
      * **OAuth Optional**
@@ -401,7 +401,7 @@ interface Users {
     fun watchlistMovies(
         @Path("username") userSlug: UserSlug?,
         @Query(value = "extended", encoded = true) extended: Extended?
-    ): Call<List<BaseMovie?>?>?
+    ): Call<List<BaseMovie>>
 
     /**
      * **OAuth Optional**
@@ -414,7 +414,7 @@ interface Users {
     fun watchlistShows(
         @Path("username") userSlug: UserSlug?,
         @Query(value = "extended", encoded = true) extended: Extended?
-    ): Call<List<BaseShow?>?>?
+    ): Call<List<BaseShow>>
 
     /**
      * **OAuth Optional**
@@ -427,7 +427,7 @@ interface Users {
     fun watchlistSeasons(
         @Path("username") userSlug: UserSlug?,
         @Query(value = "extended", encoded = true) extended: Extended?
-    ): Call<List<WatchlistedSeason?>?>?
+    ): Call<List<WatchlistedSeason>>
 
     /**
      * **OAuth Optional**
@@ -440,7 +440,7 @@ interface Users {
     fun watchlistEpisodes(
         @Path("username") userSlug: UserSlug?,
         @Query(value = "extended", encoded = true) extended: Extended?
-    ): Call<List<WatchlistedEpisode?>?>?
+    ): Call<List<WatchlistedEpisode>>
 
     /**
      * **OAuth Optional**
@@ -454,7 +454,7 @@ interface Users {
     fun watchedMovies(
         @Path("username") userSlug: UserSlug?,
         @Query(value = "extended", encoded = true) extended: Extended?
-    ): Call<List<BaseMovie?>?>?
+    ): Call<List<BaseMovie>>
 
     /**
      * **OAuth Optional**
@@ -468,5 +468,5 @@ interface Users {
     fun watchedShows(
         @Path("username") userSlug: UserSlug?,
         @Query(value = "extended", encoded = true) extended: Extended?
-    ): Call<List<BaseShow?>?>?
+    ): Call<List<BaseShow>>
 }

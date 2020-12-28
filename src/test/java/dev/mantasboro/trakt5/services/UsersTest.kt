@@ -71,7 +71,7 @@ class UsersTest : BaseTestCase() {
             Assertions.assertThat(list.sort_how).isNotNull
             Assertions.assertThat(list.created_at).isNotNull
             Assertions.assertThat(list.updated_at).isNotNull
-            Assertions.assertThat(list.item_count).isPositive
+            Assertions.assertThat(list.item_count).isGreaterThanOrEqualTo(0)
             Assertions.assertThat(list.comment_count).isGreaterThanOrEqualTo(0)
             Assertions.assertThat(list.likes).isGreaterThanOrEqualTo(0)
             Assertions.assertThat(list.user).isNotNull
@@ -322,7 +322,7 @@ class UsersTest : BaseTestCase() {
                 OffsetDateTime.of(2016, 8, 3, 10, 0, 0, 0, ZoneOffset.UTC)
             )
         )
-        Assertions.assertThat(history.size).isGreaterThan(0)
+        Assertions.assertThat(history.size).isGreaterThanOrEqualTo(0)
         assertMovieHistory(history)
     }
 
@@ -483,6 +483,6 @@ class UsersTest : BaseTestCase() {
     }
 
     companion object {
-        private const val TEST_LIST_WITH_ITEMS_TRAKT_ID = 1012786
+        private const val TEST_LIST_WITH_ITEMS_TRAKT_ID = 20416093
     }
 }

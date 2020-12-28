@@ -13,8 +13,8 @@ import java.io.IOException
 open class BaseTestCase {
 
     internal class TestTraktV2 : TraktV2 {
-        constructor(apiKey: String?) : super(apiKey) {}
-        constructor(apiKey: String?, clientSecret: String?, redirectUri: String?) : super(
+        constructor(apiKey: String) : super(apiKey) {}
+        constructor(apiKey: String, clientSecret: String, redirectUri: String) : super(
             apiKey,
             clientSecret,
             redirectUri
