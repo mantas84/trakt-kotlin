@@ -1,6 +1,7 @@
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.4.10'
+    id 'org.jetbrains.kotlin.jvm' version '1.4.21'
     id 'io.gitlab.arturbosch.detekt' version '1.14.2'
+    id "org.jetbrains.kotlin.kapt" version "1.4.21"
 }
 
 group 'dev.mantasboro'
@@ -17,7 +18,12 @@ dependencies {
     testCompile("org.assertj:assertj-core:3.11.1")
 
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.0.0'
+
+    implementation "com.squareup.retrofit2:converter-moshi:2.9.0"
+    implementation "com.squareup.moshi:moshi:1.11.0"
+    implementation "com.squareup.moshi:moshi-kotlin:1.11.0"
+    kapt "com.squareup.moshi:moshi-kotlin-codegen:1.11.0"
+
     implementation("org.threeten:threetenbp:1.5.0")
     implementation "com.squareup.okhttp3:logging-interceptor:4.0.1"
 
