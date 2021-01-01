@@ -1,7 +1,6 @@
 package dev.mantasboro.trakt5.enums
 
 import java.util.Locale
-import kotlin.collections.HashMap
 
 enum class ProgressLastActivity(private val value: String) : TraktEnum {
 

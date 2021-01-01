@@ -2,9 +2,25 @@ package dev.mantasboro.trakt5.services
 
 import dev.mantasboro.trakt5.BaseTestCase
 import dev.mantasboro.trakt5.TestData
-import dev.mantasboro.trakt5.entities.*
+import dev.mantasboro.trakt5.entities.HistoryEntry
+import dev.mantasboro.trakt5.entities.ListItemRank
+import dev.mantasboro.trakt5.entities.MovieIds
+import dev.mantasboro.trakt5.entities.PersonIds
+import dev.mantasboro.trakt5.entities.ShowIds
+import dev.mantasboro.trakt5.entities.SyncItems
+import dev.mantasboro.trakt5.entities.SyncMovie
+import dev.mantasboro.trakt5.entities.SyncPerson
+import dev.mantasboro.trakt5.entities.SyncShow
+import dev.mantasboro.trakt5.entities.TraktList
+import dev.mantasboro.trakt5.entities.UserSlug
 import dev.mantasboro.trakt5.entities.base.BaseIdsData
-import dev.mantasboro.trakt5.enums.*
+import dev.mantasboro.trakt5.enums.Extended
+import dev.mantasboro.trakt5.enums.HistoryType
+import dev.mantasboro.trakt5.enums.ListPrivacy
+import dev.mantasboro.trakt5.enums.Rating
+import dev.mantasboro.trakt5.enums.RatingsFilter
+import dev.mantasboro.trakt5.enums.SortBy
+import dev.mantasboro.trakt5.enums.SortHow
 import org.assertj.core.api.Assertions
 import org.junit.Test
 import org.threeten.bp.LocalTime
@@ -13,7 +29,7 @@ import org.threeten.bp.ZoneOffset
 import retrofit2.Response
 import java.io.IOException
 import java.net.HttpURLConnection
-import java.util.*
+import java.util.ArrayList
 
 class UsersTest : BaseTestCase() {
     @Test

@@ -1,7 +1,11 @@
 package dev.mantasboro.trakt5.services
 
 import dev.mantasboro.trakt5.BaseTestCase
-import dev.mantasboro.trakt5.entities.*
+import dev.mantasboro.trakt5.entities.EpisodeIds
+import dev.mantasboro.trakt5.entities.MovieIds
+import dev.mantasboro.trakt5.entities.ScrobbleProgress
+import dev.mantasboro.trakt5.entities.SyncEpisode
+import dev.mantasboro.trakt5.entities.SyncMovie
 import dev.mantasboro.trakt5.entities.base.BaseIdsData
 import dev.mantasboro.trakt5.entities.base.GenericProgressData
 import org.assertj.core.api.Assertions

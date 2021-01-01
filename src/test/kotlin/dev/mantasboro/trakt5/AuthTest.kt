@@ -1,6 +1,5 @@
 package dev.mantasboro.trakt5
 
-import dev.mantasboro.trakt5.TraktV2
 import org.assertj.core.api.Assertions
 import org.junit.Test
 import java.io.IOException
