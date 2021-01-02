@@ -3,6 +3,8 @@ trakt-kotlin
 
 #### 🔨 Work in progress 🔨
 
+![CI](https://github.com/mantas84/trakt-kotlin/workflows/CI/badge.svg?branch=main)
+
 A fork from [Trakt-java](https://github.com/UweTrottmann/trakt-java/)
 
 A ~~Java~~ Kotlin wrapper around the [Trakt v2 API](http://docs.trakt.apiary.io/) using [retrofit 2](https://square.github.io/retrofit/).
