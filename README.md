@@ -3,7 +3,7 @@ trakt-kotlin
 
 #### 🔨 Work in progress 🔨
 
-![CI](https://github.com/mantas84/trakt-kotlin/workflows/CI/badge.svg?branch=main)
+![Build](https://github.com/mantas84/trakt-kotlin/workflows/Build/badge.svg)
 
 A fork from [Trakt-java](https://github.com/UweTrottmann/trakt-java/)
 
