@@ -34,6 +34,7 @@ import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
 
+@Suppress("LongParameterList", "TooManyFunctions")
 interface Users {
     /**
      * **OAuth Required**

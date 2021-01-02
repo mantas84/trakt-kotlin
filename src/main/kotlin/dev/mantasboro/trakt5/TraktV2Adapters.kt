@@ -29,6 +29,7 @@ class TraktV2Adapters {
     }
 
     @ToJson
+    @Suppress("MagicNumber")
     fun ratingToJson(rating: Rating): Int {
         return when (rating) {
             Rating.WEAKSAUCE -> 1
@@ -45,6 +46,7 @@ class TraktV2Adapters {
     }
 
     @FromJson
+    @Suppress("MagicNumber")
     fun ratingFromJson(json: Int): Rating {
         return when (json) {
             1 -> Rating.WEAKSAUCE
@@ -57,7 +59,9 @@ class TraktV2Adapters {
             8 -> Rating.GREAT
             9 -> Rating.SUPERB
             10 -> Rating.TOTALLYNINJA
-            else -> throw IllegalArgumentException("Name $json does not match any of the enum constants defined in the class")
+            else -> throw IllegalArgumentException(
+                "Name $json does not match any of the enum constants defined in the class"
+            )
         }
     }
 }

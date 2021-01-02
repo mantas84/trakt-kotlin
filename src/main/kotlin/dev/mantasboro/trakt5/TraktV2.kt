@@ -38,6 +38,7 @@ import java.net.URLEncoder
 /**
  * Helper class for easy usage of the trakt v2 API using retrofit.
  */
+@Suppress("TooManyFunctions")
 open class TraktV2 {
     private var okHttpClient: OkHttpClient? = null
     private var retrofit: Retrofit? = null
@@ -143,7 +144,8 @@ open class TraktV2 {
     }
 
     /**
-     * Adds [dev.mantasboro.trakt5.TraktV2Interceptor] as an application interceptor and [dev.mantasboro.trakt5.TraktV2Authenticator] as an authenticator.
+     * Adds [dev.mantasboro.trakt5.TraktV2Interceptor] as an application interceptor and
+     * [dev.mantasboro.trakt5.TraktV2Authenticator] as an authenticator.
      */
     protected open fun setOkHttpClientDefaults(builder: Builder) {
         builder.addInterceptor(TraktV2Interceptor(this))
@@ -321,7 +323,7 @@ open class TraktV2 {
             retrofit()!!.responseBodyConverter<TraktOAuthError>(TraktOAuthError::class.java, arrayOfNulls(0))
         if (response.errorBody() != null) {
             try {
-                return errorConverter.convert(response.errorBody())
+                return errorConverter.convert(response.errorBody()!!)
             } catch (ignored: IOException) {
             }
         }

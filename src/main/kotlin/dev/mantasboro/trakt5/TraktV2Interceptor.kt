@@ -21,7 +21,8 @@ class TraktV2Interceptor(private val trakt: TraktV2) : Interceptor {
     }
 
     /**
-     * If the host matches [TraktV2.API_HOST] adds a header for the current [TraktV2.API_VERSION], [ ][TraktV2.HEADER_TRAKT_API_KEY] with the given api key, [TraktV2.HEADER_CONTENT_TYPE] and if not present an
+     * If the host matches [TraktV2.API_HOST] adds a header for the current [TraktV2.API_VERSION],
+     * [ ][TraktV2.HEADER_TRAKT_API_KEY] with the given api key, [TraktV2.HEADER_CONTENT_TYPE] and if not present an
      * Authorization header using the given access token.
      *
      * If a request fails due to HTTP 429 Too Many Requests, will retry the request after the time in seconds given

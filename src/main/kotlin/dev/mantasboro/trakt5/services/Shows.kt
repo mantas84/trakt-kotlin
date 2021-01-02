@@ -15,6 +15,7 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 
+@Suppress("LongParameterList", "TooManyFunctions")
 interface Shows {
     /**
      * Returns the most popular shows. Popularity is calculated using the rating percentage and the number of ratings.

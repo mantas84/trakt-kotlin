@@ -9,9 +9,11 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 
+@Suppress("LongParameterList")
 interface Search {
     /**
-     * Search all text fields that a media object contains (i.e. title, overview, etc). Results are ordered by the most relevant score.
+     * Search all text fields that a media object contains (i.e. title, overview, etc).
+     * Results are ordered by the most relevant score.
      *
      * @see [Search - Text Query](http://docs.trakt.apiary.io/.reference/search/text-query/get-text-query-results)
      *
