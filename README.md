@@ -18,6 +18,15 @@ API key (OAuth client id) and optionally a given user access token.
 
 TBA
 
+## Quality
+
+Not production-ready. Most code auto-converted to Kotlin from Java. More idiomatic kotlin is coming.
+
+## Most notable changes
+
+- [x] Kotlin
+- [x] Replace Gson with Moshi
+- [ ] Add coroutines
 
 ## License
 
