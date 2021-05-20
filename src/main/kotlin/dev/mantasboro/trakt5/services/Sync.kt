@@ -177,7 +177,9 @@ interface Sync {
     @GET("sync/ratings/movies{rating}")
     fun ratingsMovies(
         @Path(value = "rating", encoded = true) filter: RatingsFilter?,
-        @Query(value = "extended", encoded = true) extended: Extended?
+        @Query(value = "extended", encoded = true) extended: Extended?,
+        @Query("page") page: Int?,
+        @Query("limit") limit: Int?
     ): Call<List<RatedMovie>>
 
     /**
@@ -191,7 +193,9 @@ interface Sync {
     @GET("sync/ratings/shows{rating}")
     fun ratingsShows(
         @Path(value = "rating", encoded = true) filter: RatingsFilter?,
-        @Query(value = "extended", encoded = true) extended: Extended?
+        @Query(value = "extended", encoded = true) extended: Extended?,
+        @Query("page") page: Int?,
+        @Query("limit") limit: Int?
     ): Call<List<RatedShowData>>
 
     /**
@@ -205,7 +209,9 @@ interface Sync {
     @GET("sync/ratings/seasons{rating}")
     fun ratingsSeasons(
         @Path(value = "rating", encoded = true) filter: RatingsFilter?,
-        @Query(value = "extended", encoded = true) extended: Extended?
+        @Query(value = "extended", encoded = true) extended: Extended?,
+        @Query("page") page: Int?,
+        @Query("limit") limit: Int?
     ): Call<List<RatedSeason>>
 
     /**
@@ -219,7 +225,9 @@ interface Sync {
     @GET("sync/ratings/episodes{rating}")
     fun ratingsEpisodes(
         @Path(value = "rating", encoded = true) filter: RatingsFilter?,
-        @Query(value = "extended", encoded = true) extended: Extended?
+        @Query(value = "extended", encoded = true) extended: Extended?,
+        @Query("page") page: Int?,
+        @Query("limit") limit: Int?
     ): Call<List<RatedEpisode>>
 
     /**

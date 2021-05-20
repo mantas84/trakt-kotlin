@@ -101,10 +101,10 @@ open class BaseTestCase {
         }
     }
 
-    protected fun <T : BaseRatedEntity?> assertRatedEntities(ratedMovies: List<T>) {
-        for (movie in ratedMovies) {
-            Assertions.assertThat(movie?.rated_at).isNotNull
-            Assertions.assertThat(movie?.rating).isNotNull
+    protected fun <T : BaseRatedEntity?> assertRatedEntities(ratedEntities: List<T>) {
+        for (ratedEntity in ratedEntities) {
+            Assertions.assertThat(ratedEntity?.rated_at).isNotNull
+            Assertions.assertThat(ratedEntity?.rating).isNotNull
         }
     }
 
@@ -232,6 +232,15 @@ open class BaseTestCase {
         println("Retrieved refresh token: " + response.body()!!.refresh_token)
         println("Retrieved scope: " + response.body()!!.scope)
         println("Retrieved expires in: " + response.body()!!.expires_in + " seconds")
+    }
+
+    @Throws(IOException::class)
+    open fun <T> executeCallWithoutReadingBody(call: Call<T>): Response<T> {
+        val response = call.execute()
+        if (!response.isSuccessful) {
+            handleFailedResponse(response) // will throw error
+        }
+        return response
     }
 
     companion object {

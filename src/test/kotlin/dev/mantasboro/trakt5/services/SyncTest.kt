@@ -6,6 +6,7 @@ import dev.mantasboro.trakt5.entities.EpisodeIds
 import dev.mantasboro.trakt5.entities.LastActivityMore
 import dev.mantasboro.trakt5.entities.ListsLastActivity
 import dev.mantasboro.trakt5.entities.MovieIds
+import dev.mantasboro.trakt5.entities.RatedMovie
 import dev.mantasboro.trakt5.entities.ScrobbleProgress
 import dev.mantasboro.trakt5.entities.ShowIds
 import dev.mantasboro.trakt5.entities.SyncEpisode
@@ -17,6 +18,7 @@ import dev.mantasboro.trakt5.entities.SyncShow
 import dev.mantasboro.trakt5.entities.base.BaseIdsData
 import dev.mantasboro.trakt5.entities.base.GenericProgressData
 import dev.mantasboro.trakt5.entities.base.LastActivity
+import dev.mantasboro.trakt5.entities.base.RatedShowData
 import dev.mantasboro.trakt5.enums.Rating
 import dev.mantasboro.trakt5.enums.RatingsFilter
 import org.assertj.core.api.Assertions
@@ -24,8 +26,10 @@ import org.junit.Test
 import org.threeten.bp.Instant
 import org.threeten.bp.OffsetDateTime
 import org.threeten.bp.ZoneOffset
+import retrofit2.Call
+import retrofit2.Response
 import java.io.IOException
-import java.util.ArrayList
+
 
 class SyncTest : BaseTestCase() {
     @Test
@@ -307,7 +311,9 @@ class SyncTest : BaseTestCase() {
         val ratedMovies = executeCall(
             trakt.sync().ratingsMovies(
                 RatingsFilter.ALL,
-                null
+                null,
+                1,
+                2
             )
         )
         assertRatedEntities(ratedMovies)
@@ -319,6 +325,8 @@ class SyncTest : BaseTestCase() {
         val ratedMovies = executeCall(
             trakt.sync().ratingsMovies(
                 RatingsFilter.TOTALLYNINJA,
+                null,
+                null,
                 null
             )
         )
@@ -331,10 +339,21 @@ class SyncTest : BaseTestCase() {
 
     @Test
     @Throws(IOException::class)
+    fun test_ratingsMovies_with_pagination() {
+        val call: Call<List<RatedMovie>> = trakt.sync().ratingsMovies(RatingsFilter.ALL, null, 1, 2)
+        val response: Response<List<RatedMovie>> = executeCallWithoutReadingBody(call)
+        Assertions.assertThat(response.headers()["X-Pagination-Page-Count"]).isNotEmpty
+        Assertions.assertThat(response.headers()["X-Pagination-Item-Count"]).isNotEmpty
+    }
+
+    @Test
+    @Throws(IOException::class)
     fun test_ratingsShows() {
         val ratedShows = executeCall(
             trakt.sync().ratingsShows(
                 RatingsFilter.ALL,
+                null,
+                null,
                 null
             )
         )
@@ -343,14 +362,34 @@ class SyncTest : BaseTestCase() {
 
     @Test
     @Throws(IOException::class)
+    fun test_ratingsShows_with_pagination() {
+        val call: Call<List<RatedShowData>> = trakt.sync().ratingsShows(RatingsFilter.ALL, null, 1, 2)
+        val response = executeCallWithoutReadingBody(call)
+        Assertions.assertThat(response.headers()["X-Pagination-Page-Count"]).isNotEmpty
+        Assertions.assertThat(response.headers()["X-Pagination-Item-Count"]).isNotEmpty
+    }
+
+    @Test
+    @Throws(IOException::class)
     fun test_ratingsSeasons() {
         val ratedSeasons = executeCall(
             trakt.sync().ratingsSeasons(
                 RatingsFilter.ALL,
-                null
+                null,
+                null,
+                null,
             )
         )
         assertRatedEntities(ratedSeasons)
+    }
+
+    @Test
+    @Throws(IOException::class)
+    fun test_ratingsSeasons_with_pagination() {
+        val call = trakt.sync().ratingsSeasons(RatingsFilter.ALL, null, 1, 5)
+        val response = executeCallWithoutReadingBody(call)
+        Assertions.assertThat(response.headers()["X-Pagination-Page-Count"]).isNotEmpty
+        Assertions.assertThat(response.headers()["X-Pagination-Item-Count"]).isNotEmpty
     }
 
     @Test
@@ -359,10 +398,21 @@ class SyncTest : BaseTestCase() {
         val ratedEpisodes = executeCall(
             trakt.sync().ratingsEpisodes(
                 RatingsFilter.ALL,
+                null,
+                null,
                 null
             )
         )
         assertRatedEntities(ratedEpisodes)
+    }
+
+    @Test
+    @Throws(IOException::class)
+    fun test_ratingsEpisodes_with_pagination() {
+        val call = trakt.sync().ratingsEpisodes(RatingsFilter.ALL, null, 1, 2)
+        val response = executeCallWithoutReadingBody(call)
+        Assertions.assertThat(response.headers()["X-Pagination-Page-Count"]).isNotEmpty
+        Assertions.assertThat(response.headers()["X-Pagination-Item-Count"]).isNotEmpty
     }
 
     @Test
