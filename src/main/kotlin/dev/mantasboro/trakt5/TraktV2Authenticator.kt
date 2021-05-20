@@ -26,14 +26,14 @@ class TraktV2Authenticator(val trakt: TraktV2) : Authenticator {
      */
     @Throws(IOException::class)
     fun handleAuthenticate(response: Response, trakt: TraktV2): Request? {
-        if (TraktV2.API_HOST != response.request.url.host) {
+        if (TraktV2.isHost(response.request.url.host)) {
             return null // not a trakt API endpoint (possibly trakt OAuth or other API), give up.
         }
         if (responseCount(response) >= 2) {
             return null // failed 2 times, give up.
         }
         val refreshToken = trakt.refreshToken()
-        if (refreshToken == null || refreshToken.length == 0) {
+        if (refreshToken == null || refreshToken.isEmpty()) {
             return null // have no refresh token, give up.
         }
 

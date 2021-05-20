@@ -47,14 +47,18 @@ open class TraktV2 {
     private var redirectUri: String? = null
     private var accessToken: String? = null
     private var refreshToken: String? = null
+    private var isStaging: Boolean = false
+    private val url: String
+        get() = if (isStaging) API_STAGING_URL else API_URL
 
     /**
      * Get a new API manager instance.
      *
      * @param apiKey The API key obtained from trakt, currently equal to the OAuth client id.
      */
-    constructor(apiKey: String) {
+    constructor(apiKey: String, isStaging: Boolean = false) {
         this.apiKey = apiKey
+        this.isStaging = isStaging
     }
 
     /**
@@ -64,10 +68,11 @@ open class TraktV2 {
      * @param clientSecret The client secret obtained from trakt.
      * @param redirectUri  The redirect URI to use for OAuth2 token requests.
      */
-    constructor(apiKey: String, clientSecret: String?, redirectUri: String?) {
+    constructor(apiKey: String, clientSecret: String?, redirectUri: String?, isStaging: Boolean = false) {
         this.apiKey = apiKey
         this.clientSecret = clientSecret
         this.redirectUri = redirectUri
+        this.isStaging = isStaging
     }
 
     fun apiKey(): String {
@@ -122,7 +127,7 @@ open class TraktV2 {
             .build()
 
         return Retrofit.Builder()
-            .baseUrl(API_URL)
+            .baseUrl(url)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .client(okHttpClient())
     }
@@ -422,8 +427,10 @@ open class TraktV2 {
         /**
          * trakt API v2 URL.
          */
-        const val API_HOST = "api.trakt.tv"
-        const val API_URL = "https://$API_HOST/"
+        private const val API_HOST = "api.trakt.tv"
+        private const val API_STAGING_HOST = "api-staging.trakt.tv"
+        private const val API_URL = "https://$API_HOST/"
+        private const val API_STAGING_URL = "https://$API_STAGING_HOST/"
         const val API_VERSION = "2"
         const val SITE_URL = "https://trakt.tv"
         const val OAUTH2_AUTHORIZATION_URL = "$SITE_URL/oauth/authorize"
@@ -432,5 +439,9 @@ open class TraktV2 {
         const val CONTENT_TYPE_JSON = "application/json"
         const val HEADER_TRAKT_API_VERSION = "trakt-api-version"
         const val HEADER_TRAKT_API_KEY = "trakt-api-key"
+
+        fun isHost(host: String): Boolean {
+            return host == API_STAGING_HOST || host == API_HOST
+        }
     }
 }
