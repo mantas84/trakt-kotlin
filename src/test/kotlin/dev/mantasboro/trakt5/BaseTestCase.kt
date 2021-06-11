@@ -20,11 +20,13 @@ import java.io.IOException
 open class BaseTestCase {
 
     internal class TestTraktV2 : TraktV2 {
-        constructor(apiKey: String) : super(apiKey) {}
+
+        constructor(apiKey: String) : super(apiKey = apiKey,true) {}
         constructor(apiKey: String, clientSecret: String, redirectUri: String) : super(
             apiKey,
             clientSecret,
-            redirectUri
+            redirectUri,
+            true
         ) {
             refreshToken(TEST_REFRESH_TOKEN)
         }

@@ -35,7 +35,7 @@ class TraktV2Interceptor(private val trakt: TraktV2) : Interceptor {
         accessToken: String?
     ): Response {
         val request: Request = chain.request()
-        if (TraktV2.isHost(request.url.host)) {
+        if (!TraktV2.isHost(request.url.host)) {
             // do not intercept requests for other hosts
             // this allows the interceptor to be used on a shared okhttp client
             return chain.proceed(request)
